@@ -3013,7 +3013,7 @@ h2.hero-subheading {
 
 @media (max-width:768px) {
     .image-teaser-grid {
-        margin-bottom: 20px
+        margin: 0 0 20px
     }
 }
 

@@ -4,6 +4,25 @@
     margin-bottom: 40px;
   }
 
+  body.home .wrapper:has(.image-teaser-grid) {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+
+  .image-teaser-wrap.image-teaser-grid {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .image-teaser-grid {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
   .image-teaser-wrap .owl-stage-outer {
     padding: 0;
     margin: 0;
