@@ -1,0 +1,9 @@
+/* MGL E&C — phone UI overlay. Desktop CSS is unchanged.
+   Loaded after style.css. Safe to remove: delete the <link> in home.php. */
+@import url("mobile/base.css");
+@import url("mobile/header.css");
+@import url("mobile/hero.css");
+@import url("mobile/home.css");
+@import url("mobile/projects.css");
+@import url("mobile/about.css");
+@import url("mobile/content.css");

@@ -1,0 +1,71 @@
+
+  RewriteEngine on
+
+AddDefaultCharset UTF-8
+
+Options All -Indexes
+
+  RewriteRule ^loginPost(/?)+$ system/user.login.post [L]
+  
+  
+  RewriteRule ^profilePic/([0-9]+)/([^/]+)(/?)+$ pro.pic.php?memberID=$2&w=$1 [L]
+  RewriteRule ^profileHead/([0-9]+)/([^/]+)(/?)+$ pro.pic.php?proHead=ok&memberID=$2&w=$1 [L]
+  
+  RewriteRule ^newsimg/(.+)$ postpic/image/$1 [NC,L]
+  RewriteRule ^newstimg/(.+)$ postpic/_thumbs/Images/$1 [NC,L]
+  
+  RewriteRule ^home/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=home&subPage=$1&objID=$2 [L]
+  RewriteRule ^changeLang/([0-9]+)(/?)+$ index.php?incPageType=home&changeLang=$1 [L]
+  
+  RewriteRule ^page/([0-9]+)/p/([0-9]+)(/?)+$ index.php?incPageType=page&pageID=$1&p=$2 [L]
+  
+  RewriteRule ^users/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=users&subPage=$1&userID=$2 [L]
+  RewriteRule ^users/([^/]+)(/?) index.php?incPageType=users&subPage=$1 [L]
+  
+  RewriteRule ^settings/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=settings&subPage=$1&objID=$2 [L]
+  RewriteRule ^settings/([^/]+)(/?) index.php?incPageType=settings&subPage=$1 [L]
+  
+  RewriteRule ^access/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=access&subPage=$1&objID=$2 [L]
+  RewriteRule ^access/([^/]+)(/?) index.php?incPageType=access&subPage=$1 [L]
+  
+  RewriteRule ^info/([^/]+)/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=info&subPage=$1&typeType=$2&objID=$3 [L]
+  RewriteRule ^info/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=info&subPage=$1&objID=$2 [L]
+  RewriteRule ^info/([^/]+)(/?) index.php?incPageType=info&subPage=$1 [L]
+  
+  RewriteRule ^insert/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=insert&subPage=$1&objID=$2 [L,QSA]
+  RewriteRule ^insert/([^/]+)(/?) index.php?incPageType=insert&subPage=$1 [L,QSA]
+  
+  RewriteRule ^pics/([A-Z,a-z]+)/([^/]+)(/?) postpic/$1/$2 [NC,L]
+  
+  RewriteRule ^proPic/([A-Z,a-z]+)/([0-9]+)(/?)+$ pro.pic.php?memberID=$2&g=$1 [L]
+  
+  
+  RewriteRule ^img/([^/]+)(/?) image/$1 [L]
+  RewriteRule ^slidepic/([^/]+)/([0-9]+)/([0-9]+)/([^/]+)(/?) thumbimg.php?catDir=$1&catID=$2&pic=$4&w=$3 [L]
+  RewriteRule ^upic/([^/]+)/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)/([^/]+)(/?) upics.php?slideDir=$1&slideID=$2&galleryID=$5&wid=$3&hid=$4&pic=$6 [L]
+  
+  RewriteRule ^lang/([0-9]+)(/?)+$ index.php?alang=$1 [L]
+  
+  RewriteRule ^pns/([0-9]+)(/?)+$ module.php?action=photoSlide&slID=$1 [L]
+  
+  RewriteRule ^widJs/([^/]+)/([^/]+)/([^/]+)(/?)+$ wid.js.php?widType=$1&jsName=$2&widID=$3 [L]
+  
+  
+  RewriteRule ^modu/([^/]+)/([^/]+)/([0-9]+)(/?)+$ module.php?action=$1&$2=$3 [L]
+  RewriteRule ^modu/([^/]+)/([^/]+)/([0-9]+)/(.*)+$ module.php?action=$1&$2=$3&$4 [QSA]
+  RewriteRule ^modu/([^/]+)/([0-9]+)(/?)+$ module.php?action=$1&objID=$2 [L]
+  RewriteRule ^modu/([^/]+)(/?)+$ module.php?action=$1 [L]
+  
+  RewriteRule ^userPost/([^/]+)(/?)+$ user.sys.posts.php?mod=$1 [L]
+  RewriteRule ^userPost/([^/]+)/(.*)+$ user.sys.posts.php?mod=$1&$2 [QSA]
+  
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.php?incPageType=$1 [L,QSA]
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “alt-php72” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-alt-php72___lsphp .php .php7 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

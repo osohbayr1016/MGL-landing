@@ -1,0 +1,138 @@
+/* ============================================================================
+   MGL E&C — MOBILE HERO VIDEO FIX          ***  STANDALONE / REVERSIBLE  ***
+   ----------------------------------------------------------------------------
+   This file is deliberately kept SEPARATE from patch.css so it can be switched
+   off on its own without disturbing the home / projects / about fixes.
+
+       TO REVERT: delete the one <link> tag that loads this file.
+                  Nothing else needs changing. Zero risk.
+
+   ----------------------------------------------------------------------------
+   THE PROBLEM
+
+   All 15 home hero slides are landscape videos (1920x1080 and 1920x1536), and
+   the slide titles stored in the database are empty — the headline text is
+   rendered INSIDE each video file.
+
+   Production sizes them like this:
+
+       .hero-slide-item                          { height: 100vh }
+       @media (max-width:768px) .hero-slide-item { height:  92vh }
+       .hero-slide-image img,
+       .hero-slide-image video   { height: 100vh; object-fit: cover }
+       .hero-slide-image video   { max-width: none; width: 100vw }
+
+   On a 375x812 phone, `cover` scales a 16:9 video up until it fills 812px of
+   height, making it 1444px wide against a 375px screen:
+
+       VISIBLE 26%   —   CROPPED AWAY 74%
+
+   The baked-in headline is centre-cropped, which is why it reads as
+   "...EATING / ...NCE OF" instead of the full sentence.
+
+   ----------------------------------------------------------------------------
+   THE APPROACH
+
+   Full bleed to the screen edges, scaled down to fit the width, height follows
+   the video's own proportions.
+
+   Natural sizing (`width:100%; height:auto`) is used rather than a fixed
+   `aspect-ratio` box, because the slides are NOT all the same shape — a fixed
+   16:9 frame would put black bars beside every 1920x1536 slide. Letting each
+   video set its own height means no bars on any slide, whatever its ratio.
+
+   Desktop (769px and up) is untouched: still 100vh, still `cover`.
+   ========================================================================== */
+
+
+/* Safe at every width: `100vw` does not account for a scrollbar, so the video
+   was wider than the slide holding it. */
+.hero-slider-wrap .hero-slide-image video {
+  width: 100%;
+  max-width: 100%;
+}
+
+
+@media (max-width: 768px) {
+
+  /* -- 1. Let the carousel size to its content ---------------------------- */
+  /* Every one of these is pinned to a viewport height in production, which is
+     what forces the crop. */
+  .hero-slider-outer,
+  .hero-slider-wrap,
+  .hero-slider-wrap .owl-stage-outer,
+  .hero-slider-wrap .owl-stage,
+  .hero-slider-wrap .owl-item {
+    height: auto;
+  }
+
+  .hero-slide-item {
+    height: auto;
+    min-height: 0;
+    background: #002234;
+  }
+
+  .hero-slider-wrap .hero-slide-image {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    background: #002234;
+    font-size: 0;            /* removes the inline-element gap under the video */
+  }
+
+  /* -- 2. Full width, scaled down, nothing cropped ------------------------ */
+  /* `height:auto` makes the element take its intrinsic ratio, so a 16:9 slide
+     and a 5:4 slide each get exactly the height they need. */
+  .hero-slider-wrap .hero-slide-image video,
+  .hero-slider-wrap .hero-slide-image img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: fill;        /* no cropping — the box already fits the frame */
+    object-position: center;
+  }
+
+  .hero-slider-wrap .hero-slide-image picture {
+    display: block;
+    width: 100%;
+  }
+
+  /* -- 3. Overlay no longer needed ---------------------------------------- */
+  /* The dark scrim existed to keep white text legible over a full-bleed crop.
+     There is no text sitting on the video on mobile now. */
+  .hero-slider-wrap .hero-slide-image .img-overlay {
+    display: none;
+  }
+
+  /* -- 4. Title moves below the video ------------------------------------- */
+  /* It was `position:absolute; bottom:70px`, i.e. sitting on the footage. With
+     a short hero it would cover the video. As a strip underneath, any title
+     entered in the admin panel stays readable; empty titles collapse to just
+     the arrow. */
+  .hero-slider-wrap .hero-slide-title {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    padding: 16px 20px 4px;
+    background: #002234;
+    color: #fff;
+    font-size: clamp(18px, 5.2vw, 27px);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .hero-slider-wrap .hero-slide-title:empty { padding: 4px 20px 0; }
+  .hero-slider-wrap .hero-slide-title:after { margin-top: 8px; }
+
+  /* -- 5. Dots below the video, not on top of it -------------------------- */
+  .hero-slider-wrap .owl-dots {
+    position: static;
+    margin: 0;
+    padding: 10px 20px 18px;
+    text-align: left;
+    background: #002234;
+  }
+}

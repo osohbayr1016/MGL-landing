@@ -1,0 +1,401 @@
+/* ============================================================================
+   MGL E&C — targeted layout patch
+   ----------------------------------------------------------------------------
+   This is an OVERRIDE layer. It loads AFTER assets/css/style.css and changes
+   only what is broken. The existing design, markup, PHP and admin panel are
+   untouched.
+
+   Fixes three things:
+     1. Home page — the projects carousel hangs off both screen edges
+     2. Projects page — tiles are small and carry no visible information
+     3. About page — the Профайл hero and the body copy beneath it
+
+   The mobile hero-video fix lives SEPARATELY in patch-hero-mobile.css so it
+   can be switched off on its own by removing its <link> tag.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   FIX 1 — HOME: make the projects section fit inside the screen
+   --------------------------------------------------------------------------
+   Root cause (style.css:2917-2922):
+
+       .image-teaser-wrap .owl-stage-outer {
+           padding-left: 100%;  margin-left: -100%;
+           padding-right: 100%; margin-right: -100%;
+       }
+
+   That deliberately pushes the carousel 100% of the viewport past BOTH edges
+   so neighbouring slides bleed off-screen. It is the reason the projects
+   section "doesn't fit". Neutralising those four values keeps the carousel
+   inside its container. Nothing else about the section moves.
+   ========================================================================== */
+
+.image-teaser-wrap .owl-stage-outer {
+  padding-left: 0;
+  margin-left: 0;
+  padding-right: 0;
+  margin-right: 0;
+  overflow: hidden;
+}
+
+/* The images had a hard `min-height:310px`, which does not scale down on a
+   phone or up on a large monitor. A fluid height keeps the same proportions
+   at every width. */
+.image-teaser-content img {
+  min-height: 0;
+  width: 100%;
+  height: clamp(200px, 24vw, 400px);
+  object-fit: cover;
+}
+
+/* Even, predictable spacing between the tiles in a slide. */
+.image-teaser-content .image-teaser-inner {
+  margin-bottom: clamp(16px, 2vw, 32px);
+}
+
+.image-teaser-wrap {
+  margin-bottom: clamp(40px, 6vw, 95px);
+}
+
+/* On touch screens there is no hover, so the description + button could never
+   be revealed. Show the title block in place instead of parking it off the
+   bottom edge. Desktop hover behaviour is left exactly as it was. */
+@media (hover: none) {
+  .image-teaser-content .image-teaser-copy {
+    bottom: 0 !important;
+    transform: translateY(0);
+    padding: 20px;
+  }
+  .image-teaser-content .image-teaser-inner:after { display: block; }
+}
+
+
+/* ==========================================================================
+   FIX 2 — PROJECTS PAGE: bigger tiles, and information that is actually
+   visible
+   --------------------------------------------------------------------------
+   Two problems in the original:
+
+   a) Tile width stepped 16.6% -> 20% -> 25% -> 33.3% -> 100%, which lands on
+      4 small columns on a typical desktop and drops straight to 1 column at
+      768px with no 2-column stage in between.
+
+   b) style.css:4601-4607 sets the caption to `display:none` and only reveals
+      it on `:hover`. On any touch device that means the grid shows 178
+      untitled photographs — which is what makes it read as a social feed
+      rather than a portfolio.
+
+   The grid below is deliberately capped at 3 columns so each project is shown
+   large, and the caption sits permanently beneath the image in a restrained,
+   corporate treatment.
+   ========================================================================== */
+
+/* --- the grid ------------------------------------------------------------ */
+.projects-listing .projects-listing-row {
+  display: grid;
+  grid-template-columns: 1fr;              /* phone: one large image */
+  gap: clamp(20px, 2.2vw, 40px);
+  margin: 0;
+  padding-bottom: 0;
+}
+
+@media (min-width: 600px) {
+  .projects-listing .projects-listing-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+  /* Capped at 3 — this is what makes the work look substantial. */
+  .projects-listing .projects-listing-row { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Neutralise the old flex sizing so the grid controls the layout. */
+.projects-listing .projects-listing-row .project-listing-item,
+.projects-listing .projects-listing-row.featured-row .project-listing-item {
+  flex-basis: auto;
+  width: auto;
+  max-width: none;
+  padding: 0;
+}
+
+.projects-listing .projects-listing-row.featured-row { margin: 0; }
+
+/* --- the tile ------------------------------------------------------------ */
+.projects-listing .projects-listing-row .project-listing-item-inner {
+  position: relative;
+  overflow: visible;          /* caption now sits outside the image box */
+  display: block;
+}
+
+.projects-listing .projects-listing-row .project-listing-teaser-image {
+  position: relative;
+  overflow: hidden;
+  background: #f2f4f5;
+  padding-bottom: 0;
+}
+
+/* One consistent crop across every tile. An aligned grid is most of what
+   separates an enterprise portfolio from a photo wall. */
+.projects-listing .projects-listing-row .project-listing-teaser-image img,
+.projects-listing .projects-listing-row .project-listing-teaser-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .projects-listing .projects-listing-row .project-listing-item-inner:hover
+  .project-listing-teaser-image img { transform: scale(1.04); }
+}
+
+/* Kill the dark gradient that existed only to make hover text legible —
+   the caption is no longer sitting on the photograph. */
+.projects-listing .projects-listing-row .project-listing-item-inner::after {
+  display: none;
+}
+
+/* --- the caption: always visible ----------------------------------------- */
+.projects-listing .projects-listing-row .project-listing-teaser-content,
+.projects-listing .projects-listing-row .project-listing-item-inner:hover
+.project-listing-teaser-content {
+  position: static;
+  display: block;
+  width: 100%;
+  padding: 18px 0 0;
+  color: #0e1417;
+  background: none;
+}
+
+.projects-listing .projects-listing-row .project-teaser-name {
+  display: block;
+  margin: 0;
+  font-family: Montserrat, Helvetica, Arial, sans-serif;
+  font-size: clamp(15px, 1.05vw, 19px);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #0e1417;
+}
+
+/* Category — small, quiet, uppercase. Restrained on purpose. */
+.projects-listing .projects-listing-row .project-teaser-location {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7c878d;
+}
+
+/* The old CSS appended an arrow icon to the hover caption. Not needed now. */
+.projects-listing .projects-listing-row .project-listing-teaser-content:after {
+  display: none;
+}
+
+
+/* ==========================================================================
+   Shared: stop horizontal overflow on phones
+   --------------------------------------------------------------------------
+   .wrapperfull was a hard `padding: 0 48px 0 38px` at every width, eating 86px
+   of a 375px screen. Fluid padding gives phones their width back without
+   changing the desktop appearance.
+   ========================================================================== */
+.wrapperfull {
+  padding-left: clamp(16px, 3vw, 38px);
+  padding-right: clamp(16px, 3.5vw, 48px);
+}
+
+@media (max-width: 768px) {
+  .wrapper { padding-left: 20px; padding-right: 20px; }
+}
+
+html, body { overflow-x: hidden; }
+
+
+/* ==========================================================================
+   FIX 3 — ABOUT PAGE (everything from "Холбоо барих" upward)
+   --------------------------------------------------------------------------
+   The About page renders SEVEN identical `.pageHeader` blocks — a full black
+   slab with a background photo and a white H1 — one for each section:
+
+       #widhas1166  Профайл        <- redesigned (image kept, made the hero)
+       ------------------------------------------------------------------
+       #widhas17    Холбоо барих   <- NOT TOUCHED (reverted to production)
+       #widhas21    Ажил эрхлэлт   <- NOT TOUCHED (reverted to production)
+       #widhas1171  Хамт олон      <- NOT TOUCHED
+       #widhas1172  Хэвлэл         <- NOT TOUCHED
+       #widhas72    Харилцагч      <- NOT TOUCHED
+       #widhas107   Шагнал         <- NOT TOUCHED
+
+   Scope is now deliberately narrow: only the Профайл hero and the body copy
+   directly beneath it are changed. Every other section on the About page
+   renders exactly as production does.
+
+   Scoped with `body.about` + widget IDs so nothing else on the site moves.
+   ========================================================================== */
+
+/* --- 3a. Профайл: the company photo, given a better home ----------------- */
+body.about #widhas1166 {
+  padding: 0;
+  margin-bottom: clamp(36px, 5vw, 72px);
+  min-height: clamp(340px, 56vh, 660px);
+  display: flex;
+  align-items: flex-end;
+  background: #002234;
+  overflow: hidden;
+}
+
+/* Fill the block properly instead of centring an unscaled image in it. */
+body.about #widhas1166 picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+body.about #widhas1166 picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  margin: 0;
+}
+
+/* The original had white text sitting directly on the photograph with no
+   scrim, so the title washed out against light areas. */
+body.about #widhas1166::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+              rgba(0,34,52,0.30) 0%,
+              rgba(0,34,52,0.05) 42%,
+              rgba(0,34,52,0.78) 100%);
+}
+
+/* Title moves to the bottom-left — the standard editorial position, and it
+   stops the photograph being obscured by centred text. */
+body.about #widhas1166 .header-bt {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: none;
+  padding: 0 clamp(20px, 3.4vw, 56px) clamp(28px, 4vw, 56px);
+  margin: 0;
+}
+body.about #widhas1166 h1 {
+  color: #fff !important;
+  font-size: clamp(30px, 5.2vw, 68px);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+/* --- 3b. Профайл body copy ---------------------------------------------- */
+/* Production had these paragraphs at 30px/700 in two floated 47% columns.
+   A CSS grid was tried first, but grid aligns every row to its tallest cell,
+   which opened a large hole beneath the short left-hand paragraph. Multi-column
+   layout flows the text continuously instead, so the columns balance
+   themselves and no gaps appear regardless of how long each paragraph is. */
+
+body.about .aboutText {
+  margin-bottom: clamp(32px, 5vw, 72px);
+  padding-top: clamp(20px, 2.6vw, 36px);
+}
+
+body.about .aboutText ul {
+  columns: 1;
+  column-gap: clamp(32px, 4vw, 76px);
+}
+@media (min-width: 900px) {
+  body.about .aboutText ul { columns: 2; }
+}
+
+body.about .aboutText ul li,
+body.about .aboutText ul li p {
+  float: none !important;
+  width: auto !important;
+  padding: 0 !important;
+  font-size: clamp(14.5px, 0.95vw, 16.5px);
+  line-height: 1.85;
+  font-weight: 400;
+  color: #55616a;
+}
+
+/* Keep each paragraph whole rather than splitting it across the column break. */
+body.about .aboutText ul li {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  margin: 0 0 clamp(18px, 2.2vw, 32px) !important;
+}
+body.about .aboutText ul li p { margin: 0 !important; }
+
+/* The opening statement runs the full measure and carries a navy rule, so the
+   block starts with a clear anchor instead of four equal-weight paragraphs. */
+body.about .aboutText ul li:first-child {
+  column-span: all;
+  border-top: 2px solid #003d59;
+  padding-top: clamp(18px, 2.2vw, 30px) !important;
+  margin-bottom: clamp(26px, 3.2vw, 48px) !important;
+}
+body.about .aboutText ul li:first-child,
+body.about .aboutText ul li:first-child p {
+  font-size: clamp(17px, 1.6vw, 26px);
+  line-height: 1.58;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: #0e1417;
+  max-width: 46ch;
+}
+
+body.about .aboutText ul::after { display: none; }
+
+/* Холбоо барих / Ажил эрхлэлт: their section headers, the .awards card rows
+   and the vacancies accordion were all restyled in an earlier revision and
+   have been REVERTED at the client's request. They now inherit production
+   styling untouched — no rules for them appear in this file. */
+
+/* --- 3c. Sticky section nav --------------------------------------------- */
+/* `.headersubmenu` is `position:fixed; top:80px` with a right-floated list and
+   38px padding — on a phone the items run off the edge with no way to reach
+   them. Made scrollable instead of overflowing. */
+@media (max-width: 1023px) {
+  body.about .headersubmenu {
+    position: static;
+    transform: none;
+    left: auto;
+    margin: 0 0 20px;
+  }
+  body.about .headersubmenu ul {
+    float: none;
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.about .headersubmenu ul::-webkit-scrollbar { display: none; }
+  body.about .headersubmenu ul li { float: none; flex-shrink: 0; }
+  body.about .headersubmenu ul li a { font-size: 13px; white-space: nowrap; }
+}
+
+/* --- 3d. Guard: every other About section stays as production ----------- */
+/* Listed explicitly so a future edit does not accidentally sweep them in. */
+body.about #widhas17,     /* Холбоо барих */
+body.about #widhas21,     /* Ажил эрхлэлт */
+body.about #widhas1171,   /* Хамт олон    */
+body.about #widhas1172,   /* Хэвлэл       */
+body.about #widhas72,     /* Харилцагч    */
+body.about #widhas107 {   /* Шагнал       */
+  /* intentionally unstyled — production appearance preserved */
+}
+
+

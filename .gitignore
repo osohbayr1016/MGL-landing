@@ -1,0 +1,16 @@
+# Logs (multi-GB; not source)
+error_log
+**/error_log
+*.log
+
+# Uploaded media already on the live server
+cpadmin/postpic/
+
+# Database credentials stay on the server only
+/const.php
+/cpadmin/const.php
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini

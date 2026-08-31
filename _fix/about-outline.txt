@@ -1,0 +1,225 @@
+[SEC] pageHeader
+      H1  Профайл
+[SEC] aboutText
+[SEC] pageHeader
+      H1  Холбоо барих
+[SEC] awards
+[SEC] flexRow
+[SEC] flexCol col-4-1
+      H3  Хаяг
+[SEC] flexCol col-4-1
+      H3  Хүний нөөц
+[SEC] flexCol col-4-1
+      H3  Хамтарч ажиллах
+[SEC] pageHeader
+      H1  Ажил эрхлэлт
+[SEC] awards
+[SEC] flexRow
+[SEC] flexCol col-2-1
+      H3  Ажлын байр
+[SEC] flexCol col-2-1
+[SEC] flexCol col-2-1
+      H3  Дадлагажих
+[SEC] cusWidget
+      H2  Ажлын орон тоо
+[SEC] accordion accordion-vacancies-wrap
+[SEC] pageHeader
+      H1  Хамт олон
+[SEC] people-grid-wrap people-grid-small
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+      H6  MGL E&C
+[SEC] pageHeader
+      H1  Хэвлэл
+[SEC] media-text-wrap media-featured  aos-init aos-animate
+      H6  Гарчиг
+      H5  Инженеринг Архитектур дизайн сервис
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2019 он
+      H6  Гарчиг
+      H5  Architecture and Engineering projects
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2022 он
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.1
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2023 оны 5-р сар
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.2
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2023 оны 10-р сар
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.3
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2024 оны 3-р сар
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.4
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2023 оны 7-р сар
+      H6  Гарчиг
+      H5  MGL E&amp;C Selected works 2024
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2024 оны 9-р сар
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.5
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2025 оны 5-р сар
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.6
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2025 оны 10-р сар
+      H6  Гарчиг
+      H5  The Architecture Times Issue No.7
+      H6  Зохиогч
+      H5  MGL E&amp;C LLC
+      H6  Хэвлэл
+      H5  -
+      H6  Хэвлэгдсэн он
+      H5  2026 оны 6-р сар
+[SEC] pageHeader
+      H1  Харилцагч
+[SEC] pageHeader
+      H1  Шагнал
+[SEC] media-text-wrap media-featured  aos-init aos-animate
+[SEC] wrapperfull

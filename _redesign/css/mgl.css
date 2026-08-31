@@ -1,0 +1,260 @@
+/* ============================================================================
+   MGL E&C  —  Design System  (rebuilt from scratch, MOBILE-FIRST)
+   ----------------------------------------------------------------------------
+   Why this file exists:
+   The old style.css was DESKTOP-FIRST with 190 of its 201 media queries at a
+   single `max-width:768px` breakpoint. That gave a 375px phone and a 768px
+   tablet identical CSS, and made the project grid jump 3 columns -> 1 column
+   with nothing in between. This file inverts that: phone is the base case and
+   every larger screen is an additive `min-width` enhancement.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- tokens -- */
+:root {
+  /* Brand ---------------------------------------------------------------- */
+  --navy:        #003d59;         /* the existing $themeColor */
+  --navy-deep:   #002234;
+  --ink:         #0e1417;
+  --ink-70:      #4a555b;
+  --ink-45:      #7c878d;
+  --ink-25:      #b6bfc4;
+  --rule:        #e3e7e9;
+  --rule-soft:   #eef1f2;
+  --paper:       #ffffff;
+  --paper-warm:  #f7f8f9;
+
+  /* Fluid type — scales smoothly, no breakpoint "jumps" ------------------- */
+  --fs-micro:  0.6875rem;
+  --fs-small:  0.8125rem;
+  --fs-body:   clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --fs-lead:   clamp(1.0625rem, 1rem + 0.5vw, 1.375rem);
+  --fs-h4:     clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --fs-h3:     clamp(1.25rem,  1.1rem + 0.8vw, 1.75rem);
+  --fs-h2:     clamp(1.625rem, 1.3rem + 1.7vw, 3rem);
+  --fs-h1:     clamp(2.125rem, 1.5rem + 3.2vw, 5.25rem);
+  --fs-hero:   clamp(2.5rem,   1.4rem + 5.6vw, 7rem);
+
+  /* Fluid spacing --------------------------------------------------------- */
+  --s-1:  0.25rem;
+  --s-2:  0.5rem;
+  --s-3:  0.75rem;
+  --s-4:  1rem;
+  --s-5:  1.5rem;
+  --s-6:  2rem;
+  --s-7:  3rem;
+  --s-8:  clamp(3rem, 2rem + 4vw, 5.5rem);
+  --s-9:  clamp(4rem, 2.5rem + 6vw, 8rem);
+
+  /* Gutter: 20px on a phone, up to 80px on a wide desktop.
+     The old .wrapperfull was a hard `0 48px 0 38px` at every size, which ate
+     86px of a 375px screen. */
+  --gutter:    clamp(1.25rem, 0.7rem + 2.6vw, 5rem);
+  --maxw:      1680px;
+  --maxw-text: 68ch;
+
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-pill: 100px;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur:  0.32s;
+
+  --shadow-1: 0 1px 2px rgba(14, 20, 23, 0.06);
+  --shadow-2: 0 6px 28px -8px rgba(14, 20, 23, 0.16);
+
+  --header-h: 60px;
+}
+
+@media (min-width: 1024px) { :root { --header-h: 84px; } }
+
+/* ----------------------------------------------------------------- reset -- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;   /* stop iOS inflating text in landscape */
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: Montserrat, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Belt-and-braces against the horizontal scroll the old negative margins
+     (.flexRow{margin:0 -20px}) caused on phones. */
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, dl { margin: 0; }
+ul[class], ol[class] { list-style: none; padding: 0; }
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); letter-spacing: -0.01em; }
+
+p { text-wrap: pretty; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Images never overflow their box. The old rule forced `width:100%` on EVERY
+   img and video, which stretched logos and icons. Scoped properly here. */
+img, video, svg, picture { display: block; max-width: 100%; }
+img, video { height: auto; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+
+:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+::selection { background: var(--navy); color: #fff; }
+
+/* ------------------------------------------------------------ primitives -- */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.wrap--narrow { max-width: 1200px; }
+.wrap--text   { max-width: calc(var(--maxw-text) + var(--gutter) * 2); }
+
+.section        { padding-block: var(--s-8); }
+.section--tight { padding-block: var(--s-7); }
+.section--warm  { background: var(--paper-warm); }
+
+.eyebrow {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.eyebrow__num { color: var(--navy); font-variant-numeric: tabular-nums; }
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  margin-bottom: var(--s-6);
+}
+.section-head__title { max-width: 20ch; }
+.section-head__lead  { max-width: 52ch; color: var(--ink-70); font-size: var(--fs-lead); }
+
+@media (min-width: 900px) {
+  .section-head {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-7);
+  }
+  .section-head__aside { flex-shrink: 0; }
+}
+
+/* Buttons ------------------------------------------------------------------ */
+.btn {
+  --btn-fg: var(--ink);
+  --btn-bg: transparent;
+  --btn-bd: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  /* 48px min touch target — the old .bbtn was a 10px font with 15px padding,
+     roughly 34px tall, below the accessible minimum. */
+  min-height: 48px;
+  padding: 0 var(--s-5);
+  border: 1px solid var(--btn-bd);
+  border-radius: var(--r-pill);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+.btn:hover { --btn-bg: var(--ink); --btn-fg: #fff; }
+.btn--primary { --btn-bg: var(--navy); --btn-fg: #fff; --btn-bd: var(--navy); }
+.btn--primary:hover { --btn-bg: var(--navy-deep); --btn-bd: var(--navy-deep); }
+.btn--ghost-light { --btn-fg: #fff; --btn-bd: rgba(255,255,255,0.45); }
+.btn--ghost-light:hover { --btn-bg: #fff; --btn-fg: var(--ink); --btn-bd: #fff; }
+.btn--block { width: 100%; }
+
+@media (min-width: 640px) { .btn--block { width: auto; } }
+
+/* Text link with a sliding underline — restrained, no bounce. */
+.tlink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding-block: var(--s-3);
+  position: relative;
+}
+.tlink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform var(--dur) var(--ease);
+}
+.tlink:hover::after { transform-origin: left; transform: scaleX(1); }
+.tlink__arrow { transition: transform var(--dur) var(--ease); }
+.tlink:hover .tlink__arrow { transform: translateX(4px); }
+
+/* Utility ------------------------------------------------------------------ */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; top: 0; left: 0; z-index: 200;
+  transform: translateY(-120%);
+  background: var(--navy); color: #fff;
+  padding: var(--s-3) var(--s-5);
+}
+.skip-link:focus { transform: translateY(0); }

@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=cyrillic-ext");
+BODY{
+	position:relative;
+	max-width: 777px; margin:auto;
+	font-family: 'Roboto Condensed', sans-serif; font-size:18px; font-weight:300;
+	line-height:150%;
+}
+
+OL { counter-reset: item }
+OL LI { display: block }
+OL LI:before { content: counters(item, ".") ". "; counter-increment: item }
+
+blockquote {
+    font-size: 20px;
+    line-height: 28px;
+    font-style: italic;
+    position: relative;
+    margin: 0; color:#999;
+    padding: 3px 30px 7px;
+    border-left: 3px solid #34125f;
+    margin: 30px 0 30px 30px;
+}
+blockquote :first-letter {
+	float: left;
+	margin:8px 6px 1px 0;
+	font-family: Georgia;
+	font-size: 58px;
+	font-weight: bold;
+}
+

@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");
+body{
+	background-color: #171717;
+	overflow:hidden;
+}
+.loginDiv{
+	background:#FFF;
+	height:100vh;
+	padding:0 15%;
+	align-items:center !important;
+	justify-content: center !important;
+	display: flex;
+	flex-wrap:flex;
+}
+.loginDiv .loginLogo{
+	text-align: center;
+}
+.loginDiv .loginLogo #logo {
+    -webkit-filter: invert(1);
+    filter: invert(1);
+}
+.loginDiv .logoTitle{
+	text-align:center; color:#666; font-size:12px; padding:5px 0;
+}
+.loginDiv H3{
+	text-align:center; font-family:roboto; font-size:17px;
+	margin:0; padding-bottom:20px;
+}
+.loginDiv P{
+	text-align:center; font-size:11px; color:#999;
+}
+.loginDiv .regTxt{
+	text-align:center; font-size:11px; color:#999;
+	padding-top:10px;
+}
+
+.aboutDiv{
+	background:url(../img/circle_01.svg) no-repeat left top; background-size:150% auto;
+	height:100vh;
+	padding:15%; margin-right:-30px;
+	align-items:center !important;
+	justify-content: center !important;
+	flex-wrap:flex;
+}
+.headDiv{
+	display:block;
+	color:#FFF;
+}
+.headDiv H1{
+	margin:0; text-transform:uppercase;
+}
+.frmErr{
+	display:none;
+}
+.errDiv .frmErr{
+	display:block;
+	color:#999;
+}
+.errDiv INPUT,.errDiv TEXTAREA,.errDiv SELECT, .errDiv .btn{
+	border-color:#F30;
+}
+.doneDiv INPUT,.doneDiv TEXTAREA,.doneDiv SELECT, .doneDiv .btn{
+	border-color:#0C0;
+}
+
+
+.options-container {
+	padding-top:30px;
+    display: flex;
+    flex-direction: row;
+}
+.option {
+    width: 200px;
+    height: 200px;
+    border: 1px solid hsla(0,0%,100%,.411);
+    border-radius: 5px;
+    margin-right: 2vw;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    -webkit-transition: all .5s ease-in;
+    transition: all .5s ease-in;
+    cursor: pointer; color: #fff;
+
+}
+.option A{
+    cursor: pointer; color: #fff;
+
+}
+.option h5 {
+
+    width: 100px;
+    margin: 1vw;
+    font-size: 14px;
+    font-weight: 600;
+
+}
+.option h6 {
+
+    width: 160px;
+    margin: 0 1vw;
+    font-weight: 300;
+    font-size: 12px;
+
+}

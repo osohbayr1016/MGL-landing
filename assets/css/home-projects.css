@@ -1,0 +1,70 @@
+/* Home page — Төслүүд carousel UX fix */
+
+.image-teaser-wrap .owl-stage-outer {
+  padding-left: 0;
+  margin-left: 0;
+  padding-right: 0;
+  margin-right: 0;
+  overflow: hidden;
+}
+
+.image-teaser-content img {
+  min-height: 0;
+  width: 100%;
+  height: clamp(200px, 24vw, 400px);
+  object-fit: cover;
+}
+
+.image-teaser-content .image-teaser-inner {
+  margin-bottom: clamp(16px, 2vw, 32px);
+}
+
+.image-teaser-wrap {
+  margin-bottom: clamp(40px, 6vw, 95px);
+}
+
+.image-teaser-wrap .owl-nav {
+  top: clamp(-60px, -5vw, -80px);
+}
+
+@media (max-width: 768px) {
+  .image-teaser-wrap .owl-nav {
+    position: relative;
+    top: 0;
+    margin-top: 20px;
+    text-align: right;
+  }
+
+  .image-teaser-content .image-teaser-copy {
+    position: static;
+    transform: none;
+    padding: 14px 0 0;
+  }
+
+  .image-teaser-content h4 {
+    color: #1a1a1a;
+    margin-bottom: 0;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .image-teaser-content .image-teaser-inner:after {
+    display: none;
+  }
+
+  .image-teaser-content .button {
+    display: none;
+  }
+}
+
+@media (hover: none) and (min-width: 769px) {
+  .image-teaser-content .image-teaser-copy {
+    bottom: 0 !important;
+    transform: translateY(0);
+    padding: 20px;
+  }
+
+  .image-teaser-content .image-teaser-inner:after {
+    display: block;
+  }
+}

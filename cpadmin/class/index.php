@@ -1,0 +1,1 @@
+﻿<?php defined('sitelocation') or die ("<font color=\"#FF0000\" size=\"+4\" >Алдаа! </font> энд дарна уу <a href='http://".$_SERVER['SERVER_NAME']."'>".$_SERVER['SERVER_NAME']."</a><hr style='border:2px solid #FF0000;'>");?>

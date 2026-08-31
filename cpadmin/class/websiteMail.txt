@@ -1,0 +1,16 @@
+{greetings}
+
+http://www.uma.org.mn
+
+Sanal huselt
+
+Send Date	 : {date}
+Sender Name  : {name}
+Sender Email : {email}
+
+Message:
+-------------------------------------
+
+{message}
+
+-------------------------------------

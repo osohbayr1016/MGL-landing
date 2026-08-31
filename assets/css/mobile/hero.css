@@ -1,0 +1,106 @@
+/* Phone hero: show the full video, never crop the baked-in title. */
+@media (max-width: 768px) {
+  .hero-slider-outer,
+  .hero-slider-wrap,
+  .hero-slider-wrap .owl-stage-outer {
+    height: auto;
+  }
+
+  .hero-slider-wrap .owl-stage-outer {
+    aspect-ratio: 16 / 9;
+    background: #002234;
+  }
+
+  .hero-slider-wrap .owl-stage,
+  .hero-slider-wrap .owl-item,
+  .hero-slide-item {
+    position: relative;
+    height: 100% !important;
+    min-height: 0;
+    background: #002234;
+  }
+
+  .hero-slider-wrap .hero-slide-image {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    background: #002234;
+    font-size: 0;
+  }
+
+  .hero-slider-wrap .hero-slide-image video,
+  .hero-slider-wrap .hero-slide-image img {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center;
+  }
+
+  .hero-slider-wrap .hero-slide-image picture {
+    display: block;
+    width: 100%;
+  }
+
+  .hero-slider-wrap .hero-slide-image .img-overlay {
+    display: none;
+  }
+
+  .hero-slider-wrap .hero-slide-title {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    padding: 0 16px;
+    background: #002234;
+    color: #fff;
+    font-size: 20px;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-slider-wrap .hero-slide-title:after {
+    display: none;
+  }
+
+  .hero-slider-wrap .owl-dots {
+    position: static;
+    margin: 0;
+    padding: 10px 16px 14px;
+    text-align: left;
+    background: #002234;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hero-slider-wrap .owl-dots .owl-dot {
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    background: none;
+    opacity: 1;
+  }
+
+  .hero-slider-wrap .owl-dots .owl-dot span {
+    width: 8px;
+    height: 8px;
+    margin: 7px auto;
+    background: #fff;
+    opacity: 0.4;
+    display: block;
+    border-radius: 50%;
+  }
+
+  .hero-slider-wrap .owl-dots .owl-dot.active span,
+  .hero-slider-wrap .owl-dots .owl-dot.active {
+    opacity: 1;
+  }
+
+  .hero-slider-trigger-wrap {
+    display: none;
+  }
+}

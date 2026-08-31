@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administrator | Нэвтрэх</title>
+
+    <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/assets/css/animate.css" rel="stylesheet">
+    <link href="/assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="black-bg">
+
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+
+                <img src="/assets/img/logo.svg">
+
+            </div>
+            <p>Системд нэвтрэх.</p>
+            <form class="m-t" action="/userPost/users" method="post">
+                <div class="form-group">
+                    <input type="text" name="userName" class="form-control" placeholder="Нэвтрэх нэр" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="userPass" class="form-control" placeholder="Нууц үг" required>
+                </div>
+                <input type="hidden" name="frmPost" value="login">
+                <button type="submit" class="btn btn-danger block full-width m-b">Нэвтрэх</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/assets/js/jquery-2.1.1.js"></script>
+    <script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
