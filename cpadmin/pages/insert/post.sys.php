@@ -1,5 +1,7 @@
 <?php
 
+include_once __DIR__ . "/order.helper.php";
+
 $sysReturnLink =  "/insert/maps";
 
 switch($_POST["frmPost"]){
@@ -256,8 +258,9 @@ switch($_POST["frmPost"]){
 
 		}
 	
-		$typeOrder = txtSec($_POST["frmOrder"]);
+		$typeOrder = max(1, (int)txtSec($_POST["frmOrder"]));
 		$slideType = txtSec($_POST["frmSlideType"]);
+		$menuID = (int)txtSec($_POST["frmMenuID"]);
 		
 		unset($post_value_arr);
 		$post_value_arr["ceoName"]		=	txtSec($_POST["frmTitle"]);
@@ -279,8 +282,7 @@ switch($_POST["frmPost"]){
 		
 		if($_POST["frmEditID"]>0){
 			
-			$slideID = txtSec($_POST["frmEditID"]);
-			
+			$slideID = (int)txtSec($_POST["frmEditID"]);
 
 			$db->where ('ceoID',$slideID);
 			$db->update($db_ceo, $post_value_arr);
@@ -289,40 +291,50 @@ switch($_POST["frmPost"]){
 		}
 		else{
 			
-			$post_value_arr["pageID"]	=	$_POST["frmMenuID"];
+			$post_value_arr["pageID"]	=	$menuID;
 			
 			$slideID = $db->insert($db_ceo, $post_value_arr);
 			
 		}
-		
-		
-		
-		$typeSql = "SELECT `ceoID` FROM $db_ceo WHERE `ceoOrder`>=? and `ceoID`!=? and lang=? ORDER BY `ceoOrder` ASC";
-		$selTypeArr = $db->rawQuery($typeSql, Array ($typeOrder,$slideID,$adminLang));
 
-		
-		$typeOrder += 1;
-		
-		if(count($selTypeArr)>0)
-		foreach($selTypeArr as $key=>$obj){
-			
-			unset($post_value_arr);
-			$post_value_arr["ceoOrder"]		=	$typeOrder;
-			$db->where ('ceoID', $obj["ceoID"]);
-			$db->update($db_ceo, $post_value_arr);
-			
-			$typeOrder ++;
-		
+		$scope = array("lang" => $adminLang);
+		if ($menuID > 0) {
+			$scope["pageID"] = $menuID;
 		}
+		reorderScopedItem($db, $db_ceo, "ceoID", "ceoOrder", $slideID, $typeOrder, $scope);
 		
-		
-		
-		$sysReturnLink =  "/insert/promo/".txtSec($_POST["frmMenuID"]);
+		$sysReturnLink =  "/insert/promo/".$menuID;
 		
 	
 	break;
 	case "ceoReorder":
 		include "ceo.reorder.sys.php";
+	break;
+	case "ceoOrderSet":
+		$ceoID = (int)txtSec($_POST["ceoID"]);
+		$newOrder = max(1, (int)txtSec($_POST["frmOrder"]));
+		$pageID = (int)txtSec($_POST["pageID"]);
+		$scope = array("lang" => $adminLang);
+		if ($pageID > 0) {
+			$scope["pageID"] = $pageID;
+		}
+		reorderScopedItem($db, $db_ceo, "ceoID", "ceoOrder", $ceoID, $newOrder, $scope);
+		orderAjaxDone(array("order" => $newOrder));
+	break;
+	case "schOrderSet":
+		$schID = (int)txtSec($_POST["schID"]);
+		$newOrder = max(1, (int)txtSec($_POST["frmOrder"]));
+		$parentID = txtSec($_POST["parentID"]);
+		if ($parentID !== "" && (int)$parentID > 0) {
+			$scope = array("parentID" => (int)$parentID);
+		} else {
+			$scope = array(
+				"schKey" => (int)txtSec($_POST["schKey"]),
+				"parentID" => "0"
+			);
+		}
+		reorderScopedItem($db, $db_pagesch, "schID", "schOrder", $schID, $newOrder, $scope);
+		orderAjaxDone(array("order" => $newOrder));
 	break;
 	case "visualPost":
 		
@@ -519,12 +531,15 @@ switch($_POST["frmPost"]){
 		
 		unset($post_value_arr);
 		$post_value_arr["schNote"]		=	json_encode($_POST["frmVal"],JSON_UNESCAPED_UNICODE);
-		$post_value_arr["schOrder"]		=	txtSec($_POST["frmOrder"]);
+		$typeOrder						=	max(1, (int)txtSec($_POST["frmOrder"]));
+		$post_value_arr["schOrder"]		=	$typeOrder;
 		$post_value_arr["schTemp"]		=	txtSec($_POST["frmTemplate"]);
 		
 		if($_POST["frmEditID"]>0){
 			
-			$schID 						= txtSec($_POST["frmEditID"]);
+			$schID 						= (int)txtSec($_POST["frmEditID"]);
+			$db->where("schID", $schID);
+			$existingSch = $db->getOne($db_pagesch, "schKey, parentID");
 			$db->where ('schID',$schID);
 			$db->update($db_pagesch, $post_value_arr);
 		
@@ -532,15 +547,21 @@ switch($_POST["frmPost"]){
 		else{			
 			$schKey = $gloSessionID;
 			if($_POST["frmCourseID"]>0)
-				$schKey = txtSec($_POST["frmCourseID"]);
+				$schKey = (int)txtSec($_POST["frmCourseID"]);
 				
 			$post_value_arr["schKey"]	=	$schKey;
+			$post_value_arr["parentID"]	=	"0";
 			
 			$schID = $db->insert($db_pagesch, $post_value_arr);
+			$existingSch = array("schKey" => $schKey, "parentID" => "0");
 			
 			
 		}
-		
+
+		reorderScopedItem($db, $db_pagesch, "schID", "schOrder", $schID, $typeOrder, array(
+			"schKey" => (int)$existingSch["schKey"],
+			"parentID" => "0"
+		));
 		
 		$sysReturnLink =  "/insert/pageSchList/".txtSec($_POST["frmCourseID"]);
 		
@@ -550,13 +571,14 @@ switch($_POST["frmPost"]){
 		
 		
 		unset($post_value_arr);
-		$post_value_arr["schOrder"]		=	txtSec($_POST["frmOrder"]);
+		$typeOrder						=	max(1, (int)txtSec($_POST["frmOrder"]));
+		$post_value_arr["schOrder"]		=	$typeOrder;
 		$post_value_arr["parentID"]		=	txtSec($_POST["frmSchID"]);
 		$post_value_arr["schNote"]		=	json_encode($_POST["frmVal"],JSON_UNESCAPED_UNICODE);
 		
 		if($_POST["frmEditID"]>0){
 			
-			$schID 						= txtSec($_POST["frmEditID"]);
+			$schID 						= (int)txtSec($_POST["frmEditID"]);
 			$db->where ('schID',$schID);
 			$db->update($db_pagesch, $post_value_arr);
 		
@@ -568,7 +590,10 @@ switch($_POST["frmPost"]){
 			
 			
 		}
-		
+
+		reorderScopedItem($db, $db_pagesch, "schID", "schOrder", $schID, $typeOrder, array(
+			"parentID" => (int)txtSec($_POST["frmSchID"])
+		));
 		
 		$sysReturnLink =  "/insert/pageSubSchList/".txtSec($_POST["frmSchID"]);
 		

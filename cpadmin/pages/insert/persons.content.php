@@ -3,13 +3,12 @@
         <h5>Бүтээгдэхүүний жагсаалт</h5>
     </div>
     <div class="ibox-content">
-        <p class="text-muted">Мөрийг чирж эрэмбэлнэ үү. Дээд мөр /projects хуудсанд эхэнд харагдана.</p>
+        <p class="text-muted">Дэс дугаар оруулж эрэмбэлнэ. Жишээ нь <strong>1</strong> — эхэнд, <strong>2</strong> — дараагийн байр.</p>
         <div class="project-list">
             <table id="ceoOrderTable" class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th style="width:36px;"></th>
-                    <th style="width:50px;">№</th>
+                    <th style="width:90px;">Дэс дугаар</th>
                     <th>Зураг</th>
                     <th>Бүтээгдэхүүн</th>
                     <th>Үзүүлэлт</th>
@@ -22,10 +21,16 @@
                 foreach($ceoArr as $key=>$obj){
                 ?>
                 <tr id="proTr<?php echo $obj["ceoID"]?>" data-ceo-id="<?php echo $obj["ceoID"]?>">
-                    <td class="drag-handle" style="cursor:move;text-align:center;vertical-align:middle;">
-                        <i class="fa fa-bars"></i>
+                    <td style="vertical-align:middle;">
+                        <input type="number"
+                            min="1"
+                            class="form-control input-sm js-order-input"
+                            data-post="ceoOrderSet"
+                            data-ceo-id="<?php echo $obj["ceoID"];?>"
+                            data-page-id="<?php echo $selMenuID;?>"
+                            value="<?php echo (int)$obj["ceoOrder"];?>"
+                            style="width:72px;">
                     </td>
-                    <td class="order-num" style="vertical-align:middle;"><?php echo $key+1;?></td>
                     <td>
                         <img src="<?php echo $obj["ceoPic"];?>" width="100" />
                     </td>

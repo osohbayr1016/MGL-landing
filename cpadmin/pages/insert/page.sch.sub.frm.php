@@ -9,7 +9,7 @@
             <div class="form-group">
                 <label class="font-noraml">Дэс дугаар</label>
                 <div >
-                    <input type="text" class="form-control input-sm" autocomplete="off" name="frmOrder" value="<?php echo $lastTypeOrder;?>">
+                    <input type="number" min="1" class="form-control input-sm" autocomplete="off" name="frmOrder" value="<?php echo $lastTypeOrder;?>">
                 </div>
             </div>
             <?php

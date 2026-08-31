@@ -45,8 +45,12 @@ if($selSlideID>0){
 }
 else{
 	
+	$db->where("lang", $adminLang);
+	if(isset($_REQUEST["menuID"]) && (int)txtSec($_REQUEST["menuID"])>0){
+		$db->where("pageID", (int)txtSec($_REQUEST["menuID"]));
+	}
 	$db->orderBy("`ceoOrder`","DESC");
-	$lastTypeOrder = $db->getValue($db_ceo,"`ceoOrder`",1) + 1;
+	$lastTypeOrder = (int)$db->getValue($db_ceo,"`ceoOrder`",1) + 1;
 	
 }
 
