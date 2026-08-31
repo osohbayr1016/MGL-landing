@@ -298,9 +298,6 @@ switch($_POST["frmPost"]){
 		}
 
 		$scope = array("lang" => $adminLang);
-		if ($menuID > 0) {
-			$scope["pageID"] = $menuID;
-		}
 		reorderScopedItem($db, $db_ceo, "ceoID", "ceoOrder", $slideID, $typeOrder, $scope);
 		
 		$sysReturnLink =  "/insert/promo/".$menuID;
@@ -313,11 +310,7 @@ switch($_POST["frmPost"]){
 	case "ceoOrderSet":
 		$ceoID = (int)txtSec($_POST["ceoID"]);
 		$newOrder = max(1, (int)txtSec($_POST["frmOrder"]));
-		$pageID = (int)txtSec($_POST["pageID"]);
 		$scope = array("lang" => $adminLang);
-		if ($pageID > 0) {
-			$scope["pageID"] = $pageID;
-		}
 		reorderScopedItem($db, $db_ceo, "ceoID", "ceoOrder", $ceoID, $newOrder, $scope);
 		orderAjaxDone(array("order" => $newOrder));
 	break;

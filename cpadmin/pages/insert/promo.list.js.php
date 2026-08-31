@@ -4,6 +4,56 @@
 .js-order-input.order-busy { opacity: 0.6; }
 </style>
 <script>
+function saveOrderInput($inp){
+	if($inp.data('order-saving')){
+		return;
+	}
+
+	var postType = $inp.data('post');
+	var newOrder = parseInt($inp.val(), 10);
+
+	if(isNaN(newOrder) || newOrder < 1){
+		newOrder = 1;
+		$inp.val(newOrder);
+	}
+
+	var payload = {
+		frmPost: postType,
+		frmOrder: newOrder,
+		ajaxOrder: 1
+	};
+
+	if(postType === 'ceoOrderSet'){
+		payload.ceoID = $inp.data('ceo-id');
+	}
+
+	if(postType === 'schOrderSet'){
+		payload.schID = $inp.data('sch-id');
+		payload.parentID = $inp.data('parent-id');
+		payload.schKey = $inp.data('sch-key') || 0;
+	}
+
+	$inp.data('order-saving', true);
+	$inp.addClass('order-busy').prop('disabled', true);
+
+	$.post('/userPost/insert', payload, function(res){
+		$inp.data('order-saving', false);
+		$inp.removeClass('order-busy').prop('disabled', false);
+		if(res && res.ok){
+			$inp.addClass('order-saved');
+			if(postType === 'ceoOrderSet'){
+				window.location.reload();
+				return;
+			}
+			setTimeout(function(){ $inp.removeClass('order-saved'); }, 900);
+		}
+	}, 'json').fail(function(){
+		$inp.data('order-saving', false);
+		$inp.removeClass('order-busy').prop('disabled', false);
+		alert('Дэс дугаар хадгалахад алдаа гарлаа.');
+	});
+}
+
 $(document).ready(function() {
 	
 	
@@ -39,44 +89,14 @@ $(document).ready(function() {
 	});
 
 	$(document).on('change', '.js-order-input', function(){
-		var $inp = $(this);
-		var postType = $inp.data('post');
-		var newOrder = parseInt($inp.val(), 10);
+		saveOrderInput($(this));
+	});
 
-		if(isNaN(newOrder) || newOrder < 1){
-			newOrder = 1;
-			$inp.val(newOrder);
+	$(document).on('keydown', '.js-order-input', function(e){
+		if(e.key === 'Enter' || e.keyCode === 13){
+			e.preventDefault();
+			saveOrderInput($(this));
 		}
-
-		var payload = {
-			frmPost: postType,
-			frmOrder: newOrder,
-			ajaxOrder: 1
-		};
-
-		if(postType === 'ceoOrderSet'){
-			payload.ceoID = $inp.data('ceo-id');
-			payload.pageID = $inp.data('page-id') || 0;
-		}
-
-		if(postType === 'schOrderSet'){
-			payload.schID = $inp.data('sch-id');
-			payload.parentID = $inp.data('parent-id');
-			payload.schKey = $inp.data('sch-key') || 0;
-		}
-
-		$inp.addClass('order-busy').prop('disabled', true);
-
-		$.post('/userPost/insert', payload, function(res){
-			$inp.removeClass('order-busy').prop('disabled', false);
-			if(res && res.ok){
-				$inp.addClass('order-saved');
-				setTimeout(function(){ $inp.removeClass('order-saved'); }, 900);
-			}
-		}, 'json').fail(function(){
-			$inp.removeClass('order-busy').prop('disabled', false);
-			alert('Дэс дугаар хадгалахад алдаа гарлаа.');
-		});
 	});
 	
 	

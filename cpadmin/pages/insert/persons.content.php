@@ -27,7 +27,6 @@
                             class="form-control input-sm js-order-input"
                             data-post="ceoOrderSet"
                             data-ceo-id="<?php echo $obj["ceoID"];?>"
-                            data-page-id="<?php echo $selMenuID;?>"
                             value="<?php echo (int)$obj["ceoOrder"];?>"
                             style="width:72px;">
                     </td>

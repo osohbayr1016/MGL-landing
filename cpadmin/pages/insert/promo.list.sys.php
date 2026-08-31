@@ -50,10 +50,8 @@ switch($selMenuObj["pageType"]){
 	case "projects":
 		
 		$db->where('lang', $adminLang);
-		if ($selMenuID > 0) {
-			$db->where('pageID', $selMenuID);
-		}
 		$db->orderBy("`ceoOrder`","asc");
+		$db->orderBy("`ceoID`","asc");
 		$ceoArr = $db->get($db_ceo);
 		
 	break;
