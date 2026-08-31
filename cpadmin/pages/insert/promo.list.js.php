@@ -36,22 +36,24 @@ function saveOrderInput($inp){
 	$inp.data('order-saving', true);
 	$inp.addClass('order-busy').prop('disabled', true);
 
-	$.post('/userPost/insert', payload, function(res){
-		$inp.data('order-saving', false);
-		$inp.removeClass('order-busy').prop('disabled', false);
-		if(res && res.ok){
-			$inp.addClass('order-saved');
-			if(postType === 'ceoOrderSet'){
-				window.location.reload();
-				return;
+		$.post('/userPost/insert', payload, function(res){
+			$inp.data('order-saving', false);
+			$inp.removeClass('order-busy').prop('disabled', false);
+			if(res && res.ok){
+				$inp.addClass('order-saved');
+				if(postType === 'ceoOrderSet'){
+					setTimeout(function(){ window.location.reload(); }, 350);
+					return;
+				}
+				setTimeout(function(){ $inp.removeClass('order-saved'); }, 900);
+			} else if (res && res.error) {
+				alert('Дэс дугаар хадгалахад алдаа: ' + res.error);
 			}
-			setTimeout(function(){ $inp.removeClass('order-saved'); }, 900);
-		}
-	}, 'json').fail(function(){
-		$inp.data('order-saving', false);
-		$inp.removeClass('order-busy').prop('disabled', false);
-		alert('Дэс дугаар хадгалахад алдаа гарлаа.');
-	});
+		}, 'json').fail(function(xhr){
+			$inp.data('order-saving', false);
+			$inp.removeClass('order-busy').prop('disabled', false);
+			alert('Дэс дугаар хадгалахад алдаа гарлаа. Server response: ' + xhr.status);
+		});
 }
 
 $(document).ready(function() {

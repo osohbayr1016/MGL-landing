@@ -15,6 +15,17 @@ function reorderScopedItem($db, $table, $idCol, $orderCol, $itemId, $newOrder, $
 	$db->orderBy($idCol, "ASC");
 	$rows = $db->get($table, null, array($idCol, $orderCol));
 
+	if (is_array($rows) && $orderCol === "ceoOrder") {
+		usort($rows, function ($a, $b) use ($idCol, $orderCol) {
+			$orderA = (int)$a[$orderCol];
+			$orderB = (int)$b[$orderCol];
+			if ($orderA !== $orderB) {
+				return $orderA - $orderB;
+			}
+			return (int)$a[$idCol] - (int)$b[$idCol];
+		});
+	}
+
 	$ids = array();
 	if (is_array($rows)) {
 		foreach ($rows as $row) {
@@ -33,7 +44,7 @@ function reorderScopedItem($db, $table, $idCol, $orderCol, $itemId, $newOrder, $
 	$order = 1;
 	foreach ($ids as $id) {
 		$db->where($idCol, $id);
-		$db->update($table, array($orderCol => $order));
+		$db->update($table, array($orderCol => (int)$order));
 		$order++;
 	}
 }

@@ -50,9 +50,19 @@ switch($selMenuObj["pageType"]){
 	case "projects":
 		
 		$db->where('lang', $adminLang);
-		$db->orderBy("`ceoOrder`","asc");
-		$db->orderBy("`ceoID`","asc");
+		$db->orderBy("`ceoOrder`", "asc");
+		$db->orderBy("`ceoID`", "asc");
 		$ceoArr = $db->get($db_ceo);
+		if (is_array($ceoArr)) {
+			usort($ceoArr, function ($a, $b) {
+				$orderA = (int)$a["ceoOrder"];
+				$orderB = (int)$b["ceoOrder"];
+				if ($orderA !== $orderB) {
+					return $orderA - $orderB;
+				}
+				return (int)$a["ceoID"] - (int)$b["ceoID"];
+			});
+		}
 		
 	break;
 }
