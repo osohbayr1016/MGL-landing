@@ -9,6 +9,7 @@ cpadmin/postpic/
 # Database credentials stay on the server only
 /const.php
 /cpadmin/const.php
+/cpadmin/const.local.php
 
 # OS
 Thumbs.db

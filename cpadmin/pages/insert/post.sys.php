@@ -329,6 +329,12 @@ switch($_POST["frmPost"]){
 		reorderScopedItem($db, $db_pagesch, "schID", "schOrder", $schID, $newOrder, $scope);
 		orderAjaxDone(array("order" => $newOrder));
 	break;
+	case "homeProjectsSave":
+		include "home.projects.save.php";
+	break;
+	case "homeProjectPic":
+		include "home.projects.pic.php";
+	break;
 	case "visualPost":
 		
 		$path = "postpic/visual/";

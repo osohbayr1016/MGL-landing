@@ -33,6 +33,24 @@ if(isset($_SESSION["upass"]) && isset($_SESSION["umail"])) {
 				$adminAccessPer[$objA[0]][$objA[1]]=$objA[1];
 			}
 		}
+
+		if(isset($adminAccessPer["insert"]["promo"]) && !isset($adminAccessPer["insert"]["homeProjects"])){
+			$adminAccessPer["insert"]["homeProjects"] = "homeProjects";
+		}
+
+		if(isset($gloMenuArr["insert"]["sub"]) && !isset($gloMenuArr["insert"]["sub"]["homeProjects"])){
+			$hpSub = array();
+			foreach($gloMenuArr["insert"]["sub"] as $hpKey=>$hpLabel){
+				$hpSub[$hpKey] = $hpLabel;
+				if($hpKey === "promo"){
+					$hpSub["homeProjects"] = "Нүүр хуудасны төслүүд";
+				}
+			}
+			if(!isset($hpSub["homeProjects"])){
+				$hpSub["homeProjects"] = "Нүүр хуудасны төслүүд";
+			}
+			$gloMenuArr["insert"]["sub"] = $hpSub;
+		}
 		
 		$db->orderBy("langOrder","asc");
 		$sysLangArr = $db->get($db_lang);

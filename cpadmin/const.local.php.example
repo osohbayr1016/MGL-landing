@@ -1,0 +1,19 @@
+<?php
+/**
+ * Local admin overrides — copy to const.local.php and edit.
+ * const.local.php is gitignored; production const.php stays unchanged.
+ */
+
+$gloDomainLink = "http://localhost:8075";
+
+// Option A: local MySQL (import production dump into this database)
+$sysDbHost = "localhost";
+$sysDbUser = "root";
+$sysDbPass = "";
+$sysDbName = "mglenc_local";
+
+// Option B: use production DB remotely (read/write — test carefully)
+// $sysDbHost = "localhost";
+// $sysDbUser = "your_cpanel_db_user";
+// $sysDbPass = "your_db_password";
+// $sysDbName = "your_db_name";

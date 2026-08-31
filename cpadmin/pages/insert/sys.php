@@ -33,6 +33,9 @@ switch($subPage){
 		include "promo.list.sys.php";
 		
 	break;
+	case "homeProjects":
+		include "home.projects.sys.php";
+	break;
 	case "pro":
 	
 		include "pro.list.sys.php";
