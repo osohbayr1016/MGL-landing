@@ -1,0 +1,372 @@
+/* ------------------------------------------------------------------
+   Арга хэмжээний бүртгэлийн хуудас — /registration
+   Бүх өнгө, хэмжээ CSS хувьсагчаар ирдэг (skin/new/registration.php),
+   тэдгээрийг CP Admin -> Хуудасны дизайн -> Загвар хэсгээс өөрчилнө.
+   Дизайнерын "Нэмэлт CSS" энэ файлын ДАРАА ачаалагддаг тул
+   энд байгаа аль ч дүрмийг дарж бичиж болно.
+   ------------------------------------------------------------------ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body.reg-body {
+	margin: 0;
+	padding: 0;
+	background: var(--reg-bg, #0E0E0E);
+	color: var(--reg-text, #FFFFFF);
+	font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+	font-weight: var(--reg-body-weight, 500);
+	font-size: 16px;
+	line-height: 1.6;
+	letter-spacing: var(--reg-ls, 0em);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body.reg-body h1,
+body.reg-body h2,
+body.reg-body h3,
+body.reg-body h4 {
+	margin: 0 0 .5em;
+	font-weight: var(--reg-title-weight, 800);
+	line-height: 1.12;
+	letter-spacing: -0.01em;
+}
+
+body.reg-upper h1,
+body.reg-upper h2,
+body.reg-upper .reg-hero-eyebrow,
+body.reg-upper .reg-btn,
+body.reg-upper .reg-label { text-transform: uppercase; }
+
+body.reg-body p { margin: 0 0 1em; }
+body.reg-body a { color: var(--reg-accent, #FE5925); }
+body.reg-body img { max-width: 100%; height: auto; display: block; }
+
+.reg-wrap {
+	width: 100%;
+	max-width: var(--reg-max, 1080px);
+	margin: 0 auto;
+	padding: 0 24px;
+}
+
+.reg-wrap-full { width: 100%; }
+
+.reg-section { position: relative; }
+
+.reg-section-title {
+	font-size: clamp(24px, 3.4vw, 38px);
+	margin-bottom: 32px;
+}
+
+.reg-align-center { text-align: center; }
+.reg-align-center .reg-text-inner { margin-left: auto; margin-right: auto; }
+
+/* ---------------- Hero ---------------- */
+
+.reg-hero {
+	position: relative;
+	display: flex;
+	overflow: hidden;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	padding: 80px 0;
+}
+
+.reg-hero-v-start  { align-items: flex-start; }
+.reg-hero-v-center { align-items: center; }
+.reg-hero-v-end    { align-items: flex-end; }
+
+.reg-hero-a-left   { text-align: left; }
+.reg-hero-a-center { text-align: center; }
+.reg-hero-a-right  { text-align: right; }
+
+.reg-hero-video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+}
+
+.reg-hero-overlay {
+	position: absolute;
+	inset: 0;
+	background: #000;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.reg-hero-inner { position: relative; z-index: 2; width: 100%; }
+
+.reg-hero-a-center .reg-hero-logo { margin-left: auto; margin-right: auto; }
+.reg-hero-a-right  .reg-hero-logo { margin-left: auto; }
+
+.reg-hero-logo { margin-bottom: 28px; height: auto; }
+
+.reg-hero-eyebrow {
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: .22em;
+	opacity: .85;
+	margin-bottom: 16px;
+}
+
+.reg-hero-title {
+	font-size: clamp(32px, 7vw, var(--reg-title-size, 56px));
+	font-weight: var(--reg-title-weight, 800);
+	margin-bottom: 18px;
+}
+
+.reg-hero-sub {
+	font-size: clamp(15px, 2vw, 19px);
+	font-weight: 400;
+	max-width: 660px;
+	opacity: .9;
+	margin-bottom: 28px;
+}
+
+.reg-hero-a-center .reg-hero-sub { margin-left: auto; margin-right: auto; }
+.reg-hero-a-right  .reg-hero-sub { margin-left: auto; }
+
+.reg-hero-meta {
+	list-style: none;
+	margin: 0 0 32px;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 28px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.reg-hero-a-center .reg-hero-meta { justify-content: center; }
+.reg-hero-a-right  .reg-hero-meta { justify-content: flex-end; }
+
+.reg-hero-meta i { margin-right: 8px; color: var(--reg-accent, #FE5925); }
+
+/* ---------------- Товч ---------------- */
+
+.reg-btn {
+	display: inline-block;
+	padding: 16px 40px;
+	border: 0;
+	border-radius: var(--reg-radius, 4px);
+	background: var(--reg-accent, #FE5925);
+	color: var(--reg-accent-text, #FFFFFF) !important;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform .18s ease, filter .18s ease;
+}
+
+.reg-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.reg-btn:active { transform: translateY(0); }
+.reg-btn[disabled] { opacity: .6; cursor: default; transform: none; }
+
+/* ---------------- Мэдээллийн хэсэг ---------------- */
+
+.reg-info-grid { display: grid; gap: 28px; }
+
+.reg-info-item {
+	background: var(--reg-surface, #171717);
+	border: 1px solid var(--reg-border, #2A2A2A);
+	border-radius: var(--reg-radius, 4px);
+	padding: 32px 28px;
+}
+
+.reg-info-icon { font-size: 26px; color: var(--reg-accent, #FE5925); margin-bottom: 16px; display: block; }
+.reg-info-pic { width: 48px; margin-bottom: 16px; }
+.reg-info-label { font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--reg-muted, #A8A8A8); margin-bottom: 8px; }
+.reg-info-value { font-size: 19px; font-weight: 700; margin: 0; }
+
+/* ---------------- Текст ---------------- */
+
+.reg-rte { font-weight: 400; }
+.reg-rte img { border-radius: var(--reg-radius, 4px); }
+.reg-rte a { text-decoration: underline; }
+
+/* ---------------- Зураг / цомог ---------------- */
+
+.reg-figure { margin: 0; }
+.reg-figure img { width: 100%; border-radius: var(--reg-radius, 4px); }
+.reg-image-narrow .reg-figure { max-width: 720px; margin: 0 auto; }
+.reg-image-wide .reg-figure img { border-radius: 0; }
+.reg-figure figcaption,
+.reg-gallery-item figcaption {
+	margin-top: 10px;
+	font-size: 13px;
+	color: var(--reg-muted, #A8A8A8);
+}
+
+.reg-gallery-grid { display: grid; }
+.reg-gallery-item { margin: 0; }
+.reg-gallery-item img { width: 100%; border-radius: var(--reg-radius, 4px); }
+
+/* ---------------- Countdown ---------------- */
+
+.reg-countdown-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 16px;
+	max-width: 640px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.reg-cd-cell {
+	background: var(--reg-surface, #171717);
+	border: 1px solid var(--reg-border, #2A2A2A);
+	border-radius: var(--reg-radius, 4px);
+	padding: 22px 8px;
+}
+
+.reg-cd-num { display: block; font-size: clamp(26px, 5vw, 42px); font-weight: 800; line-height: 1; }
+.reg-cd-lbl { display: block; margin-top: 8px; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--reg-muted, #A8A8A8); }
+
+/* ---------------- Хоосон зай ---------------- */
+
+.reg-spacer { position: relative; }
+.reg-spacer-line {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: min(100% - 48px, var(--reg-max, 1080px));
+	height: 1px;
+	background: var(--reg-border, #2A2A2A);
+}
+
+/* ---------------- Форм ---------------- */
+
+.reg-form-box {
+	margin: 0 auto;
+	background: var(--reg-surface, #171717);
+	border: 1px solid var(--reg-border, #2A2A2A);
+	border-radius: var(--reg-radius, 4px);
+	padding: 44px 40px;
+}
+
+.reg-form-title { font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 10px; }
+.reg-form-sub { color: var(--reg-muted, #A8A8A8); font-weight: 400; margin-bottom: 30px; }
+
+.reg-form-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+}
+
+.reg-w-full  { grid-column: span 2; }
+.reg-w-half  { grid-column: span 1; }
+.reg-w-third { grid-column: span 1; }
+
+.reg-field { min-width: 0; }
+
+.reg-label {
+	display: block;
+	margin-bottom: 8px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .1em;
+	color: var(--reg-muted, #A8A8A8);
+}
+
+.reg-req { color: var(--reg-accent, #FE5925); margin-left: 4px; }
+
+.reg-input {
+	width: 100%;
+	padding: 14px 16px;
+	border: 1px solid transparent;
+	border-radius: var(--reg-radius, 4px);
+	background: var(--reg-input-bg, #FFFFFF);
+	color: var(--reg-input-text, #111111);
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.4;
+	outline: none;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.reg-input::placeholder { color: #9A9A9A; font-weight: 400; }
+
+.reg-input:focus {
+	border-color: var(--reg-accent, #FE5925);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--reg-accent, #FE5925) 28%, transparent);
+}
+
+textarea.reg-input { resize: vertical; min-height: 110px; }
+
+select.reg-input { appearance: none; -webkit-appearance: none; padding-right: 40px;
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23555'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat; background-position: right 12px center; background-size: 20px; }
+
+.reg-choice-list { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+
+.reg-choice { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.reg-choice input { margin-top: 3px; accent-color: var(--reg-accent, #FE5925); width: 16px; height: 16px; flex: 0 0 auto; }
+.reg-consent { font-weight: 400; color: var(--reg-muted, #A8A8A8); }
+
+.reg-help { display: block; margin-top: 6px; font-size: 12px; color: var(--reg-muted, #A8A8A8); }
+.reg-error { display: block; margin-top: 6px; font-size: 12px; font-weight: 600; color: #FF6B6B; }
+.reg-has-error .reg-input { border-color: #FF6B6B; }
+
+.reg-alert {
+	margin-bottom: 24px;
+	padding: 14px 18px;
+	border-radius: var(--reg-radius, 4px);
+	background: rgba(255, 107, 107, .12);
+	border: 1px solid rgba(255, 107, 107, .5);
+	font-size: 14px;
+	font-weight: 600;
+	color: #FF8B8B;
+}
+
+.reg-submit { width: 100%; margin-top: 28px; }
+
+/* robot урхи — хэрэглэгчид харагдахгүй, screen reader-ээс ч нуусан */
+.reg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------------- Төлөв (амжилттай / хаагдсан / дүүрсэн) ---------------- */
+
+.reg-state { text-align: center; padding: 20px 0; }
+.reg-state i { font-size: 52px; margin-bottom: 20px; display: block; color: var(--reg-accent, #FE5925); }
+.reg-state h2 { font-size: clamp(22px, 3vw, 30px); margin-bottom: 12px; }
+.reg-state p { color: var(--reg-muted, #A8A8A8); font-weight: 400; margin: 0; }
+.reg-state-ok i { color: #3ECF8E; }
+
+/* ---------------- Footer ---------------- */
+
+.reg-footer {
+	padding: 28px 0 40px;
+	border-top: 1px solid var(--reg-border, #2A2A2A);
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--reg-muted, #A8A8A8);
+	text-align: center;
+}
+
+/* ---------------- Гар утас ---------------- */
+
+@media (max-width: 900px) {
+	.reg-info-grid,
+	.reg-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width: 640px) {
+	.reg-wrap { padding: 0 18px; }
+	.reg-hero { padding: 64px 0; }
+	.reg-form-box { padding: 30px 22px; }
+	.reg-form-grid { grid-template-columns: minmax(0, 1fr); }
+	.reg-w-full, .reg-w-half, .reg-w-third { grid-column: span 1; }
+	.reg-info-grid,
+	.reg-gallery-grid { grid-template-columns: minmax(0, 1fr) !important; }
+	.reg-countdown-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.reg-hero-meta { gap: 8px 18px; }
+}
