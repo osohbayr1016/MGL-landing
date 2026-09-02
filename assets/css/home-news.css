@@ -8,6 +8,15 @@ body.home .featured-news-wrap {
   margin-bottom: clamp(48px, 6vw, 100px);
 }
 
+body.home .featured-news-wrap.owl-carousel {
+  display: block;
+}
+
+body.home .featured-news-wrap.owl-carousel .featured-news-item {
+  flex-basis: auto;
+  margin-bottom: 0;
+}
+
 body.home .featured-news-item {
   margin-bottom: 0;
 }
@@ -29,9 +38,20 @@ body.home .featured-news-item-inner picture {
 
 body.home .featured-news-item-inner picture img {
   width: 100%;
-  height: clamp(160px, 22vw, 240px);
+  height: clamp(140px, 16vw, 200px);
   object-fit: cover;
   display: block;
+}
+
+@media (min-width: 1200px) {
+  body.home .featured-news-item-content {
+    padding: 14px 14px 16px;
+  }
+
+  body.home .featured-news-item-title a {
+    -webkit-line-clamp: 3;
+    font-size: clamp(14px, 1.1vw, 16px);
+  }
 }
 
 body.home .featured-news-item-content {

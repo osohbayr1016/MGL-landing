@@ -1,25 +1,29 @@
-<div class="wrapper">
-	<div class="section-header">
-		<h3><?php echo $selSchBody["title"];?></h3>
+<div class="home-projects-block">
+	<div class="wrapper">
+		<div class="section-header">
+			<h3><?php echo $selSchBody["title"];?></h3>
+		</div>
 	</div>
-    <div class="image-teaser-wrap image-teaser-grid">
- 	<?php
-			if(count($workWidArr[$objs["schID"]]))
-			foreach($workWidArr[$objs["schID"]] as $key=>$obj){
-			?>
-            <div class="image-teaser-content">
-            <a class="image-teaser-inner" href="/project/<?php echo $obj["ceoID"];?>">
-                <picture>
-                    <source type="image/jpeg" srcset="<?php echo newsPicFnc($obj["ceoID"],$obj["ceoPic"]);?>">
-                    <img src="<?php echo newsPicFnc($obj["ceoID"],$obj["ceoPic"]);?>" alt="<?php echo $obj["ceoName"];?>">
-                </picture>
-                <div class="image-teaser-copy">
-                    <h4><?php echo $obj["ceoName"];?></h4>
-                    <span class="image-teaser-subtext"><?php echo $obj["brandName"];?></span>
-                    <span class="button button-white"></span>
-                </div>
-            </a>
-            </div>
-            <?php }?>
-    </div>
+	<div class="home-projects-marquee-wrap">
+	<?php
+	$projects = is_array($workWidArr[$objs["schID"]]) ? $workWidArr[$objs["schID"]] : array();
+	$rowDirs = array("rtl", "ltr", "rtl");
+
+	for ($row = 0; $row < 3; $row++) {
+		$rowItems = array_slice($projects, $row * 4, 4);
+		if (count($rowItems) === 0) {
+			continue;
+		}
+		$loopItems = array_merge($rowItems, $rowItems);
+		$dir = $rowDirs[$row];
+	?>
+		<div class="home-projects-marquee home-projects-marquee--<?php echo $dir; ?>">
+			<div class="home-projects-marquee__track">
+			<?php foreach ($loopItems as $obj) {
+				include __DIR__ . "/wid6.item.php";
+			} ?>
+			</div>
+		</div>
+	<?php } ?>
+	</div>
 </div>

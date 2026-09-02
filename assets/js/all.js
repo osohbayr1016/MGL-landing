@@ -211,18 +211,36 @@ var image_teaser_slider = {
         }
     },
     news_carousel = {
+        getVisibleItems: function() {
+            var w = window.innerWidth;
+            return 1200 <= w ? 4 : 769 <= w ? 2 : 1
+        },
+        canAutoplay: function(e, i) {
+            return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && e > i
+        },
+        startAutoplay: function(e) {
+            e.trigger("stop.owl.autoplay"), e.trigger("play.owl.autoplay", [6500, 900])
+        },
         init: function() {
             var e = $(".featured-news-wrap");
-            e.length && e.owlCarousel({
-                margin: 32,
+            if (!e.length || e.hasClass("owl-loaded")) return;
+            var i = e.children(".featured-news-item").length;
+            if (!i) return;
+            var t = news_carousel.getVisibleItems(),
+                n = i >= 2 * t;
+            e.owlCarousel({
+                margin: 20,
                 nav: !1,
                 dots: !0,
-                loop: !0,
-                autoplay: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+                loop: n,
+                rewind: !n,
+                autoplay: news_carousel.canAutoplay(i, t),
                 autoplayTimeout: 6500,
                 autoplayHoverPause: !0,
                 autoplaySpeed: 900,
                 smartSpeed: 900,
+                slideBy: 1,
+                rtl: !1,
                 stagePadding: 0,
                 responsiveClass: !0,
                 responsive: {
@@ -232,10 +250,12 @@ var image_teaser_slider = {
                     769: {
                         items: 2
                     },
-                    1025: {
-                        items: 2
+                    1200: {
+                        items: 4
                     }
                 }
+            }), news_carousel.canAutoplay(i, t) && news_carousel.startAutoplay(e), $(window).on("load.newsCarousel", function() {
+                e.trigger("refresh.owl.carousel"), news_carousel.canAutoplay(i, news_carousel.getVisibleItems()) && news_carousel.startAutoplay(e)
             })
         }
     },

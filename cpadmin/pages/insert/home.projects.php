@@ -15,7 +15,7 @@
 <div class="wrapper wrapper-content">
     <div class="ibox">
         <div class="ibox-title">
-            <h5>Нүүр хуудас — 4 мөр × 3 багана</h5>
+            <h5>Нүүр хуудас — 3 мөр × 4 багана</h5>
         </div>
         <div class="ibox-content">
             <p class="text-muted">Чирж байрыг солино. Карт дээр дарж өөр төсөл эсвэл зураг сонгоно.</p>

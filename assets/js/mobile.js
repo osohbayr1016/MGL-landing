@@ -5,8 +5,14 @@
 
   jQuery(function ($) {
     function refresh() {
-      $(".hero-slider-wrap, .image-teaser-carousel, .featured-news-wrap")
-        .trigger("refresh.owl.carousel");
+      var $carousels = $(".hero-slider-wrap, .image-teaser-carousel, .featured-news-wrap");
+      $carousels.trigger("refresh.owl.carousel");
+      if (typeof news_carousel !== "undefined") {
+        var $news = $(".featured-news-wrap");
+        if ($news.length && news_carousel.canAutoplay($news.children(".featured-news-item").length, news_carousel.getVisibleItems())) {
+          news_carousel.startAutoplay($news);
+        }
+      }
     }
     refresh();
     setTimeout(refresh, 400);

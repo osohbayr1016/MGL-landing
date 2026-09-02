@@ -35,7 +35,12 @@
     <link href="/assets/css/style.css?v=<?php echo time()?>" rel="stylesheet">
     <?php if($clkMenuObj["pageType"]=="home") { ?>
     <link href="/assets/css/home-projects.css?v=<?php echo time()?>" rel="stylesheet">
+    <link href="/assets/css/home-projects-marquee.css?v=<?php echo time()?>" rel="stylesheet">
     <link href="/assets/css/home-news.css?v=<?php echo time()?>" rel="stylesheet">
+    <?php } ?>
+    <?php if(isset($_REQUEST["productID"]) && $incPage=="projects") { ?>
+    <link href="/assets/css/project-detail-hero.css?v=<?php echo time()?>" rel="stylesheet">
+    <link href="/assets/css/project-detail.css?v=<?php echo time()?>" rel="stylesheet">
     <?php } ?>
     <link href="/assets/css/mobile.css?v=<?php echo time()?>" rel="stylesheet">
 
@@ -105,8 +110,8 @@
 
     <script src="https://unpkg.com/magic-grid@3.1.2/dist/magic-grid.min.js"></script>
 
-    <script src="/assets/js/all.js?v=3"></script>
-    <script src="/assets/js/mobile.js?v=1"></script>
+    <script src="/assets/js/all.js?v=4"></script>
+    <script src="/assets/js/mobile.js?v=2"></script>
 	<?php 
 if(isset($widJsArr))
 if(count($widJsArr)>0)
