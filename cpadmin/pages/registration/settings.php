@@ -224,6 +224,127 @@
     </div>
 
     <input type="hidden" name="frmPost" value="regSettings">
+
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>Хуудсан дээр нь шууд засварлах</h5>
+            <div class="ibox-tools">
+                <span class="label <?php echo $regSet["liveEdit"]=="1" ? "label-primary" : "label-default";?>">
+                    <?php echo $regSet["liveEdit"]=="1" ? "Асаалттай" : "Унтраасан";?>
+                </span>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <p class="text-muted">
+                Асаалттай үед нэвтэрсэн админ бүртгэлийн хуудсыг нээхэд текст дээр нь шууд дарж
+                засах, зураг/дэвсгэр дээр дарж шинэ зураг эсвэл видео байршуулах боломжтой болно.
+                Арга хэмжээ дууссаны дараа <strong>унтраавал</strong> хуудас зөвхөн уншигдах болно.
+            </p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="font-noraml">Горим</label>
+                        <select class="form-control input-sm" name="frmSet[liveEdit]">
+                            <option value="1"<?php if($regSet["liveEdit"]=="1") echo ' selected';?>>Асаалттай — админ шууд засаж болно</option>
+                            <option value="0"<?php if($regSet["liveEdit"]!="1") echo ' selected';?>>Унтраасан — зөвхөн CP Admin-аас</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-8" style="padding-top:24px">
+                    <a href="/registration/design" class="btn btn-white btn-sm">
+                        <i class="fa fa-magic"></i> Хуудасны дизайн хэсгээс шууд засаж эхлэх
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ibox">
+        <div class="ibox-title">
+            <h5>Медиа хадгалалт — Cloudflare R2</h5>
+            <div class="ibox-tools">
+                <span class="label <?php echo $regMedia["ready"] ? "label-primary" : "label-warning";?>">
+                    <?php echo $regMedia["ready"] ? "Холбогдсон" : "Тохируулаагүй";?>
+                </span>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <?php if(isset($_SESSION["regR2Result"])){ ?>
+            <div class="alert <?php echo strpos($_SESSION["regR2Result"],"АЛДАА")!==false ? "alert-danger" : "alert-success";?>">
+                <?php echo RegistrationCore::esc($_SESSION["regR2Result"]); unset($_SESSION["regR2Result"]); ?>
+            </div>
+            <?php } ?>
+
+            <p class="text-muted">
+                Хуудсан дээр байршуулсан зураг, видео Cloudflare R2 bucket-д хадгалагдана.
+                Хоосон үлдээвэл файлууд серверийн диск дээр хадгалагдана (тэр ч ажиллана).
+                Эдгээрийг <code>const.php</code>-д бичсэн бол тэр нь давуу эрхтэй.
+            </p>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="font-noraml">Account ID</label>
+                        <input type="text" class="form-control input-sm" name="frmSet[r2Account]" autocomplete="off"
+                               value="<?php echo RegistrationCore::esc($regSet["r2Account"]);?>" placeholder="Cloudflare -> R2 -> Account ID">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="font-noraml">Bucket нэр</label>
+                        <input type="text" class="form-control input-sm" name="frmSet[r2Bucket]" autocomplete="off"
+                               value="<?php echo RegistrationCore::esc($regSet["r2Bucket"]);?>" placeholder="mglenc-media">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="font-noraml">Access Key ID</label>
+                        <input type="text" class="form-control input-sm" name="frmSet[r2Key]" autocomplete="off"
+                               value="<?php echo RegistrationCore::esc($regSet["r2Key"]);?>">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="font-noraml">Secret Access Key</label>
+                        <input type="password" class="form-control input-sm" name="frmSet[r2Secret]" autocomplete="new-password"
+                               placeholder="<?php echo $regSet["r2Secret"]!="" ? "•••••••• (хадгалагдсан — солихгүй бол хоосон үлдээнэ)" : "";?>">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label class="font-noraml">Медиа CDN хаяг (Cloudflare Worker)</label>
+                        <input type="text" class="form-control input-sm" name="frmSet[mediaCdn]"
+                               value="<?php echo RegistrationCore::esc($regSet["mediaCdn"]);?>" placeholder="https://mglenc-media.<нэр>.workers.dev">
+                        <small class="text-muted">
+                            Хоосон бол зураг сервер дээрээс үйлчилнэ (R2-д зэрэг хуулагдана).
+                            Хаяг оруулсан үед л зөвхөн R2-оос үйлчилж, серверийн хуулбар устана.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-sm-4" style="padding-top:24px">
+                    <button type="submit" class="btn btn-primary btn-sm">Хадгалах</button>
+                    <button type="submit" class="btn btn-white btn-sm" name="frmPost" value="regR2Test">Холболт шалгах</button>
+                </div>
+            </div>
+
+            <div class="alert alert-info" style="margin-bottom:0">
+                <strong>Cloudflare дээр хийх зүйл:</strong>
+                <ol style="margin:8px 0 0 18px;padding:0">
+                    <li>R2 → <em>Create bucket</em> → нэр: <code>mglenc-media</code></li>
+                    <li>R2 → <em>Manage R2 API Tokens</em> → <em>Create API token</em> → эрх: <em>Object Read &amp; Write</em> → Access Key ID / Secret Access Key-г энд буулгана</li>
+                    <li>Account ID нь R2 хуудасны баруун талд байдаг</li>
+                    <li>Зургийг R2-оос үйлчлүүлэхийн тулд <code>cloudflare/media-worker.js</code> worker-ийг deploy хийж, түүний хаягийг дээрх талбарт бичнэ</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+
     <button type="submit" class="btn btn-primary">Хадгалах</button>
 
 </form>

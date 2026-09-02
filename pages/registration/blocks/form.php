@@ -18,8 +18,8 @@ $frmLabel = RegistrationCore::val($regData, "labelShow", "y") == "y";
 
 			<div class="reg-state reg-state-ok">
 				<i class="fa fa-check-circle"></i>
-				<h2><?php echo RegistrationCore::esc($regSet["successTitle"]); ?></h2>
-				<p><?php echo nl2br(RegistrationCore::esc($regSet["successText"])); ?></p>
+				<h2<?php echo RegistrationCore::editAttr($regEdit, "setting", 0, "successTitle"); ?>><?php echo RegistrationCore::esc($regSet["successTitle"]); ?></h2>
+				<p<?php echo RegistrationCore::editAttr($regEdit, "setting", 0, "successText"); ?>><?php echo nl2br(RegistrationCore::esc($regSet["successText"])); ?></p>
 			</div>
 
 			<?php } elseif (!$regStatus["open"]) { ?>
@@ -28,16 +28,17 @@ $frmLabel = RegistrationCore::val($regData, "labelShow", "y") == "y";
 				<i class="fa <?php echo $regStatus["state"] == "full" ? "fa-users" : "fa-lock"; ?>"></i>
 				<h2><?php echo RegistrationCore::esc($regStatus["title"]); ?></h2>
 				<p><?php echo nl2br(RegistrationCore::esc($regStatus["text"])); ?></p>
+				<?php if ($regEdit) { ?><span class="reg-edit-hint">Энэ текстийг CP Admin -> Тохиргоо хэсгээс солино.</span><?php } ?>
 			</div>
 
 			<?php } else { ?>
 
-			<?php if (RegistrationCore::val($regData, "title") != "") { ?>
-			<h2 class="reg-form-title"><?php echo RegistrationCore::esc($regData["title"]); ?></h2>
+			<?php if (RegistrationCore::val($regData, "title") != "" || $regEdit) { ?>
+			<h2 class="reg-form-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "title"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($regData, "title")); ?></h2>
 			<?php } ?>
 
-			<?php if (RegistrationCore::val($regData, "subtitle") != "") { ?>
-			<p class="reg-form-sub"><?php echo nl2br(RegistrationCore::esc($regData["subtitle"])); ?></p>
+			<?php if (RegistrationCore::val($regData, "subtitle") != "" || $regEdit) { ?>
+			<p class="reg-form-sub"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "subtitle"); ?>><?php echo nl2br(RegistrationCore::esc(RegistrationCore::val($regData, "subtitle"))); ?></p>
 			<?php } ?>
 
 			<?php if (isset($regErrors["_form"])) { ?>
@@ -174,7 +175,7 @@ $frmLabel = RegistrationCore::val($regData, "labelShow", "y") == "y";
 				<input type="hidden" name="regTs" value="<?php echo time(); ?>">
 				<input type="hidden" name="frmRegPost" value="1">
 
-				<button type="submit" class="reg-btn reg-submit"><?php echo RegistrationCore::esc($regSet["submitLabel"]); ?></button>
+				<button type="submit" class="reg-btn reg-submit"<?php echo RegistrationCore::editAttr($regEdit, "setting", 0, "submitLabel"); ?>><?php echo RegistrationCore::esc($regSet["submitLabel"]); ?></button>
 			</form>
 
 			<?php } ?>

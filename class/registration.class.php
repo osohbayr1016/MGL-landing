@@ -203,8 +203,28 @@ class RegistrationCore
 			/* Чөлөөт код */
 			"customCss"      => "",
 			"customHeadHtml" => "",
-			"footerText"     => "© MGL E&C LLC"
+			"footerText"     => "© MGL E&C LLC",
+
+			/* Шууд засварлах горим (хуудсан дээрээ дарж засах) */
+			"liveEdit"       => "1",
+			"editToken"      => "",
+			"editTokenExp"   => "0",
+
+			/* Медиа хадгалалт — Cloudflare R2.
+			   Хоосон бол const.php доторх $gloR2* утгуудыг ашиглана,
+			   тэр ч хоосон бол зураг сервер дээрээ хадгалагдана. */
+			"r2Account"      => "",
+			"r2Bucket"       => "",
+			"r2Key"          => "",
+			"r2Secret"       => "",
+			"mediaCdn"       => ""
 		);
+	}
+
+	/** Нууц утгууд — админд бүтнээр нь харуулахгүй */
+	public static function secretSettings()
+	{
+		return array("r2Secret", "editToken");
 	}
 
 	public static function settings($db)
@@ -929,6 +949,409 @@ class RegistrationCore
 		$ip = isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : "";
 
 		return substr((string)$ip, 0, 60);
+	}
+
+	/* ------------------------------------------------------------------
+	   Шууд засварлах горим (хуудсан дээрээ дарж засах)
+	   ------------------------------------------------------------------ */
+
+	/** Нэвтэрсэн админ мөн эсэх (нүүр сайт болон CP Admin session хуваалцдаг) */
+	public static function isAdminSession($db)
+	{
+		if (empty($_SESSION["umail"]) || empty($_SESSION["upass"])) {
+			return false;
+		}
+
+		global $tbl_prefadmin, $tbl_pref;
+		$tbl = isset($tbl_prefadmin) && $tbl_prefadmin != ""
+			? $tbl_prefadmin
+			: (isset($tbl_pref) ? $tbl_pref : "db_") . "admin";
+
+		if (!self::tableExists($db, $tbl)) {
+			return false;
+		}
+
+		$n = (int)self::scalar($db,
+			"SELECT COUNT(*) FROM `" . $tbl . "` WHERE `aname`=? AND `apass`=?",
+			array($_SESSION["umail"], $_SESSION["upass"])
+		);
+
+		return $n > 0;
+	}
+
+	/** CP Admin-аас "шууд засах" линк үүсгэх (өөр домэйнээс ч ажиллана) */
+	public static function makeEditToken($db)
+	{
+		$token = "";
+		if (function_exists("random_bytes")) {
+			$token = bin2hex(random_bytes(16));
+		} else {
+			$token = md5(uniqid("reg", true) . microtime());
+		}
+
+		self::saveSettings($db, array(
+			"editToken"    => $token,
+			"editTokenExp" => (string)(time() + 86400)
+		));
+
+		return $token;
+	}
+
+	public static function checkEditToken($db, $token, $set = null)
+	{
+		$token = trim((string)$token);
+		if ($token === "" || strlen($token) > 64) {
+			return false;
+		}
+
+		if ($set === null) {
+			$set = self::settings($db);
+		}
+
+		if ($set["editToken"] === "" || (int)$set["editTokenExp"] < time()) {
+			return false;
+		}
+
+		/* Хугацаа-тогтмол харьцуулалт */
+		if (function_exists("hash_equals")) {
+			return hash_equals((string)$set["editToken"], $token);
+		}
+
+		return (string)$set["editToken"] === $token;
+	}
+
+	/**
+	 * Энэ хүсэлт хуудсыг засах эрхтэй юу?
+	 * 1) Тохиргоонд liveEdit асаалттай
+	 * 2) Нэвтэрсэн админ ЭСВЭЛ session дотор зөвшөөрөгдсөн тэмдэг
+	 */
+	public static function canEdit($db, $set)
+	{
+		if ((string)$set["liveEdit"] !== "1") {
+			return false;
+		}
+
+		if (!empty($_SESSION["regEditor"])) {
+			return true;
+		}
+
+		return self::isAdminSession($db);
+	}
+
+	/**
+	 * Засварлах боломжтой элементэд тавих атрибутууд.
+	 *   $scope  block | setting
+	 *   $id     блокийн ID (setting үед хэрэггүй)
+	 *   $key    талбарын түлхүүр
+	 *   $mode   text | html
+	 */
+	public static function editAttr($on, $scope, $id, $key, $mode = "text")
+	{
+		if (!$on) {
+			return "";
+		}
+
+		return ' data-reg-edit="' . self::esc($scope . ":" . $id . ":" . $key . ":" . $mode) . '"';
+	}
+
+	/** Медиа (зураг/видео) солих боломжтой элемент */
+	public static function mediaAttr($on, $scope, $id, $key, $accept = "image")
+	{
+		if (!$on) {
+			return "";
+		}
+
+		return ' data-reg-media="' . self::esc($scope . ":" . $id . ":" . $key . ":" . $accept) . '"';
+	}
+
+	/** Блокийн төрөлд зөвшөөрөгдсөн талбарын түлхүүрүүд (аюулгүйн шүүлт) */
+	public static function allowedKeys($blockType)
+	{
+		$obj = self::blockTypeObj($blockType);
+		$keys = array();
+
+		if ($obj == null) {
+			return $keys;
+		}
+
+		foreach ($obj["cols"] as $col) {
+			$keys[$col["key"]] = isset($col["type"]) ? $col["type"] : "text";
+		}
+
+		if (!empty($obj["subCols"])) {
+			foreach ($obj["subCols"] as $col) {
+				$keys[$col["key"]] = isset($col["type"]) ? $col["type"] : "text";
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
+	 * Талбарын төрлөөр нь цэвэрлэнэ.
+	 * editor / code нь админы бичсэн HTML тул хэвээр үлдэнэ (CP Admin-тай ижил),
+	 * бусад нь энгийн текст болно.
+	 */
+	public static function sanitizeByType($value, $type)
+	{
+		if (is_array($value)) {
+			$value = "";
+		}
+
+		$value = (string)$value;
+
+		switch ($type) {
+
+			case "editor":
+			case "code":
+				$value = str_replace("\0", "", $value);
+				return function_exists("mb_substr")
+					? mb_substr($value, 0, 60000, "UTF-8")
+					: substr($value, 0, 60000);
+
+			case "file":
+				$value = trim(strip_tags($value));
+				if ($value === "") {
+					return "";
+				}
+				/* Зөвхөн танил хэлбэрийн зам */
+				if (preg_match('#^(/pics/|/postpic/|/newsimg/|/image/|https?://)#i', $value)) {
+					return substr($value, 0, 500);
+				}
+				return "";
+
+			case "number":
+				return preg_match('/^-?\d{1,9}$/', trim($value)) ? trim($value) : "";
+
+			case "color":
+				$value = trim($value);
+				return preg_match('/^#[0-9A-Fa-f]{3,8}$/', $value) ? $value : "";
+
+			case "bool":
+				return ($value === "y" || $value === "1" || $value === "true") ? "y" : "";
+
+			case "textarea":
+				return self::clean($value, 2000);
+
+			default:
+				return self::clean($value, 500);
+		}
+	}
+
+	/** Шууд засахад өөрчилж болох тохиргоонууд */
+	public static function editableSettings()
+	{
+		return array("footerText", "successTitle", "successText", "submitLabel",
+			"closedTitle", "closedText", "fullTitle", "fullText", "metaTitle");
+	}
+
+	/* ------------------------------------------------------------------
+	   Медиа — Cloudflare R2 (буцах зам: сервер дээрээ хадгална)
+	   ------------------------------------------------------------------ */
+
+	/** postpic доторх дэд хавтас — /pics/reg/... болж үйлчилнэ */
+	const MEDIA_FOLDER = "reg";
+
+	/**
+	 * R2-ийн тохиргоог бэлдэнэ.
+	 * Эрэмбэ: const.php доторх $gloR2* -> админд оруулсан утгууд.
+	 * Буцаах: array("ready"=>bool, "bucket"=>.., "cdn"=>..)
+	 */
+	public static function mediaBoot($db, $set = null)
+	{
+		if ($set === null) {
+			$set = self::settings($db);
+		}
+
+		$map = array(
+			"gloR2Account" => "r2Account",
+			"gloR2Bucket"  => "r2Bucket",
+			"gloR2Key"     => "r2Key",
+			"gloR2Secret"  => "r2Secret"
+		);
+
+		foreach ($map as $glo => $key) {
+			if (empty($GLOBALS[$glo]) && trim((string)$set[$key]) !== "") {
+				$GLOBALS[$glo] = trim($set[$key]);
+			}
+		}
+
+		/* Зөвхөн бүртгэлийн хуудсанд CDN-ээр үйлчилнэ (сайтын бусад хэсэгт хөндөхгүй) */
+		if (empty($GLOBALS["gloCdnBase"]) && trim((string)$set["mediaCdn"]) !== "") {
+			$GLOBALS["gloCdnBase"] = rtrim(trim($set["mediaCdn"]), "/");
+		}
+
+		$r2Path = self::sitePath("cpadmin/r2.php");
+		if (!function_exists("r2Enabled") && $r2Path !== "" && is_file($r2Path)) {
+			include_once $r2Path;
+		}
+
+		return array(
+			"ready"  => function_exists("r2Enabled") && r2Enabled(),
+			"bucket" => isset($GLOBALS["gloR2Bucket"]) ? $GLOBALS["gloR2Bucket"] : "",
+			"cdn"    => isset($GLOBALS["gloCdnBase"]) ? $GLOBALS["gloCdnBase"] : ""
+		);
+	}
+
+	/** Сайтын үндсэн хавтаснаас эхлэсэн зам */
+	public static function sitePath($rel = "")
+	{
+		/* class/registration.class.php -> сайтын үндэс */
+		$root = dirname(__DIR__);
+
+		return $rel === "" ? $root : $root . "/" . ltrim($rel, "/");
+	}
+
+	public static function mediaTypes()
+	{
+		return array(
+			"jpg" => "image", "jpeg" => "image", "png" => "image", "gif" => "image",
+			"webp" => "image", "avif" => "image", "svg" => "image",
+			"mp4" => "video", "webm" => "video", "ogv" => "video", "mov" => "video"
+		);
+	}
+
+	/**
+	 * Байршуулсан файлыг хадгална.
+	 *
+	 * 1. cpadmin/postpic/reg/ дотор бичнэ
+	 * 2. R2 тохируулагдсан бол тийш хуулна
+	 * 3. Зөвхөн CDN-ээр үйлчилж байгаа үед л локал хуулбарыг устгана —
+	 *    эс бөгөөс зураг эвдэрнэ
+	 *
+	 * Буцаах: array("ok"=>bool, "url"=>"/pics/reg/x.jpg", "kind"=>"image|video", "error"=>"")
+	 */
+	/**
+	 * Байршуулсан файлыг шалгана (диск рүү бичихээс өмнө).
+	 * Буцаах: array("ok"=>bool, "ext"=>.., "kind"=>"image|video", "error"=>"")
+	 */
+	public static function mediaValidate($file)
+	{
+		$fail = array("ok" => false, "ext" => "", "kind" => "", "error" => "");
+
+		if (!is_array($file) || !isset($file["tmp_name"]) || !isset($file["error"])
+			|| $file["error"] !== UPLOAD_ERR_OK) {
+			$fail["error"] = "Файл ирсэнгүй.";
+			return $fail;
+		}
+
+		if (isset($file["size"]) && $file["size"] > 200 * 1024 * 1024) {
+			$fail["error"] = "Файл хэт том (200 MB-аас их).";
+			return $fail;
+		}
+
+		$name = isset($file["name"]) ? $file["name"] : "";
+
+		/* Давхар өргөтгөл (a.php.jpg) болон дүрсний зам хаана */
+		$name = str_replace(array("\0", "/", "\\"), "", $name);
+		$ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+		$types = self::mediaTypes();
+		if ($ext === "" || !isset($types[$ext])) {
+			$fail["error"] = "Зөвхөн зураг (jpg, png, webp, gif, svg) эсвэл видео (mp4, webm) байршуулна.";
+			return $fail;
+		}
+
+		/* Нэрэнд гүйцэтгэгдэх өргөтгөл нуугдсан эсэх */
+		if (preg_match('/\.(php\d?|phtml|phar|cgi|pl|py|sh|htaccess|js|html?)\./i', $name)) {
+			$fail["error"] = "Файлын нэр зөвшөөрөгдөхгүй.";
+			return $fail;
+		}
+
+		$kind = $types[$ext];
+
+		/* Зургийн хувьд агуулгыг нь бас шалгана */
+		if ($kind == "image" && $ext != "svg" && function_exists("getimagesize")
+			&& is_file($file["tmp_name"])) {
+			if (@getimagesize($file["tmp_name"]) === false) {
+				$fail["error"] = "Зураг уншигдахгүй байна.";
+				return $fail;
+			}
+		}
+
+		return array("ok" => true, "ext" => $ext, "kind" => $kind, "error" => "");
+	}
+
+	public static function mediaStore($db, $file, $set = null)
+	{
+		$fail = array("ok" => false, "url" => "", "kind" => "", "error" => "");
+
+		$check = self::mediaValidate($file);
+		if (!$check["ok"]) {
+			$fail["error"] = $check["error"];
+			return $fail;
+		}
+
+		if (!is_uploaded_file($file["tmp_name"])) {
+			$fail["error"] = "Файл буруу.";
+			return $fail;
+		}
+
+		$ext  = $check["ext"];
+		$kind = $check["kind"];
+
+		$dir = self::sitePath("cpadmin/postpic/" . self::MEDIA_FOLDER);
+		if (!is_dir($dir)) {
+			@mkdir($dir, 0775, true);
+		}
+		if (!is_dir($dir) || !is_writable($dir)) {
+			$fail["error"] = "cpadmin/postpic/" . self::MEDIA_FOLDER . " хавтас бичигдэхгүй байна.";
+			return $fail;
+		}
+
+		/* Гүнзгий хамгаалалт: энэ хавтсанд ямар ч скрипт ажиллуулахгүй */
+		$guard = $dir . "/.htaccess";
+		if (!is_file($guard)) {
+			@file_put_contents($guard,
+				"# Байршуулсан медиа — энд ямар ч скрипт ажиллуулахгүй\n"
+				. "php_flag engine off\n"
+				. "AddType text/plain .php .php3 .php4 .php5 .php7 .php8 .phtml .phar .pl .py .cgi .sh\n"
+				. "<IfModule mod_rewrite.c>\n"
+				. "\tRewriteEngine Off\n"
+				. "</IfModule>\n"
+			);
+		}
+
+		$base = pathinfo($file["name"], PATHINFO_FILENAME);
+		$base = preg_replace('/[^A-Za-z0-9_-]+/', "-", $base);
+		$base = trim(substr($base, 0, 40), "-");
+		if ($base === "") {
+			$base = "media";
+		}
+
+		$name = $base . "-" . date("YmdHis") . "-" . substr(md5(uniqid("", true)), 0, 6) . "." . $ext;
+		$dest = $dir . "/" . $name;
+
+		if (!@move_uploaded_file($file["tmp_name"], $dest)) {
+			$fail["error"] = "Файлыг хадгалж чадсангүй.";
+			return $fail;
+		}
+		@chmod($dest, 0644);
+
+		$media = self::mediaBoot($db, $set);
+		$stored = "local";
+
+		if ($media["ready"] && function_exists("r2Put")) {
+			$key = self::MEDIA_FOLDER . "/" . $name;
+
+			if (r2Put($key, $dest)) {
+				$stored = "r2";
+
+				/* CDN-ээр үйлчилж байж л локал хуулбарыг хаяна */
+				if ($media["cdn"] !== "") {
+					@unlink($dest);
+					$stored = "r2-only";
+				}
+			}
+		}
+
+		return array(
+			"ok"    => true,
+			"url"   => "/pics/" . self::MEDIA_FOLDER . "/" . $name,
+			"kind"  => $kind,
+			"where" => $stored,
+			"error" => ""
+		);
 	}
 
 	/* ------------------------------------------------------------------

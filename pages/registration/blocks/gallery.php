@@ -10,8 +10,8 @@ $galGap = (int)RegistrationCore::val($regData, "gap", "16");
 <section class="reg-section reg-gallery" style="<?php echo RegistrationCore::sectionStyle($regData, 80, 80); ?>">
 	<div class="reg-wrap">
 
-		<?php if (RegistrationCore::val($regData, "title") != "") { ?>
-		<h2 class="reg-section-title"><?php echo RegistrationCore::esc($regData["title"]); ?></h2>
+		<?php if (RegistrationCore::val($regData, "title") != "" || $regEdit) { ?>
+		<h2 class="reg-section-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "title"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($regData, "title")); ?></h2>
 		<?php } ?>
 
 		<?php if (count($regSub) > 0) { ?>
@@ -19,16 +19,21 @@ $galGap = (int)RegistrationCore::val($regData, "gap", "16");
 			style="grid-template-columns:repeat(<?php echo $galCols; ?>, minmax(0,1fr));gap:<?php echo $galGap; ?>px">
 			<?php
 			foreach ($regSub as $subObj) {
-				$item = $subObj["data"];
-				if (RegistrationCore::val($item, "pic") == "") {
+				$item   = $subObj["data"];
+				$itemID = (int)$subObj["blockID"];
+				$itemPic = RegistrationCore::val($item, "pic");
+
+				if ($itemPic == "" && !$regEdit) {
 					continue;
 				}
 			?>
 			<figure class="reg-gallery-item">
-				<img alt="<?php echo RegistrationCore::esc(RegistrationCore::val($item, "caption")); ?>"
-					src="<?php echo RegistrationCore::esc(newsPicFnc(0, $item["pic"])); ?>">
-				<?php if (RegistrationCore::val($item, "caption") != "") { ?>
-				<figcaption><?php echo RegistrationCore::esc($item["caption"]); ?></figcaption>
+				<img class="<?php if ($itemPic == "") echo "reg-empty-media"; ?>"
+					alt="<?php echo RegistrationCore::esc(RegistrationCore::val($item, "caption")); ?>"
+					<?php if ($itemPic != "") { ?>src="<?php echo RegistrationCore::esc(newsPicFnc(0, $itemPic)); ?>"<?php } ?>
+					<?php echo RegistrationCore::mediaAttr($regEdit, "block", $itemID, "pic", "image"); ?>>
+				<?php if (RegistrationCore::val($item, "caption") != "" || $regEdit) { ?>
+				<figcaption<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "caption"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($item, "caption")); ?></figcaption>
 				<?php } ?>
 			</figure>
 			<?php } ?>

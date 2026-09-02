@@ -8,8 +8,12 @@
         </ol>
     </div>
     <div class="col-sm-4 text-right" style="padding-top:22px;">
+        <form action="/userPost/registration" method="post" target="_blank" style="display:inline">
+            <input type="hidden" name="frmPost" value="regEditLink">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-magic"></i> Хуудсан дээр нь засах</button>
+        </form>
         <a href="<?php echo RegistrationCore::esc($regPageLink);?>" target="_blank" class="btn btn-white">
-            <i class="fa fa-external-link"></i> Хуудсыг харах
+            <i class="fa fa-external-link"></i> Харах
         </a>
     </div>
 </div>
@@ -39,9 +43,15 @@
             </div>
         </div>
         <div class="ibox-content">
+            <div class="alert alert-success" style="margin-bottom:18px">
+                <i class="fa fa-magic"></i> <strong>Хуудсан дээр нь засах</strong> —
+                дээрх ногоон товчийг дарвал бүртгэлийн хуудас шинэ цонхонд нээгдэж,
+                текст дээр нь шууд дарж бичих, зураг/дэвсгэр дээр дарж шинэ зураг эсвэл
+                видео байршуулах боломжтой болно. Хамгийн хурдан арга.
+            </div>
             <p class="text-muted">
-                Блок бүр хуудасны нэг хэсэг. Дээрээс доош байрлана — сум товчоор байрыг сольж,
-                "Засах" дээр дарж агуулга, зураг, өнгийг өөрчилнө.
+                Доорх жагсаалт нь нарийн тохиргоо (өнгө, зай, багана, өндөр) хийхэд.
+                Блок бүр хуудасны нэг хэсэг — сум товчоор байрыг сольж, "Засах" дээр дарж бүх талбарыг өөрчилнө.
             </p>
 
             <?php if(count($regBlockList)<1){ ?>

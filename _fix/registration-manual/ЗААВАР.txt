@@ -1,0 +1,89 @@
+cPANEL FILE MANAGER-ЭЭР СУУЛГАХ ЗААВАР
+========================================
+
+Энэ zip-д АМЬД .htaccess файлууд ОРООГҮЙ. Учир нь тэднийг дарж бичвэл
+сайт бүхэлдээ унтарч болзошгүй. Оронд нь 3-р алхамд 2 мөр гараар нэмнэ.
+
+
+АЛХАМ 1 — ФАЙЛУУДЫГ ХУУЛАХ
+---------------------------
+  1. cPanel -> File Manager
+  2. Зүүн талаас  public_html  хавтсыг сонгоно
+  3. Дээд талын  Upload  товч -> registration-manual.zip -ийг сонгоно
+  4. Upload дуусмагц  Go Back to ...  дарж public_html руу буцна
+  5. registration-manual.zip дээр БАРУУН товч -> Extract
+  6. Гарч ирэх цонхонд зам нь  /public_html  байгааг ШАЛГАНА
+     (өөр зам биш! wrapper хавтас үүсгэхгүй)
+  7. Extract File(s) дарна
+  8. Дууссаны дараа registration-manual.zip -ийг УСТГАНА
+
+
+АЛХАМ 2 — ФАЙЛ ОЧСОНЫГ НҮДЭЭР ШАЛГАХ
+-------------------------------------
+File Manager дотор доорх 2 файл БАЙГАА эсэхийг заавал хараарай.
+Өмнөх удаа яг эдгээр очоогүйгээс болж хуудас ажиллаагүй:
+
+  public_html/class/registration.class.php      (~35 KB)
+  public_html/class/xlsx.writer.class.php       (~13 KB)
+
+Мөн:
+  public_html/pages/registration/sys.php
+  public_html/skin/new/registration.php
+  public_html/cpadmin/pages/registration/sys.php
+
+
+АЛХАМ 3 — cpadmin/.htaccess -Д 2 МӨР НЭМЭХ  (ЗААВАЛ)
+----------------------------------------------------
+Энэ алхамгүйгээр админы дэд хуудсууд ажиллахгүй.
+
+  1. File Manager -> баруун дээд булангийн  Settings
+     -> "Show Hidden Files (dotfiles)" -г ЗААВАЛ асаана
+  2.  public_html/cpadmin/.htaccess  файл дээр баруун товч -> Edit
+  3. Доорх мөрийг ОЛНО (36-р мөр орчим):
+
+        RewriteRule ^insert/([^/]+)(/?) index.php?incPageType=insert&subPage=$1 [L,QSA]
+
+  4. ЯГ ТҮҮНИЙ ДООР доорх 2 мөрийг буулгана:
+
+RewriteRule ^registration/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=registration&subPage=$1&objID=$2 [L,QSA]
+RewriteRule ^registration/([^/]+)(/?) index.php?incPageType=registration&subPage=$1 [L,QSA]
+
+  5. Save Changes
+
+
+САЙТЫН public_html/.htaccess -Д ЮУ Ч НЭМЭХ ШААРДЛАГАГҮЙ
+-------------------------------------------------------
+Тэнд аль хэдийн байгаа доорх дүрэм /registration -г өөрөө зохицуулна:
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.php?incPageType=$1 [L,QSA]
+
+Тиймээс сайтын үндсэн .htaccess -д ГАР ХҮРЭХГҮЙ.
+
+
+АЛХАМ 4 — ШАЛГАХ
+-----------------
+  1. https://mglenc.com/regcheck.php  нээнэ
+     -> Хэрэв мөн л нүүр хуудас гарвал файл дахиад очоогүй байна
+     -> Текст тайлан гарвал бүх мөр [OK] эсэхийг хараарай
+  2. CP Admin руу нэвтэрч ГАРААД ДАХИН ОРНО (session шинэчлэгдэнэ)
+     -> Зүүн цэсэнд "Арга хэмжээний бүртгэл" гарч ирнэ
+  3. https://mglenc.com/registration  нээнэ
+  4. Бүгд ажиллаж байвал  regcheck.php -г УСТГАНА
+
+
+ЮУ ДАРЖ БИЧИГДЭХ ВЭ
+--------------------
+Энэ zip дотор ганцхан хуучин файл дарж бичигдэнэ:
+
+  cpadmin/user.info.php   -- админы цэс, эрх нэмэгдсэн (заавал)
+
+Бусад бүгд ШИНЭ файл. Хүсвэл user.info.php -г урьдчилан
+user.info.php.bak нэрээр хуулж нөөцлөөрэй.
+
+
+АЖИЛЛАХГҮЙ БОЛ
+---------------
+regcheck.php -ийн гаргасан текстийг бүхэлд нь илгээнэ үү.
+Тэр нь нуугдсан fatal алдааг ил гаргадаг.

@@ -1,0 +1,254 @@
+/* ------------------------------------------------------------------
+   Шууд засварлах горимын загвар.
+   Зөвхөн нэвтэрсэн админд ачаалагдана — зочид энэ файлыг татахгүй.
+   Дизайнерын "Нэмэлт CSS"-ийн ДАРАА ордог тул багаж хэрэгсэл
+   үргэлж харагдана.
+   ------------------------------------------------------------------ */
+
+body.reg-editing { padding-bottom: 64px; }
+
+/* ---------------- Засах боломжтой текст ---------------- */
+
+.reg-editing .reg-ed {
+	outline: 1px dashed rgba(120, 170, 255, .55);
+	outline-offset: 3px;
+	border-radius: 2px;
+	cursor: text;
+	transition: outline-color .15s ease, background-color .15s ease;
+	min-width: 24px;
+	min-height: 1em;
+}
+
+.reg-editing .reg-ed:hover { outline-color: rgba(120, 170, 255, .95); background: rgba(120, 170, 255, .08); }
+
+.reg-editing .reg-ed:focus {
+	outline: 2px solid #4A90FF;
+	outline-offset: 3px;
+	background: rgba(74, 144, 255, .1);
+}
+
+/* Хоосон талбар — юу нь хоосон байгааг харуулна */
+.reg-editing .reg-ed-empty::before {
+	content: "Энд бичнэ үү";
+	opacity: .45;
+	font-style: italic;
+	font-weight: 400;
+}
+
+/* ---------------- Медиа солих ---------------- */
+
+.reg-editing .reg-ed-media { cursor: pointer; position: relative; }
+
+.reg-editing img.reg-ed-media,
+.reg-editing i.reg-ed-media {
+	outline: 2px dashed rgba(62, 207, 142, .7);
+	outline-offset: 3px;
+}
+
+.reg-editing img.reg-ed-media:hover,
+.reg-editing i.reg-ed-media:hover { outline-color: #3ECF8E; }
+
+.reg-editing .reg-empty-media {
+	display: block;
+	min-width: 120px;
+	min-height: 90px;
+	background: rgba(255, 255, 255, .06);
+	border-radius: var(--reg-radius, 4px);
+}
+
+/* Дэвсгэртэй хэсэг — булан дээр нь сануулга */
+.reg-editing [data-reg-bg] { cursor: pointer; }
+
+.reg-editing [data-reg-bg]::after {
+	content: "\f030  Дэвсгэр солих";
+	font-family: FontAwesome, "Montserrat", sans-serif;
+	position: absolute;
+	right: 14px;
+	bottom: 14px;
+	z-index: 6;
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, .72);
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity .18s ease;
+}
+
+.reg-editing [data-reg-bg]:hover::after { opacity: 1; }
+
+/* ---------------- Медиа цэс ---------------- */
+
+.reg-media-menu {
+	position: absolute;
+	z-index: 100000;
+	min-width: 180px;
+	padding: 6px;
+	background: #1c1c1c;
+	border: 1px solid #333;
+	border-radius: 8px;
+	box-shadow: 0 12px 34px rgba(0, 0, 0, .5);
+}
+
+.reg-media-menu button {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: #eee;
+	font: 500 13px/1.2 "Montserrat", sans-serif;
+	text-align: left;
+	text-transform: none;
+	letter-spacing: 0;
+	cursor: pointer;
+}
+
+.reg-media-menu button:hover { background: #2e2e2e; }
+.reg-media-menu button i { width: 18px; margin-right: 6px; opacity: .8; }
+
+/* ---------------- Блокийн бүрхүүл ---------------- */
+
+.reg-eb { position: relative; }
+
+.reg-eb-hidden { opacity: .4; }
+
+.reg-eb-bar {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	right: 8px;
+	z-index: 8;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 5px 8px 5px 12px;
+	border-radius: 999px;
+	background: rgba(12, 12, 12, .78);
+	backdrop-filter: blur(6px);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity .18s ease;
+}
+
+.reg-eb:hover .reg-eb-bar { opacity: 1; pointer-events: auto; }
+
+.reg-eb-name {
+	color: #ddd;
+	font: 600 11px/1.3 "Montserrat", sans-serif;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.reg-eb-name i { margin-right: 6px; opacity: .7; }
+
+.reg-eb-tools { display: flex; gap: 4px; flex: 0 0 auto; }
+
+.reg-eb-btn {
+	width: 30px;
+	height: 30px;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, .1);
+	color: #fff;
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+	transition: background .15s ease;
+}
+
+.reg-eb-btn:hover { background: var(--reg-accent, #FE5925); }
+
+/* ---------------- Доод багаж самбар ---------------- */
+
+.reg-editbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 10px 16px;
+	background: #101010;
+	border-top: 1px solid #2b2b2b;
+	box-shadow: 0 -6px 26px rgba(0, 0, 0, .45);
+	font: 500 13px/1.3 "Montserrat", sans-serif;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.reg-editbar-logo {
+	flex: 0 0 auto;
+	padding: 5px 10px;
+	border-radius: 4px;
+	background: var(--reg-accent, #FE5925);
+	color: #fff;
+	font-weight: 800;
+	font-size: 12px;
+	letter-spacing: .1em;
+}
+
+.reg-editbar-msg { flex: 1 1 auto; color: #9a9a9a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reg-editbar-msg.is-warn { color: #F5C147; }
+.reg-editbar-msg.is-ok   { color: #3ECF8E; }
+.reg-editbar-msg.is-err  { color: #FF6B6B; }
+.reg-editbar-msg.is-busy { color: #6FA8FF; }
+
+.reg-editbar-actions { flex: 0 0 auto; display: flex; gap: 8px; align-items: center; }
+
+.reg-eb-main,
+.reg-eb-ghost {
+	padding: 9px 18px;
+	border: 1px solid #333;
+	border-radius: 4px;
+	background: transparent;
+	color: #ddd !important;
+	font: 600 12px/1 "Montserrat", sans-serif;
+	letter-spacing: .04em;
+	text-decoration: none;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background .15s ease, border-color .15s ease;
+}
+
+.reg-eb-main {
+	background: var(--reg-accent, #FE5925);
+	border-color: var(--reg-accent, #FE5925);
+	color: #fff !important;
+}
+
+.reg-eb-main:disabled { opacity: .4; cursor: default; }
+.reg-eb-ghost:hover { background: #222; border-color: #444; }
+.reg-eb-ghost:disabled { opacity: .4; cursor: default; }
+
+.reg-hidden-file { position: fixed; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.reg-edit-hint {
+	display: inline-block;
+	margin-top: 10px;
+	padding: 4px 10px;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, .08);
+	color: #bbb;
+	font-size: 12px;
+	font-weight: 500;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+@media (max-width: 640px) {
+	.reg-editbar { flex-wrap: wrap; gap: 8px; }
+	.reg-editbar-msg { order: 3; width: 100%; white-space: normal; }
+	.reg-eb-main, .reg-eb-ghost { padding: 8px 12px; font-size: 11px; }
+}

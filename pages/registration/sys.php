@@ -6,8 +6,9 @@
  * Хуудсыг зөвхөн шууд линк эсвэл QR-аар нээнэ. Хайлтын системд
  * гаргахгүйн тулд noindex/nofollow тавьсан (skin/new/registration.php).
  *
- * Бүх агуулга, өнгө, зураг, блокийн дараалал, формын талбарууд
- * CP Admin -> "Арга хэмжээний бүртгэл" хэсгээс удирдагдана.
+ * Бүх агуулга CP Admin-аас удирдагдана. Түүнээс гадна нэвтэрсэн админ
+ * ХУУДСАН ДЭЭРЭЭ ШУУД дарж текстээ засаж, дэвсгэр зураг/видеогоо
+ * солих боломжтой (шууд засварлах горим).
  */
 
 include_once __DIR__ . "/../../class/registration.class.php";
@@ -17,6 +18,221 @@ RegistrationCore::ensure($db);
 $regSet    = RegistrationCore::settings($db);
 $regFields = RegistrationCore::fields($db, true);
 $regStatus = RegistrationCore::status($db, $regSet);
+$regTbl    = RegistrationCore::tables();
+
+/* ------------------------------------------------------------------
+   Шууд засварлах горимд орох / гарах
+   ------------------------------------------------------------------ */
+
+if (isset($_GET["edit"]) && $_GET["edit"] != "") {
+	if ((string)$regSet["liveEdit"] === "1" && RegistrationCore::checkEditToken($db, $_GET["edit"], $regSet)) {
+		$_SESSION["regEditor"] = 1;
+	}
+
+	header("Location: /registration");
+	exit;
+}
+
+if (isset($_GET["editexit"])) {
+	unset($_SESSION["regEditor"]);
+	header("Location: /registration");
+	exit;
+}
+
+$regEdit = RegistrationCore::canEdit($db, $regSet);
+
+/* Засварлагчийн хүсэлтийг баталгаажуулах нэг удаагийн түлхүүр */
+if ($regEdit && empty($_SESSION["regNonce"])) {
+	$_SESSION["regNonce"] = function_exists("random_bytes")
+		? bin2hex(random_bytes(12))
+		: md5(uniqid("n", true));
+}
+$regNonce = $regEdit ? $_SESSION["regNonce"] : "";
+
+/* ------------------------------------------------------------------
+   Засварлагчийн AJAX үйлдлүүд
+   ------------------------------------------------------------------ */
+
+if (isset($_POST["regAction"])) {
+
+	header("Content-Type: application/json; charset=utf-8");
+
+	$respond = function ($arr) {
+		echo json_encode($arr, JSON_UNESCAPED_UNICODE);
+		exit;
+	};
+
+	if (!$regEdit) {
+		$respond(array("ok" => 0, "error" => "Засах эрх алга. Дахин нэвтэрнэ үү."));
+	}
+
+	$sentNonce = isset($_POST["regNonce"]) ? $_POST["regNonce"] : "";
+	if ($sentNonce === "" || $sentNonce !== $_SESSION["regNonce"]) {
+		$respond(array("ok" => 0, "error" => "Хуудсыг дахин ачаална уу."));
+	}
+
+	switch ($_POST["regAction"]) {
+
+		/* ---- Текст / утга хадгалах ---- */
+		case "save":
+			$payload = json_decode(isset($_POST["payload"]) ? $_POST["payload"] : "", true);
+			if (!is_array($payload)) {
+				$respond(array("ok" => 0, "error" => "Өгөгдөл уншигдсангүй."));
+			}
+
+			$saved = 0;
+
+			/* Блокийн талбарууд */
+			if (!empty($payload["block"]) && is_array($payload["block"])) {
+				foreach ($payload["block"] as $blockID => $values) {
+					$blockID = (int)$blockID;
+					if ($blockID < 1 || !is_array($values)) {
+						continue;
+					}
+
+					$row = $db->rawQueryOne(
+						"SELECT * FROM `" . $regTbl["block"] . "` WHERE `blockID`=?",
+						array($blockID)
+					);
+					if (!is_array($row) || count($row) < 1) {
+						continue;
+					}
+
+					$allowed = RegistrationCore::allowedKeys($row["blockType"]);
+					$data    = RegistrationCore::decode($row["blockData"]);
+					$dirty   = false;
+
+					foreach ($values as $key => $val) {
+						if (!isset($allowed[$key])) {
+							continue;
+						}
+
+						$val = RegistrationCore::sanitizeByType($val, $allowed[$key]);
+
+						if (!isset($data[$key]) || $data[$key] !== $val) {
+							$data[$key] = $val;
+							$dirty = true;
+						}
+					}
+
+					if ($dirty) {
+						$db->rawQuery(
+							"UPDATE `" . $regTbl["block"] . "` SET `blockData`=? WHERE `blockID`=?",
+							array(json_encode($data, JSON_UNESCAPED_UNICODE), $blockID)
+						);
+						$saved++;
+					}
+				}
+			}
+
+			/* Ерөнхий тохиргооны текстүүд */
+			if (!empty($payload["setting"]) && is_array($payload["setting"])) {
+				$allowedSet = RegistrationCore::editableSettings();
+				$setVals = array();
+
+				foreach ($payload["setting"] as $key => $val) {
+					if (in_array($key, $allowedSet)) {
+						$setVals[$key] = RegistrationCore::clean($val, 500);
+					}
+				}
+
+				if (count($setVals) > 0) {
+					RegistrationCore::saveSettings($db, $setVals);
+					$saved += count($setVals);
+				}
+			}
+
+			$respond(array("ok" => 1, "saved" => $saved));
+			break;
+
+		/* ---- Зураг / видео байршуулах ---- */
+		case "upload":
+			if (!isset($_FILES["file"])) {
+				$respond(array("ok" => 0, "error" => "Файл сонгоогүй байна."));
+			}
+
+			$res = RegistrationCore::mediaStore($db, $_FILES["file"], $regSet);
+
+			if (!$res["ok"]) {
+				$respond(array("ok" => 0, "error" => $res["error"]));
+			}
+
+			$respond(array(
+				"ok"    => 1,
+				"url"   => $res["url"],
+				"src"   => cdnUrl($res["url"]),
+				"kind"  => $res["kind"],
+				"where" => $res["where"]
+			));
+			break;
+
+		/* ---- Блокийг зөөх / нуух ---- */
+		case "blockop":
+			$blockID = (int)(isset($_POST["blockID"]) ? $_POST["blockID"] : 0);
+			$op      = isset($_POST["op"]) ? $_POST["op"] : "";
+
+			if ($blockID < 1) {
+				$respond(array("ok" => 0, "error" => "Блок олдсонгүй."));
+			}
+
+			if ($op == "hide" || $op == "show") {
+				$db->rawQuery(
+					"UPDATE `" . $regTbl["block"] . "` SET `blockStatus`=? WHERE `blockID`=? AND `parentID`=0",
+					array($op == "show" ? 1 : 0, $blockID)
+				);
+				$respond(array("ok" => 1));
+			}
+
+			if ($op == "up" || $op == "down") {
+				$parentID = (int)RegistrationCore::scalar($db,
+					"SELECT `parentID` FROM `" . $regTbl["block"] . "` WHERE `blockID`=?",
+					array($blockID)
+				);
+
+				$rows = $db->rawQuery(
+					"SELECT `blockID` FROM `" . $regTbl["block"] . "` WHERE `parentID`=?"
+						. " ORDER BY `blockOrder` ASC, `blockID` ASC",
+					array($parentID)
+				);
+
+				$ids = array();
+				if (is_array($rows)) {
+					foreach ($rows as $r) {
+						$ids[] = (int)$r["blockID"];
+					}
+				}
+
+				$pos = array_search($blockID, $ids, true);
+				$swap = $op == "up" ? $pos - 1 : $pos + 1;
+
+				if ($pos !== false && $swap >= 0 && $swap < count($ids)) {
+					$tmp = $ids[$pos];
+					$ids[$pos] = $ids[$swap];
+					$ids[$swap] = $tmp;
+
+					$order = 1;
+					foreach ($ids as $id) {
+						$db->rawQuery(
+							"UPDATE `" . $regTbl["block"] . "` SET `blockOrder`=? WHERE `blockID`=?",
+							array($order, $id)
+						);
+						$order++;
+					}
+				}
+
+				$respond(array("ok" => 1));
+			}
+
+			$respond(array("ok" => 0, "error" => "Үйлдэл танигдсангүй."));
+			break;
+	}
+
+	$respond(array("ok" => 0, "error" => "Үйлдэл танигдсангүй."));
+}
+
+/* ------------------------------------------------------------------
+   Бүртгэлийн форм илгээх
+   ------------------------------------------------------------------ */
 
 $regErrors = array();
 $regValues = array();
@@ -44,8 +260,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frmRegPost"])) {
 	} else {
 
 		/* 3. Нэг IP-ээс цагт 10-аас олон удаа илгээхийг хориглоно */
-		$regTbl = RegistrationCore::tables();
-		$recent = (int)RegistrationCore::scalar($db, 
+		$recent = (int)RegistrationCore::scalar($db,
 			"SELECT COUNT(*) FROM `" . $regTbl["entry"] . "` WHERE `entryIP`=? AND `entryDate`>DATE_SUB(NOW(), INTERVAL 1 HOUR)",
 			array(RegistrationCore::clientIp())
 		);
@@ -71,12 +286,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frmRegPost"])) {
 
 /* Бүртгэл хаагдсан/дүүрсэн эсэхийг илгээлтийн дараа дахин шалгана */
 $regStatus = RegistrationCore::status($db, $regSet);
-$regBlocks = RegistrationCore::blocks($db, true);
+
+/* Засварлах горимд унтраасан блокуудыг ч харуулж, буцааж асаах боломжтой */
+$regBlocks = RegistrationCore::blocks($db, !$regEdit);
+
+/* R2 / CDN тохиргоог идэвхжүүлнэ (зургийн хаяг зөв гарахын тулд) */
+RegistrationCore::mediaBoot($db, $regSet);
 
 /* Формын блок байхгүй бол ч бүртгүүлэх боломжтой байх ёстой */
 $regHasForm = false;
 foreach ($regBlocks as $regBlockObj) {
-	if ($regBlockObj["blockType"] == "form") {
+	if ($regBlockObj["blockType"] == "form" && (int)$regBlockObj["blockStatus"] == 1) {
 		$regHasForm = true;
 		break;
 	}

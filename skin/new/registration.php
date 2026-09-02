@@ -8,6 +8,8 @@
  * Өнгө, хэмжээ бүгд CSS хувьсагчаар гардаг тул дизайнер CP Admin-аас
  * бүх зүйлийг өөрчилж чадна. Хамгийн сүүлд нь "Нэмэлт CSS" ордог тул
  * дизайнер өөрийн бичсэн CSS-ээр аль ч дүрмийг дарж бичих боломжтой.
+ *
+ * $regEdit үнэн бол хуудсан дээрээ шууд засварлах горим нэмэгдэнэ.
  */
 
 $regUpper  = ((string)$regSet["themeUppercase"] === "1");
@@ -69,42 +71,88 @@ if (trim($regSet["customHeadHtml"]) != "") {
 if (trim($regSet["customCss"]) != "") {
 	echo "\n<style>\n" . str_replace(array("</style", "<script"), array("<\\/style", "&lt;script"), $regSet["customCss"]) . "\n</style>\n";
 }
+
+/* Засварлагчийн загвар — нэмэлт CSS-ийн ДАРАА, ингэснээр багаж хэрэгсэл үргэлж харагдана */
+if ($regEdit) {
+	echo '<link href="/assets/css/registration-edit.css?v=' . time() . '" rel="stylesheet">' . "\n";
+}
 ?>
 </head>
-<body class="reg-body<?php if ($regUpper) echo " reg-upper"; ?>">
+<body class="reg-body<?php if ($regUpper) echo " reg-upper"; ?><?php if ($regEdit) echo " reg-editing"; ?>">
 
 <div class="reg-page">
 <?php
 if (count($regBlocks) > 0) {
 	foreach ($regBlocks as $regBlock) {
 
-		$regData = $regBlock["data"];
-		$regSub  = $regBlock["sub"];
+		$regData    = $regBlock["data"];
+		$regSub     = $regBlock["sub"];
+		$regBlockID = (int)$regBlock["blockID"];
+		$regHidden  = (int)$regBlock["blockStatus"] !== 1;
 
 		$regTemp = __DIR__ . "/../../pages/registration/blocks/" . $regBlock["blockType"] . ".php";
 		if (!is_file($regTemp)) {
 			continue;
 		}
 
+		/* Засварлах горимд блок бүрийг удирдах бүрхүүлээр ороож өгнө */
+		if ($regEdit) {
+			$regTypeObj = RegistrationCore::blockTypeObj($regBlock["blockType"]);
+			$regTypeLbl = $regTypeObj ? $regTypeObj["label"] : $regBlock["blockType"];
+			?>
+			<div class="reg-eb<?php if ($regHidden) echo " reg-eb-hidden"; ?>" data-reg-block="<?php echo $regBlockID; ?>">
+				<div class="reg-eb-bar">
+					<span class="reg-eb-name"><i class="<?php echo RegistrationCore::esc($regTypeObj ? $regTypeObj["icon"] : "fa fa-square-o"); ?>"></i> <?php echo RegistrationCore::esc($regTypeLbl); ?><?php if ($regHidden) echo " — нуусан"; ?></span>
+					<span class="reg-eb-tools">
+						<button type="button" class="reg-eb-btn" data-op="up" title="Дээш"><i class="fa fa-angle-up"></i></button>
+						<button type="button" class="reg-eb-btn" data-op="down" title="Доош"><i class="fa fa-angle-down"></i></button>
+						<button type="button" class="reg-eb-btn" data-op="<?php echo $regHidden ? "show" : "hide"; ?>" title="<?php echo $regHidden ? "Харуулах" : "Нуух"; ?>"><i class="fa <?php echo $regHidden ? "fa-eye" : "fa-eye-slash"; ?>"></i></button>
+					</span>
+				</div>
+			<?php
+		}
+
 		include $regTemp;
+
+		if ($regEdit) {
+			echo "</div>\n";
+		}
 	}
 }
 
 /* Дизайнер формын блокоо санамсаргүй устгасан ч бүртгэл ажиллаж байх ёстой */
 if (!$regHasForm) {
-	$regData = RegistrationCore::blockDefaults("form");
-	$regSub  = array();
+	$regData    = RegistrationCore::blockDefaults("form");
+	$regSub     = array();
+	$regBlockID = 0;
 	include __DIR__ . "/../../pages/registration/blocks/form.php";
 }
 ?>
 </div>
 
-<?php if (trim($regSet["footerText"]) != "") { ?>
+<?php if (trim($regSet["footerText"]) != "" || $regEdit) { ?>
 <footer class="reg-footer">
-	<div class="reg-wrap"><?php echo RegistrationCore::esc($regSet["footerText"]); ?></div>
+	<div class="reg-wrap"><span<?php echo RegistrationCore::editAttr($regEdit, "setting", 0, "footerText"); ?>><?php echo RegistrationCore::esc($regSet["footerText"]); ?></span></div>
 </footer>
 <?php } ?>
 
+<?php if ($regEdit) { ?>
+<div id="regEditBar" class="reg-editbar" data-nonce="<?php echo RegistrationCore::esc($regNonce); ?>">
+	<span class="reg-editbar-logo">MGL</span>
+	<span class="reg-editbar-msg" id="regEditMsg">Текст дээр дарж засна. Зураг дээр дарж солино.</span>
+	<span class="reg-editbar-actions">
+		<button type="button" class="reg-eb-main" id="regEditSave" disabled>Хадгалах</button>
+		<button type="button" class="reg-eb-ghost" id="regEditUndo" disabled>Болих</button>
+		<a class="reg-eb-ghost" href="/cpadmin/registration/design">CP Admin</a>
+		<a class="reg-eb-ghost" href="/registration?editexit=1">Гарах</a>
+	</span>
+</div>
+<input type="file" id="regEditFile" class="reg-hidden-file" accept="image/*">
+<?php } ?>
+
 <script src="/assets/js/registration.js?v=<?php echo time(); ?>"></script>
+<?php if ($regEdit) { ?>
+<script src="/assets/js/registration-edit.js?v=<?php echo time(); ?>"></script>
+<?php } ?>
 </body>
 </html>

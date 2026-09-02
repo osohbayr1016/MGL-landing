@@ -10,6 +10,9 @@ $regStatus   = RegistrationCore::status($db, $regSet);
 
 $regPageLink = RegistrationCore::pageUrl($regSet);
 
+/* R2 холбогдсон эсэх — Тохиргооны хуудсанд төлөв харуулна */
+$regMedia = RegistrationCore::mediaBoot($db, $regSet);
+
 /** datetime-local input-д тохирох формат руу */
 function regDtLocal($value)
 {

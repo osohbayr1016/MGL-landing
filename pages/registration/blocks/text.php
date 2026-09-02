@@ -9,12 +9,12 @@ $textMax   = (int)RegistrationCore::val($regData, "maxWidth", "760");
 	<div class="reg-wrap">
 		<div class="reg-text-inner" style="max-width:<?php echo $textMax > 0 ? $textMax : 760; ?>px">
 
-			<?php if (RegistrationCore::val($regData, "title") != "") { ?>
-			<h2 class="reg-section-title"><?php echo RegistrationCore::esc($regData["title"]); ?></h2>
+			<?php if (RegistrationCore::val($regData, "title") != "" || $regEdit) { ?>
+			<h2 class="reg-section-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "title"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($regData, "title")); ?></h2>
 			<?php } ?>
 
-			<?php if (RegistrationCore::val($regData, "body") != "") { ?>
-			<div class="reg-rte"><?php echo $regData["body"]; ?></div>
+			<?php if (RegistrationCore::val($regData, "body") != "" || $regEdit) { ?>
+			<div class="reg-rte"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "body", "html"); ?>><?php echo RegistrationCore::val($regData, "body"); ?></div>
 			<?php } ?>
 
 		</div>

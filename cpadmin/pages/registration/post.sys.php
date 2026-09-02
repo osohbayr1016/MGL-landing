@@ -104,8 +104,77 @@ switch ($regFrmPost) {
 
 	case "regSettings":
 		if (is_array(regPost("frmSet", 0))) {
-			RegistrationCore::saveSettings($db, regPost("frmSet", array()));
+			$setVals = regPost("frmSet", array());
+
+			/* Нууц утгыг хоосон үлдээвэл хуучныг нь хэвээр үлдээнэ */
+			foreach (RegistrationCore::secretSettings() as $secretKey) {
+				if (isset($setVals[$secretKey]) && trim($setVals[$secretKey]) === "") {
+					unset($setVals[$secretKey]);
+				}
+			}
+
+			RegistrationCore::saveSettings($db, $setVals);
 		}
+		$sysReturnLink = "/registration/settings";
+		break;
+
+	/* ---------------- Шууд засварлах ---------------- */
+
+	case "regEditLink":
+		$set = RegistrationCore::settings($db);
+
+		/* Унтраасан байвал автоматаар асаана — админ шууд засахаар дарсан */
+		if ((string)$set["liveEdit"] !== "1") {
+			RegistrationCore::saveSettings($db, array("liveEdit" => "1"));
+			$set["liveEdit"] = "1";
+		}
+
+		$token = RegistrationCore::makeEditToken($db);
+
+		header("location: " . RegistrationCore::pageUrl($set) . "?edit=" . urlencode($token));
+		exit;
+
+	case "regEditOff":
+		RegistrationCore::saveSettings($db, array("liveEdit" => "0", "editToken" => "", "editTokenExp" => "0"));
+		$sysReturnLink = "/registration/settings";
+		break;
+
+	/* ---------------- R2 холболтыг шалгах ---------------- */
+
+	case "regR2Test":
+		$set   = RegistrationCore::settings($db);
+		$media = RegistrationCore::mediaBoot($db, $set);
+		$lines = array();
+
+		$lines[] = function_exists("curl_init") ? "OK curl бий" : "АЛДАА curl алга";
+
+		if (!$media["ready"]) {
+			$lines[] = "АЛДАА R2 тохиргоо дутуу (Account ID / Bucket / Key / Secret)";
+		} else {
+			$lines[] = "OK тохиргоо бүрэн — bucket: " . $media["bucket"];
+
+			$tmp = tempnam(sys_get_temp_dir(), "r2");
+			file_put_contents($tmp, "mgl r2 check " . gmdate("c"));
+			$key = RegistrationCore::MEDIA_FOLDER . "/_healthcheck.txt";
+
+			if (r2Put($key, $tmp)) {
+				$lines[] = "OK bucket руу бичиж чадлаа";
+				r2Delete($key);
+				$lines[] = "OK бичсэнээ устгалаа";
+			} else {
+				$lines[] = "АЛДАА bucket руу бичиж чадсангүй (error_log-оос HTTP статусыг хараарай)";
+			}
+
+			@unlink($tmp);
+		}
+
+		if ($media["cdn"] !== "") {
+			$lines[] = "OK CDN хаяг: " . $media["cdn"];
+		} else {
+			$lines[] = "АНХААР CDN хаяг хоосон — зураг серверээсээ үйлчилнэ (R2-д хуулбар үлдэнэ)";
+		}
+
+		$_SESSION["regR2Result"] = implode(" | ", $lines);
 		$sysReturnLink = "/registration/settings";
 		break;
 
