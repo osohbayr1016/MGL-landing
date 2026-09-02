@@ -115,34 +115,31 @@
     display: none;
   }
 
-  .projectMore {
-    padding: 16px 0 48px;
+  .pdetail-head {
+    padding-top: 12px;
   }
 
-  .projectMore h3 {
+  .pdetail-title {
     font-size: 22px;
-    padding-bottom: 16px;
   }
 
-  .projectMore h5,
-  .projectMore p {
-    font-size: 16px;
+  .pdetail-prose {
+    font-size: 15px;
     line-height: 1.65;
   }
 
-  .process-slider-outer {
-    margin: 24px 0;
+  .pdetail-nav {
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .process-slider-outer .process-slide-image {
-    max-height: none;
+  .pdetail-nav__link {
+    max-width: 100%;
   }
 
-  .fullscreenSlide .process-slider-trigger-wrap {
-    position: static;
-    transform: none;
-    left: auto;
-    padding: 12px 0;
+  .pdetail-nav__link--next {
+    text-align: left;
+    margin-left: 0;
   }
 }
 

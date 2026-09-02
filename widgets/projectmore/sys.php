@@ -1,4 +1,3 @@
-<?php 
-
-$widJsArr["projectmore"] = $gloConstWidDir."projectmore/more.js.php";
+<?php
+// Static layout — no scroll scripts.
 ?>
