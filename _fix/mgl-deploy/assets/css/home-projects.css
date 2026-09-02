@@ -1,0 +1,126 @@
+/* Home — Төслүүд: 4 rows x 3 columns (12), natural image ratio */
+
+.image-teaser-wrap.image-teaser-grid {
+  margin-bottom: clamp(40px, 6vw, 95px);
+}
+
+.image-teaser-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -20px clamp(24px, 4vw, 60px);
+}
+
+.image-teaser-grid .image-teaser-content {
+  flex: 0 0 33.333%;
+  max-width: 33.333%;
+  padding: 0 20px clamp(24px, 3vw, 40px);
+  box-sizing: border-box;
+}
+
+.image-teaser-grid .image-teaser-content .image-teaser-inner {
+  position: relative;
+  display: block;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.image-teaser-grid .image-teaser-content picture {
+  display: block;
+  width: 100%;
+}
+
+.image-teaser-grid .image-teaser-content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.image-teaser-grid .image-teaser-content .image-teaser-copy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  padding: 20px;
+  z-index: 1;
+  transition: transform 0.35s ease;
+}
+
+.image-teaser-grid .image-teaser-content:hover .image-teaser-copy,
+.image-teaser-grid .image-teaser-content .image-teaser-inner:hover .image-teaser-copy {
+  transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .image-teaser-grid .image-teaser-content {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  body.home .wrapper:has(.image-teaser-grid) {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+
+  .image-teaser-wrap.image-teaser-grid {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .image-teaser-grid {
+    margin: 0 0 24px;
+  }
+
+  .image-teaser-grid .image-teaser-content {
+    flex-basis: 100%;
+    max-width: 100%;
+    padding: 0 0 28px;
+  }
+
+  .image-teaser-grid .image-teaser-content .image-teaser-copy {
+    position: static;
+    transform: none;
+    padding: 12px 0 0;
+  }
+
+  .image-teaser-grid .image-teaser-content h4 {
+    color: #0e1417;
+    margin-bottom: 0;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .image-teaser-grid .image-teaser-content .image-teaser-inner:after {
+    display: none;
+  }
+
+  .image-teaser-grid .image-teaser-content .button {
+    display: none;
+  }
+}
+
+@media (hover: none) and (min-width: 769px) {
+  .image-teaser-grid .image-teaser-content .image-teaser-copy {
+    position: static;
+    transform: none;
+    padding: 14px 0 0;
+  }
+
+  .image-teaser-grid .image-teaser-content h4 {
+    color: #0e1417;
+  }
+
+  .image-teaser-grid .image-teaser-content .image-teaser-subtext {
+    color: #666;
+  }
+}

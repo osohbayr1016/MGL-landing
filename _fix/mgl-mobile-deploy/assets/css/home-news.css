@@ -1,0 +1,104 @@
+/* Home page — Мэдээ carousel: auto-slide + readable cards */
+
+body.home .featured-news-wrap.owl-carousel .owl-stage-outer {
+  overflow: hidden;
+}
+
+body.home .featured-news-wrap {
+  margin-bottom: clamp(48px, 6vw, 100px);
+}
+
+body.home .featured-news-item {
+  margin-bottom: 0;
+}
+
+body.home .featured-news-item-inner {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.home .featured-news-item-inner picture {
+  position: relative;
+  width: 100%;
+}
+
+body.home .featured-news-item-inner picture img {
+  width: 100%;
+  height: clamp(160px, 22vw, 240px);
+  object-fit: cover;
+  display: block;
+}
+
+body.home .featured-news-item-content {
+  padding: 16px 18px 20px;
+  flex: 1;
+}
+
+body.home .featured-news-item-category,
+body.home .featured-news-item-category a {
+  margin-bottom: 8px;
+}
+
+body.home .featured-news-item-title a {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.45;
+  color: #000;
+  text-decoration: none;
+}
+
+body.home .featured-news-item-title a:hover {
+  color: #003d59;
+}
+
+body.home .featured-news-wrap .owl-dots {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+body.home .featured-news-wrap .owl-dots .owl-dot span {
+  width: 10px;
+  height: 10px;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.2);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+body.home .featured-news-wrap .owl-dots .owl-dot.active span,
+body.home .featured-news-wrap .owl-dots .owl-dot:hover span {
+  background: #003d59;
+  transform: scale(1.15);
+}
+
+@media (max-width: 768px) {
+  body.home .featured-news-item-inner {
+    min-height: 0;
+  }
+
+  body.home .featured-news-item-content {
+    padding: 14px 0 4px;
+  }
+
+  body.home .featured-news-item-title a {
+    -webkit-line-clamp: 5;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.home .featured-news-wrap .owl-dots .owl-dot span {
+    transition: none;
+  }
+}

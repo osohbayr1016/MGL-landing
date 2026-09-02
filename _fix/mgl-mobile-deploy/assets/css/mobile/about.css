@@ -1,0 +1,156 @@
+/* Phone about: section chips, readable copy, team names visible. */
+@media (max-width: 768px) {
+  body.about .headersubmenu {
+    position: sticky;
+    top: 56px;
+    left: auto;
+    transform: none;
+    z-index: 90;
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e3e7e9;
+    margin: 0 0 8px;
+  }
+
+  body.about .headersubmenu ul {
+    float: none;
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px;
+    margin: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.about .headersubmenu ul::-webkit-scrollbar { display: none; }
+
+  body.about .headersubmenu ul li {
+    float: none;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.about .headersubmenu ul li a,
+  body.about .headersubmenu ul li a.active,
+  body.about .headersubmenu ul li:hover a {
+    display: inline-flex;
+    align-items: center;
+    height: auto;
+    width: auto;
+    min-height: 36px;
+    padding: 6px 12px;
+    background: #f2f4f5;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a555b;
+    white-space: nowrap;
+  }
+
+  body.about .headersubmenu ul li a span {
+    display: inline;
+  }
+
+  body.about .headersubmenu ul li a.active {
+    background: #003d59;
+    color: #fff;
+  }
+
+  .awards {
+    padding: 8px 0 40px;
+  }
+
+  .awards h3 {
+    font-size: 18px;
+    padding-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  .awards p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #3d474c;
+  }
+
+  .people-grid-wrap .people-grid-inner,
+  .people-grid-wrap.people-grid-small .people-grid-inner {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .people-grid-wrap .people-grid-inner .people-teaser-item,
+  .people-grid-wrap.people-grid-small .people-grid-inner .people-teaser-item {
+    flex-basis: auto;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .people-grid-wrap.people-grid-small .people-grid-inner .people-teaser-item .people-teaser-content {
+    position: static;
+    left: auto;
+    bottom: auto;
+    padding: 10px 0 0;
+  }
+
+  .people-grid-wrap .people-grid-inner .people-teaser-item .people-teaser-name,
+  .people-grid-wrap.people-grid-small .people-grid-inner .people-teaser-item .people-teaser-content .people-teaser-name {
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+    color: #0e1417;
+  }
+
+  .people-grid-wrap .people-grid-inner .people-teaser-item .people-teaser-job,
+  .people-grid-wrap.people-grid-small .people-grid-inner .people-teaser-item .people-teaser-content .people-teaser-job,
+  .people-grid-wrap.people-grid-small .people-grid-inner .people-teaser-item .people-teaser-content .people-teaser-language {
+    font-size: 13px;
+    line-height: 1.45;
+    color: #4a555b;
+  }
+
+  .people-grid-wrap .people-grid-inner .people-teaser-item .people-teaser-image {
+    margin-bottom: 0;
+  }
+
+  .clients-list {
+    padding: 16px 0 40px;
+    gap: 8px;
+  }
+
+  .clients-list li {
+    width: calc(50% - 8px);
+    height: 88px;
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-text-wrap .media-text-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .media-text-wrap .media-text-media {
+    max-width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .media-text-wrap .media-text-copy {
+    text-align: left;
+    padding: 0;
+  }
+
+  .media-text-wrap .media-text-title {
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+}

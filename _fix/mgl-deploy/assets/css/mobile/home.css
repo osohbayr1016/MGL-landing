@@ -1,0 +1,192 @@
+/* Phone home: projects, BIM block, news, bottom strip. */
+@media (max-width: 768px) {
+  .image-teaser-wrap {
+    margin-bottom: 40px;
+  }
+
+  body.home .wrapper:has(.image-teaser-grid) {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+
+  .image-teaser-wrap.image-teaser-grid {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .image-teaser-grid {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .image-teaser-wrap .owl-stage-outer {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .image-teaser-wrap .owl-nav {
+    position: static;
+    top: auto;
+    margin: 8px 0 0;
+    text-align: right;
+  }
+
+  .image-teaser-wrap .owl-nav button {
+    width: 44px;
+    height: 44px;
+    background-image: none;
+  }
+
+  .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content img {
+    min-height: 0;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .image-teaser-grid .image-teaser-content picture {
+    display: block;
+    width: 100%;
+  }
+
+  .image-teaser-grid .image-teaser-content img {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
+    display: block;
+  }
+
+  .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content .image-teaser-inner {
+    margin-bottom: 20px;
+    overflow: visible;
+  }
+
+  .image-teaser-grid .image-teaser-content .image-teaser-inner {
+    margin-bottom: 0;
+    overflow: hidden;
+  }
+
+  .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content .image-teaser-inner:after {
+    display: none;
+  }
+
+  .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content .image-teaser-copy {
+    position: static !important;
+    transform: none !important;
+    padding: 10px 0 0;
+    bottom: auto !important;
+  }
+
+  .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content h4 {
+    color: #0e1417;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
+
+  .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content .button {
+    display: none;
+  }
+
+  body.home .pageHeader,
+  .pageHeader {
+    padding: 0;
+    min-height: 180px;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .pageHeader picture {
+    position: absolute;
+    inset: 0;
+  }
+
+  .pageHeader picture img,
+  .pageHeader picture video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pageHeader::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(0, 34, 52, 0.1) 30%, rgba(0, 34, 52, 0.78) 100%);
+  }
+
+  .pageHeader .header-bt {
+    z-index: 2;
+    max-width: none;
+    text-align: left;
+    padding: 20px 16px;
+    margin: 0;
+  }
+
+  .pageHeader .header-bt h1,
+  .header-bt h1 {
+    color: #fff !important;
+    font-size: 26px;
+    line-height: 1.15;
+    font-weight: 600;
+  }
+
+  .aboutText {
+    margin-bottom: 28px;
+  }
+
+  .aboutText ul li,
+  .aboutText ul li p {
+    float: none !important;
+    width: 100% !important;
+    margin: 0 0 16px !important;
+    padding: 0 !important;
+    font-size: 16px;
+    line-height: 1.7;
+    font-weight: 400;
+    color: #3d474c;
+  }
+
+  .featured-strip-wrap .featured-strip-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .featured-strip-wrap .featured-strip-inner > div {
+    padding: 28px 0;
+  }
+
+  .featured-strip-wrap .featured-strip-inner h2 {
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .featured-strip-wrap .featured-strip-inner h5 {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .featured-strip-wrap .featured-strip-inner .featured-strip-image {
+    min-height: 200px;
+    aspect-ratio: 16 / 9;
+  }
+
+  .featured-strip-wrap iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+  }
+}

@@ -1,0 +1,40 @@
+/* Project detail — full-bleed hero with content peek below */
+
+body.projects {
+  overflow-x: clip;
+}
+
+.pdetail-hero {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  height: min(58vh, 520px);
+  min-height: 240px;
+  background: #eef1f2;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.pdetail-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.pdetail-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: clamp(56px, 10vh, 88px);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .pdetail-hero {
+    height: min(48vh, 360px);
+    min-height: 200px;
+  }
+}

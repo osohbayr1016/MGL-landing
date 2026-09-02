@@ -1,0 +1,148 @@
+/* Phone: news cards, footer, articles, popups, generic content. */
+@media (max-width: 768px) {
+  body.home .featured-news-wrap,
+  .featured-news-wrap {
+    margin-bottom: 40px;
+  }
+
+  .featured-news-item-inner,
+  body.home .featured-news-item-inner {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  .featured-news-item-inner picture,
+  body.home .featured-news-item-inner picture {
+    position: relative;
+    width: 100%;
+  }
+
+  .featured-news-item-inner picture img,
+  body.home .featured-news-item-inner picture img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .featured-news-item-content,
+  body.home .featured-news-item-content {
+    padding: 12px 0 8px;
+  }
+
+  .featured-news-item-title a,
+  body.home .featured-news-item-title a {
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: #0e1417;
+  }
+
+  .featured-news-item-small .featured-news-item-title a {
+    color: #0e1417;
+  }
+
+  .news-feed-wrap .featured-news-item {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  #page-footer {
+    margin: 24px 0 0;
+    padding: 24px 0 32px;
+    border-top: 1px solid #e3e7e9;
+  }
+
+  div#page-footer-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  #page-footer-right {
+    display: block;
+    flex-basis: 100%;
+  }
+
+  #footer-menu-left ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+  }
+
+  #footer-menu-left ul li {
+    float: none;
+    padding: 0 16px 0 0;
+  }
+
+  #footer-menu-left ul li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  #footer-menu-social {
+    margin: 0;
+  }
+
+  #footer-menu-social li a {
+    width: 44px;
+    height: 44px;
+  }
+
+  .footer-copyright {
+    text-align: left;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    text-transform: none;
+  }
+
+  .accordion-item-title,
+  .accordion-contacts-wrap .accordion-item-title {
+    min-height: 48px;
+  }
+
+  .popup-content,
+  .popup-content-inner {
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .person-details-top {
+    flex-direction: column;
+  }
+
+  .article-header-details .article-footer-item {
+    width: 100%;
+  }
+
+  .wheretobuy {
+    margin: 24px 0;
+  }
+
+  .wheretobuy .wherecontent .companies .col-33 {
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 20px;
+  }
+
+  .basic-page-content-inner {
+    padding-top: 24px;
+    margin-bottom: 32px;
+  }
+
+  .download-wrap a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    font-size: 12px;
+  }
+}
