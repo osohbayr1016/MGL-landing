@@ -1,0 +1,228 @@
+/* ------------------------------------------------------------------
+   Гүйлт (scroll) — хуудасны дэвсгэр ТОГТМОЛ, зөвхөн текст нь хөвнө.
+
+   .reg-page-bg      — дэлгэцэнд наалдсан зураг/видео (position:fixed)
+   .reg-scroll-section — нэг дэлгэц дүүрэн хэсэг, snap цэг
+   .reg-rv           — гарч ирэх (reveal) анимацитай элемент
+   ------------------------------------------------------------------ */
+
+/* ---------------- Тогтмол дэвсгэр ---------------- */
+
+.reg-page-bg {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+	background-color: var(--reg-bg, #0E0E0E);
+}
+
+.reg-page-bg-media {
+	position: absolute;
+	top: -3%;
+	right: -3%;
+	bottom: -3%;
+	left: -3%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+	will-change: transform;
+}
+
+.reg-page-bg-video {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.reg-page-bg-shade {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #000;
+}
+
+/* Агуулга ҮРГЭЛЖ дэвсгэрийн дээр */
+.reg-page {
+	position: relative;
+	z-index: 1;
+}
+
+/* ---------------- Хэсгүүд ---------------- */
+
+.reg-scroll-section {
+	position: relative;
+	min-height: 100vh;
+	min-height: 100svh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+/* Урт агуулгатай хэсэг (форм, чөлөөт HTML) — өндрөө өөрөө авна */
+.reg-scroll-section--fluid {
+	min-height: 0;
+	display: block;
+}
+
+.reg-section-bg {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	z-index: 0;
+}
+
+.reg-scroll-section .reg-scroll-content {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+}
+
+/* ---------------- Дэлгэц дүүрэн snap ---------------- */
+
+html.reg-snap {
+	scroll-snap-type: y proximity;
+}
+
+html.reg-snap .reg-scroll-section {
+	scroll-snap-align: start;
+	scroll-snap-stop: normal;
+}
+
+/* Дэлгэцээс өндөр хэсэгт snap хийхгүй — уншиж дуусгах боломж өгнө */
+html.reg-snap .reg-scroll-section.reg-snap-free {
+	scroll-snap-align: none;
+}
+
+/* ---------------- Гарч ирэх анимаци ---------------- */
+
+body.reg-scroll-ready .reg-rv {
+	opacity: 0;
+	transform: translateY(26px);
+	transition: opacity .7s cubic-bezier(.22, .61, .36, 1),
+		transform .7s cubic-bezier(.22, .61, .36, 1);
+	transition-delay: calc(var(--reg-i, 0) * 90ms);
+	will-change: opacity, transform;
+}
+
+body.reg-scroll-ready .reg-scroll-content.reg-in .reg-rv {
+	opacity: 1;
+	transform: none;
+}
+
+/* ---------------- Hero ---------------- */
+
+.reg-hero.reg-scroll-section {
+	padding: 0;
+	justify-content: center;
+}
+
+.reg-hero-v-start  { justify-content: flex-start; }
+.reg-hero-v-center { justify-content: center; }
+.reg-hero-v-end    { justify-content: flex-end; }
+
+.reg-hero .reg-scroll-content.reg-hero-inner {
+	padding: 80px 0;
+}
+
+/* ---------------- Доошоо заах сум ---------------- */
+
+.reg-scroll-cue {
+	position: absolute;
+	left: 50%;
+	bottom: 24px;
+	z-index: 3;
+	width: 38px;
+	height: 38px;
+	margin-left: -19px;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, .45);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 20px;
+	color: #fff;
+	opacity: .8;
+	animation: regCue 2s ease-in-out infinite;
+	transition: opacity .4s ease;
+}
+
+body.reg-scrolled .reg-scroll-cue {
+	opacity: 0;
+	pointer-events: none;
+}
+
+@keyframes regCue {
+	0%, 100% { transform: translateY(0); }
+	50%      { transform: translateY(7px); }
+}
+
+/* ---------------- Баруун талын цэгэн навигац ---------------- */
+
+.reg-dots {
+	position: fixed;
+	right: 20px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 40;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.reg-dot {
+	width: 11px;
+	height: 11px;
+	padding: 0;
+	border: 1px solid rgba(255, 255, 255, .6);
+	border-radius: 50%;
+	background: transparent;
+	cursor: pointer;
+	transition: background .25s ease, transform .25s ease, border-color .25s ease;
+}
+
+.reg-dot:hover {
+	background: rgba(255, 255, 255, .55);
+}
+
+.reg-dot.is-on {
+	background: var(--reg-accent, #FE5925);
+	border-color: var(--reg-accent, #FE5925);
+	transform: scale(1.3);
+}
+
+/* ---------------- Хөдөлгөөн багасгах / жижиг дэлгэц ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	html.reg-snap { scroll-snap-type: none; }
+
+	body.reg-scroll-ready .reg-rv {
+		opacity: 1 !important;
+		transform: none !important;
+		transition: none !important;
+	}
+
+	.reg-scroll-cue { animation: none; }
+}
+
+@media (max-width: 700px) {
+	.reg-dots { display: none; }
+	.reg-hero .reg-scroll-content.reg-hero-inner { padding: 64px 0; }
+}

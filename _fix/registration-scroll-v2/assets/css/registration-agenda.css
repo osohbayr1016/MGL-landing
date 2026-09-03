@@ -1,0 +1,165 @@
+/* ------------------------------------------------------------------
+   Хөтөлбөр (agenda) блок
+
+   1. .reg-timeline — цаг зүүн талд, дэргэд нь босоо шугам
+   2. .reg-program  — доод талын чөлөөт "Хөтөлбөр" хайрцаг
+   ------------------------------------------------------------------ */
+
+/* ---------------- Timeline ---------------- */
+
+.reg-timeline {
+	list-style: none;
+	margin: 0 0 56px;
+	padding: 0;
+	position: relative;
+}
+
+.reg-timeline::before {
+	content: "";
+	position: absolute;
+	top: 8px;
+	bottom: 8px;
+	left: 118px;
+	width: 1px;
+	opacity: .3;
+	background: linear-gradient(to bottom,
+		transparent,
+		currentColor 12%,
+		currentColor 88%,
+		transparent);
+}
+
+.reg-tl-item {
+	position: relative;
+	display: grid;
+	grid-template-columns: 118px 1fr;
+	gap: 0 34px;
+	padding: 0 0 34px;
+}
+
+.reg-tl-item:last-child { padding-bottom: 0; }
+
+.reg-tl-mark {
+	position: absolute;
+	left: 113px;
+	top: 8px;
+	width: 11px;
+	height: 11px;
+	border-radius: 50%;
+	background: var(--reg-accent, #FE5925);
+	box-shadow: 0 0 0 4px rgba(0, 0, 0, .35);
+}
+
+.reg-tl-when {
+	text-align: right;
+	padding-top: 1px;
+	padding-right: 22px;   /* цаг нь шугам/цэг дээр гарахгүй */
+}
+
+.reg-tl-time {
+	display: block;
+	font-size: 22px;
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.01em;
+}
+
+.reg-tl-date {
+	display: block;
+	margin-top: 4px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: var(--reg-muted, #A8A8A8);
+}
+
+.reg-tl-body {
+	min-width: 0;
+	padding-top: 2px;
+}
+
+.reg-tl-text {
+	font-size: 17px;
+	line-height: 1.55;
+}
+
+.reg-tl-text p:last-child { margin-bottom: 0; }
+
+.reg-tl-loc {
+	display: inline-block;
+	margin-top: 8px;
+	font-size: 13px;
+	color: var(--reg-muted, #A8A8A8);
+}
+
+.reg-tl-loc i {
+	margin-right: 6px;
+	color: var(--reg-accent, #FE5925);
+}
+
+/* ---------------- Доод "Хөтөлбөр" хайрцаг ---------------- */
+
+.reg-program {
+	border-radius: var(--reg-radius, 4px);
+	position: relative;
+}
+
+.reg-program-filled {
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border: 1px solid var(--reg-border, #2A2A2A);
+}
+
+.reg-program-title {
+	font-size: clamp(20px, 2.4vw, 28px);
+	margin: 0 0 18px;
+}
+
+.reg-program-body {
+	font-size: 17px;
+	line-height: 1.65;
+}
+
+.reg-program-body p:last-child  { margin-bottom: 0; }
+.reg-program-body ul,
+.reg-program-body ol            { padding-left: 1.25em; margin: 0 0 1em; }
+.reg-program-body li            { margin-bottom: .35em; }
+.reg-program-body h2,
+.reg-program-body h3,
+.reg-program-body h4            { margin: 1.2em 0 .5em; }
+.reg-program-body h2:first-child,
+.reg-program-body h3:first-child { margin-top: 0; }
+
+/* Хайрцаг голлосон/баруун байрлалтай үед жагсаалт нь мөн дагана */
+.reg-program[style*="text-align:center"] ul,
+.reg-program[style*="text-align:center"] ol { list-style-position: inside; padding-left: 0; }
+
+/* ---------------- Жижиг дэлгэц ---------------- */
+
+@media (max-width: 720px) {
+	.reg-timeline::before { left: 5px; }
+
+	.reg-tl-item {
+		grid-template-columns: 1fr;
+		gap: 6px;
+		padding-left: 28px;
+		padding-bottom: 28px;
+	}
+
+	.reg-tl-mark { left: 0; top: 7px; }
+
+	.reg-tl-when {
+		text-align: left;
+		padding-right: 0;
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+	}
+
+	.reg-tl-time { font-size: 19px; }
+	.reg-tl-date { margin-top: 0; }
+	.reg-tl-text { font-size: 16px; }
+
+	.reg-program { padding: 22px 20px !important; }
+}

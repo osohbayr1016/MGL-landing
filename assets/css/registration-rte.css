@@ -1,0 +1,198 @@
+/* ------------------------------------------------------------------
+   Хуудсан дээрх текстийн багаж (зөвхөн засварлах горимд)
+
+   .reg-rte-bar   — хөвөгч toolbar: үсгийн хэмжээ, өнгө, загвар, байрлал
+   .reg-lay-panel — хайрцгийн байрлал/өргөн/дэвсгэрийн тохиргоо
+   ------------------------------------------------------------------ */
+
+.reg-rte-bar,
+.reg-lay-panel {
+	position: absolute;
+	z-index: 9999;
+	background: #1B1B1D;
+	border: 1px solid #35353A;
+	border-radius: 8px;
+	box-shadow: 0 12px 34px rgba(0, 0, 0, .55);
+	font-family: "Montserrat", Arial, sans-serif;
+	color: #fff;
+	display: none;
+}
+
+.reg-rte-bar.is-on,
+.reg-lay-panel.is-on { display: block; }
+
+/* ---------------- Toolbar ---------------- */
+
+.reg-rte-bar {
+	padding: 6px;
+	white-space: nowrap;
+	max-width: calc(100vw - 24px);
+	overflow-x: auto;
+}
+
+.reg-rte-row {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.reg-rte-b {
+	min-width: 30px;
+	height: 30px;
+	padding: 0 7px;
+	border: 0;
+	border-radius: 5px;
+	background: transparent;
+	color: #E6E6E6;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+	transition: background .15s ease, color .15s ease;
+}
+
+.reg-rte-b:hover      { background: #2E2E33; }
+.reg-rte-b.is-on      { background: var(--reg-accent, #FE5925); color: #fff; }
+.reg-rte-b i          { font-size: 14px; }
+
+.reg-rte-sep {
+	width: 1px;
+	height: 20px;
+	margin: 0 3px;
+	background: #3A3A40;
+	flex: none;
+}
+
+.reg-rte-sel {
+	height: 30px;
+	padding: 0 6px;
+	border: 1px solid #3A3A40;
+	border-radius: 5px;
+	background: #232327;
+	color: #fff;
+	font-size: 12px;
+	font-family: inherit;
+	cursor: pointer;
+}
+
+.reg-rte-color {
+	width: 30px;
+	height: 30px;
+	padding: 2px;
+	border: 1px solid #3A3A40;
+	border-radius: 5px;
+	background: #232327;
+	cursor: pointer;
+}
+
+/* ---------------- Байршлын самбар ---------------- */
+
+.reg-lay-panel {
+	width: 250px;
+	padding: 14px;
+}
+
+.reg-lay-head {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: #8E8E96;
+	margin-bottom: 12px;
+}
+
+.reg-lay-row {
+	margin-bottom: 12px;
+}
+
+.reg-lay-row:last-child { margin-bottom: 0; }
+
+.reg-lay-lbl {
+	display: block;
+	font-size: 11px;
+	color: #9C9CA4;
+	margin-bottom: 5px;
+}
+
+.reg-lay-seg {
+	display: flex;
+	gap: 4px;
+}
+
+.reg-lay-seg .reg-rte-b {
+	flex: 1;
+	border: 1px solid #3A3A40;
+}
+
+.reg-lay-num {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.reg-lay-num input[type="range"] {
+	flex: 1;
+	min-width: 0;
+	accent-color: var(--reg-accent, #FE5925);
+}
+
+.reg-lay-val {
+	width: 46px;
+	text-align: right;
+	font-size: 12px;
+	color: #D4D4DA;
+	font-variant-numeric: tabular-nums;
+}
+
+.reg-lay-color {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.reg-lay-clear {
+	border: 1px solid #3A3A40;
+	border-radius: 5px;
+	background: transparent;
+	color: #9C9CA4;
+	font-size: 11px;
+	height: 26px;
+	padding: 0 8px;
+	cursor: pointer;
+}
+
+.reg-lay-clear:hover { color: #fff; border-color: #55555E; }
+
+/* ---------------- Хайрцгийн товч ---------------- */
+
+.reg-lay-open {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 6;
+	width: 30px;
+	height: 30px;
+	border: 1px solid rgba(255, 255, 255, .28);
+	border-radius: 6px;
+	background: rgba(20, 20, 22, .78);
+	color: #fff;
+	font-size: 13px;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity .18s ease;
+}
+
+.reg-program:hover .reg-lay-open,
+.reg-lay-open.is-on { opacity: 1; }
+
+body.reg-editing .reg-program {
+	outline: 1px dashed rgba(255, 255, 255, .18);
+	outline-offset: 6px;
+	min-height: 80px;
+}
+
+/* Засварлаж байхад HTML талбарын доторх зай тодрох */
+body.reg-editing .reg-rte:empty::before {
+	content: "Энд бичнэ үү…";
+	color: rgba(255, 255, 255, .35);
+}

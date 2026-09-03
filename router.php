@@ -2,12 +2,17 @@
 
 $uri = urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
 
-if ($uri !== "/" && $uri !== "/home" && is_file(__DIR__ . $uri)) {
+if ($uri !== "/" && $uri !== "/home" && $uri !== "/registration" && is_file(__DIR__ . $uri)) {
 	return false;
 }
 
 if ($uri === "/" || $uri === "/home") {
 	require __DIR__ . "/preview-home.php";
+	return true;
+}
+
+if ($uri === "/registration") {
+	require __DIR__ . "/preview-registration.php";
 	return true;
 }
 
