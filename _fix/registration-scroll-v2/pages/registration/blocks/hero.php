@@ -16,6 +16,20 @@
 require_once __DIR__ . "/../inc/scroll-section.php";
 
 $heroLogo    = RegistrationCore::val($regData, "logo");
+
+/* Ижил лого зураг, компьютер / гар утсан дээр ХОЁР өөр өргөнтэй.
+   Өргөнийг inline style-аар биш, CSS хувьсагчаар дамжуулна —
+   ингэснээр registration-scroll.css доторх media query нь гар утсан
+   дээрх утгыг сонгож чадна (inline width байвал дардаг). */
+$heroLogoW   = (int)RegistrationCore::val($regData, "logoWidth", "160");
+$heroLogoWM  = (int)RegistrationCore::val($regData, "logoWidthMobile", "100");
+
+if ($heroLogoW < 1) {
+	$heroLogoW = 160;
+}
+if ($heroLogoWM < 1) {
+	$heroLogoWM = $heroLogoW;
+}
 $heroHeight  = RegistrationCore::val($regData, "height", "90");
 $heroAlign   = RegistrationCore::val($regData, "align", "center");
 $heroValign  = RegistrationCore::val($regData, "valign", "center");
@@ -42,7 +56,7 @@ $heroMin  = ($heroHeight != "auto" && !$heroSnap)
 
 		<?php if ($heroLogo != "" || $regEdit) { ?>
 		<img class="reg-hero-logo<?php if ($heroLogo == "") echo " reg-empty-media"; ?>" alt=""
-			style="width:<?php echo (int)RegistrationCore::val($regData, "logoWidth", "160"); ?>px"
+			style="--reg-logo-w:<?php echo $heroLogoW; ?>px;--reg-logo-wm:<?php echo $heroLogoWM; ?>px"
 			<?php if ($heroLogo != "") { ?>src="<?php echo RegistrationCore::esc(newsPicFnc(0, $heroLogo)); ?>"<?php } ?>
 			<?php echo RegistrationCore::mediaAttr($regEdit, "block", $heroID, "logo", "image"); ?>>
 		<?php } ?>

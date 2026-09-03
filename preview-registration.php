@@ -96,6 +96,8 @@ $pvAgenda = array(
 
 		<div class="reg-scroll-content reg-hero-inner">
 			<div class="reg-wrap">
+				<img class="reg-hero-logo" alt="" style="--reg-logo-w:160px;--reg-logo-wm:100px"
+					src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Crect width='200' height='60' rx='8' fill='%23FE5925'/%3E%3Ctext x='100' y='40' font-family='Arial' font-size='26' font-weight='bold' fill='%23fff' text-anchor='middle'%3EMGL%3C/text%3E%3C/svg%3E">
 				<p class="reg-hero-eyebrow"<?php echo pvEd("eyebrow"); ?>>MGL E&amp;C</p>
 				<h1 class="reg-hero-title"<?php echo pvEd("title"); ?>>Шинэ оффисын нээлтийн өдөрлөг</h1>
 				<p class="reg-hero-sub"<?php echo pvEd("subtitle"); ?>>Бидний шинэ гэрт хамтдаа тэмдэглэе.</p>

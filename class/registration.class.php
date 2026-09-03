@@ -404,7 +404,9 @@ class RegistrationCore
 				"desc"  => "Дэвсгэр зураг/видео дээр гарчиг, огноо, бүртгүүлэх товч.",
 				"cols"  => array(
 					array("key" => "logo",      "name" => "Лого зураг",                  "type" => "file"),
-					array("key" => "logoWidth", "name" => "Логоны өргөн (px)",           "type" => "number", "def" => "160"),
+					array("key" => "logoWidth",       "name" => "Логоны өргөн — компьютер (px)", "type" => "number", "def" => "160"),
+					array("key" => "logoWidthMobile", "name" => "Логоны өргөн — гар утас (px)",  "type" => "number", "def" => "100",
+						"help" => "Ижил лого зураг, гар утсан дээр (640px-ээс нарийн дэлгэц) энэ өргөнөөр харагдана."),
 					array("key" => "eyebrow",   "name" => "Дээд жижиг текст",            "type" => "text"),
 					array("key" => "title",     "name" => "Гарчиг",                      "type" => "text"),
 					array("key" => "subtitle",  "name" => "Дэд гарчиг",                  "type" => "textarea"),
@@ -616,7 +618,7 @@ class RegistrationCore
 			array(
 				"type" => "hero",
 				"data" => array(
-					"logoWidth" => "160",
+					"logoWidth" => "160", "logoWidthMobile" => "100",
 					"eyebrow" => "MGL E&C",
 					"title" => "Шинэ оффисын нээлтийн өдөрлөг",
 					"subtitle" => "Бидний шинэ гэрт хамтдаа тэмдэглэе.",

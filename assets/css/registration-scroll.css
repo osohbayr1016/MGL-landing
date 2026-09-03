@@ -147,6 +147,19 @@ body.reg-scroll-ready .reg-scroll-content.reg-in .reg-rv {
 	padding: 80px 0;
 }
 
+/* ---------------- Hero лого ----------------
+   Ижил зураг, компьютер / гар утсан дээр хоёр өөр өргөнтэй.
+   Утгууд hero блокоос inline CSS хувьсагчаар ирнэ:
+       --reg-logo-w   компьютерийн өргөн
+       --reg-logo-wm  гар утасны өргөн
+   ------------------------------------------- */
+
+.reg-hero-logo {
+	width: var(--reg-logo-w, 160px);
+	max-width: 100%;
+	height: auto;
+}
+
 /* ---------------- Доошоо заах сум ---------------- */
 
 .reg-scroll-cue {
@@ -233,4 +246,11 @@ body.reg-scrolled .reg-scroll-cue {
 @media (max-width: 700px) {
 	.reg-dots { display: none; }
 	.reg-hero .reg-scroll-content.reg-hero-inner { padding: 64px 0; }
+}
+
+/* Гар утас — лого нь өөрийн өргөнтэй */
+@media (max-width: 640px) {
+	.reg-hero-logo {
+		width: var(--reg-logo-wm, var(--reg-logo-w, 100px));
+	}
 }
