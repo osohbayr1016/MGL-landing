@@ -540,6 +540,47 @@
 		});
 	});
 
+	/* ---------------- Coming soon унтраалга ---------------- */
+
+	Array.prototype.forEach.call(document.querySelectorAll("[data-reg-soon]"), function (box) {
+		box.addEventListener("change", function () {
+			var on = box.checked;
+
+			/* Хэрэглэгч болих бол унтраалгыг байрандаа буцаана */
+			var revert = function () {
+				box.checked = !on;
+			};
+
+			if (busy) {
+				revert();
+				return;
+			}
+
+			if (dirty > 0 && !window.confirm("Хадгалаагүй өөрчлөлт байна. Үргэлжлүүлбэл алдагдана. Үргэлжлүүлэх үү?")) {
+				revert();
+				return;
+			}
+
+			busy = true;
+			say(on ? "Coming soon болгож байна..." : "Хөтөлбөрийг буцааж байна...", "busy");
+
+			post({
+				regAction: "blockop",
+				blockID: box.getAttribute("data-reg-soon"),
+				op: on ? "soonon" : "soonoff"
+			}, function (res) {
+				busy = false;
+
+				if (res.ok) {
+					window.location.reload();
+				} else {
+					revert();
+					say(res.error || "Болсонгүй.", "err");
+				}
+			});
+		});
+	});
+
 	/* ---------------- Хадгалах ---------------- */
 
 	function save() {

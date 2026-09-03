@@ -208,6 +208,33 @@ if (isset($_POST["regAction"])) {
 				$respond(array("ok" => 1));
 			}
 
+			/* ---- Coming soon асаах / унтраах ---- */
+			if ($op == "soonon" || $op == "soonoff") {
+				$row = $db->rawQueryOne(
+					"SELECT * FROM `" . $regTbl["block"] . "` WHERE `blockID`=? AND `parentID`=0",
+					array($blockID)
+				);
+
+				if (!is_array($row) || count($row) < 1) {
+					$respond(array("ok" => 0, "error" => "Блок олдсонгүй."));
+				}
+
+				$allowed = RegistrationCore::allowedKeys($row["blockType"]);
+				if (!isset($allowed["soon"])) {
+					$respond(array("ok" => 0, "error" => "Энэ блокт Coming soon байхгүй."));
+				}
+
+				$data = RegistrationCore::decode($row["blockData"]);
+				$data["soon"] = $op == "soonon" ? "y" : "";
+
+				$db->rawQuery(
+					"UPDATE `" . $regTbl["block"] . "` SET `blockData`=? WHERE `blockID`=?",
+					array(json_encode($data, JSON_UNESCAPED_UNICODE), $blockID)
+				);
+
+				$respond(array("ok" => 1));
+			}
+
 			/* ---- Дэд мөр нэмэх (хөтөлбөрийн цагийн хуваарь г.м) ---- */
 			if ($op == "subadd") {
 				$parent = $db->rawQueryOne(

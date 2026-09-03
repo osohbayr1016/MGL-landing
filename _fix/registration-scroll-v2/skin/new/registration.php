@@ -26,6 +26,12 @@ $regBgPic   = $regPageBg["pic"];
 $regBgVideo = $regPageBg["video"];
 $regHasBg   = ($regBgPic != "" || $regBgVideo != "");
 
+/* Шилэн (glass) загвар */
+$regGlass      = ((string)RegistrationCore::val($regSet, "themeGlass", "1") === "1");
+$regGlassTint  = max(0, min(100, (int)RegistrationCore::val($regSet, "themeGlassTint", "10")));
+$regGlassInput = max(0, min(100, (int)RegistrationCore::val($regSet, "themeGlassInput", "72")));
+$regGlassBlur  = max(0, min(60, (int)RegistrationCore::val($regSet, "themeGlassBlur", "22")));
+
 /* Гүйлтийн горим — засварлаж байхад snap-ыг унтраана */
 $regSnap = ((string)RegistrationCore::val($regSet, "scrollSnap", "1") === "1") && !$regEdit;
 $regDots = ((string)RegistrationCore::val($regSet, "scrollDots", "1") === "1") && !$regEdit;
@@ -55,6 +61,7 @@ $regDots = ((string)RegistrationCore::val($regSet, "scrollDots", "1") === "1") &
 <link href="/assets/css/registration.css?v=<?php echo time(); ?>" rel="stylesheet">
 <link href="/assets/css/registration-scroll.css?v=<?php echo time(); ?>" rel="stylesheet">
 <link href="/assets/css/registration-agenda.css?v=<?php echo time(); ?>" rel="stylesheet">
+<link href="/assets/css/registration-glass.css?v=<?php echo time(); ?>" rel="stylesheet">
 
 <style>
 :root{
@@ -74,6 +81,13 @@ $regDots = ((string)RegistrationCore::val($regSet, "scrollDots", "1") === "1") &
 	--reg-title-size: <?php echo $regTitleSize; ?>px;
 	--reg-ls: <?php echo (float)$regSet["themeLetterSpacing"]; ?>em;
 }
+<?php if ($regGlass) { ?>
+body.reg-glass{
+	--reg-glass-face: rgba(255,255,255,<?php echo round($regGlassTint / 100, 3); ?>);
+	--reg-glass-input: rgba(255,255,255,<?php echo round($regGlassInput / 100, 3); ?>);
+	--reg-glass-blur: <?php echo $regGlassBlur; ?>px;
+}
+<?php } ?>
 </style>
 
 <?php
@@ -94,7 +108,7 @@ if ($regEdit) {
 }
 ?>
 </head>
-<body class="reg-body<?php if ($regUpper) echo " reg-upper"; ?><?php if ($regEdit) echo " reg-editing"; ?><?php if ($regHasBg) echo " reg-has-bg"; ?>">
+<body class="reg-body<?php if ($regUpper) echo " reg-upper"; ?><?php if ($regEdit) echo " reg-editing"; ?><?php if ($regHasBg) echo " reg-has-bg"; ?><?php if ($regGlass) echo " reg-glass"; ?>">
 
 <?php
 /* ------------------------------------------------------------------

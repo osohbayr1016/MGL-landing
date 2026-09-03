@@ -1,0 +1,226 @@
+/* ------------------------------------------------------------------
+   Шилэн (glass) загвар — Apple маягийн тунгалаг гадаргуу.
+
+   Зөвхөн body.reg-glass үед үйлчилнэ. CP Admin -> Хуудасны дизайн ->
+   "Шилэн (glass) загвар" хэсгээс асаах / унтраах, хүчийг нь тохируулна.
+
+   Хайрцгууд нь цаана байгаа дэвсгэр зургийг бүдгэрүүлж нэвтрүүлдэг тул
+   зураг нь мэдэгдэж, хатуу хар талбай үүсэхгүй.
+
+   Input нь ЦАЙВАР шил — тиймээс доторх текст нь ХАР хэвээр уншигдана
+   (--reg-input-text). Хэрэв хэт цайвар санагдвал CP Admin-аас
+   "Input-ийн сүүлэг байдал" утгыг багасгана.
+   ------------------------------------------------------------------ */
+
+body.reg-glass {
+	--reg-glass-face:  rgba(255, 255, 255, .10);
+	--reg-glass-edge:  rgba(255, 255, 255, .20);
+	--reg-glass-blur:  22px;
+	--reg-glass-round: 18px;
+	--reg-glass-input: rgba(255, 255, 255, .72);
+}
+
+/* ---------------- Хайрцгууд ---------------- */
+
+body.reg-glass .reg-info-item,
+body.reg-glass .reg-form-box {
+	background: var(--reg-glass-face);
+	border: 1px solid var(--reg-glass-edge);
+	border-radius: var(--reg-glass-round);
+	-webkit-backdrop-filter: blur(var(--reg-glass-blur)) saturate(165%);
+	backdrop-filter: blur(var(--reg-glass-blur)) saturate(165%);
+	box-shadow:
+		0 22px 60px rgba(0, 0, 0, .30),
+		inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+
+/* Дээд ирмэгийн зөөлөн гэрэлтэлт — шилний мэдрэмжийг өгнө */
+body.reg-glass .reg-info-item,
+body.reg-glass .reg-form-box { position: relative; }
+
+body.reg-glass .reg-info-item::after,
+body.reg-glass .reg-form-box::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 12%;
+	right: 12%;
+	height: 1px;
+	background: linear-gradient(90deg,
+		rgba(255, 255, 255, 0),
+		rgba(255, 255, 255, .45),
+		rgba(255, 255, 255, 0));
+	pointer-events: none;
+}
+
+body.reg-glass .reg-info-item:hover {
+	background: rgba(255, 255, 255, .14);
+	transition: background .25s ease;
+}
+
+/* Хөтөлбөрийн хайрцаг ч ижил шилэн гадаргуутай */
+body.reg-glass .reg-program-filled {
+	border: 1px solid var(--reg-glass-edge);
+	border-radius: var(--reg-glass-round);
+	-webkit-backdrop-filter: blur(var(--reg-glass-blur)) saturate(165%);
+	backdrop-filter: blur(var(--reg-glass-blur)) saturate(165%);
+	box-shadow:
+		0 22px 60px rgba(0, 0, 0, .28),
+		inset 0 1px 0 rgba(255, 255, 255, .14);
+}
+
+/* ---------------- Формын талбарууд ---------------- */
+
+body.reg-glass .reg-input {
+	background: var(--reg-glass-input);
+	border: 1px solid rgba(255, 255, 255, .55);
+	border-radius: 12px;
+	color: var(--reg-input-text, #111111);
+	-webkit-backdrop-filter: blur(12px) saturate(160%);
+	backdrop-filter: blur(12px) saturate(160%);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55);
+}
+
+body.reg-glass .reg-input::placeholder {
+	color: rgba(17, 17, 17, .48);
+}
+
+body.reg-glass .reg-input:focus {
+	background: rgba(255, 255, 255, .93);
+	border-color: var(--reg-accent, #FE5925);
+	box-shadow:
+		0 0 0 3px rgba(255, 255, 255, .28),
+		inset 0 1px 0 rgba(255, 255, 255, .6);
+}
+
+body.reg-glass select.reg-input option {
+	background: #FFFFFF;
+	color: #111111;
+}
+
+/* Шошго, тусламжийн текстийг шилэн дээр арай тодруулна */
+body.reg-glass .reg-label,
+body.reg-glass .reg-info-label {
+	color: rgba(255, 255, 255, .78);
+}
+
+body.reg-glass .reg-form-sub,
+body.reg-glass .reg-help {
+	color: rgba(255, 255, 255, .68);
+}
+
+body.reg-glass .reg-choice { color: rgba(255, 255, 255, .92); }
+body.reg-glass .reg-consent { color: rgba(255, 255, 255, .72); }
+
+/* ---------------- Товч ---------------- */
+
+body.reg-glass .reg-btn {
+	border-radius: 12px;
+	box-shadow: 0 10px 26px rgba(0, 0, 0, .28);
+}
+
+/* ---------------- Мэдэгдэл, төлөв ---------------- */
+
+body.reg-glass .reg-alert {
+	background: rgba(255, 107, 107, .16);
+	border-color: rgba(255, 107, 107, .45);
+	border-radius: 12px;
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+
+/* ---------------- Coming soon ---------------- */
+
+.reg-soon {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 56px 40px;
+	text-align: center;
+	border-radius: 18px;
+}
+
+body.reg-glass .reg-soon {
+	background: var(--reg-glass-face, rgba(255, 255, 255, .10));
+	border: 1px solid var(--reg-glass-edge, rgba(255, 255, 255, .20));
+	-webkit-backdrop-filter: blur(var(--reg-glass-blur, 22px)) saturate(165%);
+	backdrop-filter: blur(var(--reg-glass-blur, 22px)) saturate(165%);
+	box-shadow:
+		0 22px 60px rgba(0, 0, 0, .30),
+		inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+
+.reg-soon-badge {
+	display: inline-block;
+	margin-bottom: 22px;
+	padding: 7px 16px;
+	border: 1px solid var(--reg-accent, #FE5925);
+	border-radius: 999px;
+	color: var(--reg-accent, #FE5925);
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: .18em;
+	text-transform: uppercase;
+}
+
+.reg-soon-title {
+	font-size: clamp(28px, 4.4vw, 48px);
+	margin: 0 0 14px;
+}
+
+.reg-soon-text {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 400;
+	color: var(--reg-muted, #A8A8A8);
+}
+
+body.reg-glass .reg-soon-text { color: rgba(255, 255, 255, .74); }
+
+.reg-soon-dots {
+	display: flex;
+	justify-content: center;
+	gap: 9px;
+	margin-top: 28px;
+}
+
+.reg-soon-dots span {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--reg-accent, #FE5925);
+	opacity: .35;
+	animation: regSoonDot 1.4s ease-in-out infinite;
+}
+
+.reg-soon-dots span:nth-child(2) { animation-delay: .18s; }
+.reg-soon-dots span:nth-child(3) { animation-delay: .36s; }
+
+@keyframes regSoonDot {
+	0%, 100% { opacity: .28; transform: translateY(0); }
+	50%      { opacity: 1;   transform: translateY(-5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reg-soon-dots span { animation: none; opacity: .6; }
+}
+
+/* ------------------------------------------------------------------
+   backdrop-filter дэмждэггүй хөтөч — уншигдахуйц хатуу өнгө рүү шилжинэ
+   ------------------------------------------------------------------ */
+
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+
+	body.reg-glass .reg-info-item,
+	body.reg-glass .reg-form-box,
+	body.reg-glass .reg-soon {
+		background: rgba(18, 18, 20, .74);
+	}
+
+	body.reg-glass .reg-input {
+		background: rgba(255, 255, 255, .94);
+	}
+}
+
+@media (max-width: 640px) {
+	.reg-soon { padding: 40px 22px; }
+}

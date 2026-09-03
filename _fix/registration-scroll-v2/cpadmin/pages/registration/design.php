@@ -260,6 +260,47 @@
                 </div>
             </div>
 
+            <h4>Шилэн (glass) загвар</h4>
+            <p class="text-muted" style="margin-top:-4px">
+                Apple маягийн тунгалаг гадаргуу. Мэдээллийн хайрцаг, бүртгэлийн форм, input-ийн
+                дэвсгэр нь хатуу өнгө биш, цаана байгаа дэвсгэр зургийг бүдгэрүүлж нэвтрүүлнэ.
+                Input нь цайвар шил тул доторх текст ХАР хэвээр уншигдана.
+            </p>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="font-noraml">Шилэн загвар</label>
+                        <select class="form-control input-sm" name="frmSet[themeGlass]">
+                            <option value="1" <?php if($regSet["themeGlass"]=="1") echo "selected";?>>Асаах</option>
+                            <option value="0" <?php if($regSet["themeGlass"]!="1") echo "selected";?>>Унтраах (хатуу өнгө)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="font-noraml">Хайрцгийн сүүлэг байдал (0-100)</label>
+                        <input type="number" min="0" max="100" class="form-control input-sm" name="frmSet[themeGlassTint]"
+                               value="<?php echo (int)$regSet["themeGlassTint"];?>">
+                        <small class="text-muted">Их бол цайвар, бага бол тунгалаг.</small>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="font-noraml">Input-ийн сүүлэг байдал (0-100)</label>
+                        <input type="number" min="0" max="100" class="form-control input-sm" name="frmSet[themeGlassInput]"
+                               value="<?php echo (int)$regSet["themeGlassInput"];?>">
+                        <small class="text-muted">Бага бол илүү тунгалаг. Хэт бага бол хар текст уншигдахгүй.</small>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label class="font-noraml">Бүдгэрүүлэлт (px)</label>
+                        <input type="number" min="0" max="60" class="form-control input-sm" name="frmSet[themeGlassBlur]"
+                               value="<?php echo (int)$regSet["themeGlassBlur"];?>">
+                    </div>
+                </div>
+            </div>
+
             <h4>Бичиг, хэмжээ</h4>
             <div class="row">
                 <div class="col-sm-3">

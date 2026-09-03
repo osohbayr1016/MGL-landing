@@ -45,9 +45,40 @@ if ($agFill != "") {
 /* Агуулга бичээгүй бол зочдод харуулахгүй, засварлагчид үргэлж харагдана */
 $agShow = (trim(strip_tags($agProgram)) != "" || $regEdit);
 
+/* ---- Coming soon ----
+   Асаалттай үед хөтөлбөрийн ОРОНД "тун удахгүй" дэлгэц харагдана.
+   Бичсэн хөтөлбөр устдаггүй — унтраамагц буцаж ирнэ. */
+$agSoon      = RegistrationCore::val($regData, "soon") == "y";
+$agSoonTitle = RegistrationCore::val($regData, "soonTitle", "Тун удахгүй");
+$agSoonText  = RegistrationCore::val($regData, "soonText", "Өдөрлөгийн дэлгэрэнгүй хөтөлбөрийг удахгүй энд нийтэлнэ.");
+
 regScrollOpen("reg-section reg-agenda", $regData, 80, 80);
 ?>
 	<div class="reg-wrap">
+
+		<?php if ($regEdit) { ?>
+		<div class="reg-soon-switch">
+			<label class="reg-soon-sw">
+				<input type="checkbox" data-reg-soon="<?php echo $regBlockID; ?>"<?php if ($agSoon) echo " checked"; ?>>
+				<span class="reg-soon-track"><span class="reg-soon-knob"></span></span>
+				<span class="reg-soon-lbl">Coming soon</span>
+			</label>
+			<span class="reg-soon-note"><?php echo $agSoon
+				? "Хөтөлбөр түр нуугдсан. Унтраавал шууд буцаж ирнэ."
+				: "Асаавал хөтөлбөрийн оронд \"тун удахгүй\" дэлгэц гарна."; ?></span>
+		</div>
+		<?php } ?>
+
+		<?php if ($agSoon) { ?>
+		<div class="reg-soon">
+			<span class="reg-soon-badge">Coming soon</span>
+			<h2 class="reg-soon-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "soonTitle"); ?>><?php echo RegistrationCore::esc($agSoonTitle); ?></h2>
+			<?php if ($agSoonText != "" || $regEdit) { ?>
+			<p class="reg-soon-text"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "soonText"); ?>><?php echo nl2br(RegistrationCore::esc($agSoonText)); ?></p>
+			<?php } ?>
+			<span class="reg-soon-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+		</div>
+		<?php } else { ?>
 
 		<?php if (RegistrationCore::val($regData, "title") != "" || $regEdit) { ?>
 		<h2 class="reg-section-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "title"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($regData, "title")); ?></h2>
@@ -135,6 +166,8 @@ regScrollOpen("reg-section reg-agenda", $regData, 80, 80);
 			<div class="reg-program-body reg-rte" data-reg-ph="Нэмэлт тайлбар"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "program", "html"); ?>><?php echo $agProgram; ?></div>
 		</div>
 		<?php } ?>
+
+		<?php } /* /Coming soon */ ?>
 
 	</div>
 <?php regScrollClose(); ?>

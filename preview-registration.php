@@ -24,6 +24,10 @@ if (isset($_GET["bg"]) && $_GET["bg"] === "grid") {
 /* ?anim=0 — гарч ирэх анимацийг алгасаж, бүх текстийг шууд харуулна */
 $pvAnim = !isset($_GET["anim"]) || $_GET["anim"] !== "0";
 
+/* ?glass=0 — шилэн загварыг унтраана, ?soon=1 — Coming soon харагдац */
+$pvGlass = !isset($_GET["glass"]) || $_GET["glass"] !== "0";
+$pvSoon  = isset($_GET["soon"]) && $_GET["soon"] === "1";
+
 /* Засварлах горимд байгаа мэт data-* атрибут гаргана */
 function pvEd($key, $mode = "text")
 {
@@ -51,6 +55,7 @@ $pvAgenda = array(
 <link href="/assets/css/registration.css" rel="stylesheet">
 <link href="/assets/css/registration-scroll.css" rel="stylesheet">
 <link href="/assets/css/registration-agenda.css" rel="stylesheet">
+<link href="/assets/css/registration-glass.css" rel="stylesheet">
 <?php if ($pvEdit) { ?>
 <link href="/assets/css/registration-edit.css" rel="stylesheet">
 <link href="/assets/css/registration-rte.css" rel="stylesheet">
@@ -76,7 +81,7 @@ $pvAgenda = array(
 }
 </style>
 </head>
-<body class="reg-body reg-upper reg-has-bg<?php if ($pvEdit) echo " reg-editing"; ?>">
+<body class="reg-body reg-upper reg-has-bg<?php if ($pvGlass) echo " reg-glass"; ?><?php if ($pvEdit) echo " reg-editing"; ?>">
 
 <div class="reg-page-bg" id="regPageBg" data-reg-bg="page"<?php if ($pvEdit) echo ' data-reg-media="setting:0:pageBgPic:both"'; ?>>
 	<div class="reg-page-bg-media" style="background-image:url('<?php echo $pvBg; ?>');background-position:center;"></div>
@@ -135,6 +140,26 @@ $pvAgenda = array(
 		<div class="reg-section-bg"></div>
 		<div class="reg-scroll-content" style="padding-top:80px;padding-bottom:80px;">
 			<div class="reg-wrap">
+				<?php if ($pvEdit) { ?>
+				<div class="reg-soon-switch">
+					<label class="reg-soon-sw">
+						<input type="checkbox" data-reg-soon="1"<?php if ($pvSoon) echo " checked"; ?>>
+						<span class="reg-soon-track"><span class="reg-soon-knob"></span></span>
+						<span class="reg-soon-lbl">Coming soon</span>
+					</label>
+					<span class="reg-soon-note"><?php echo $pvSoon ? "Хөтөлбөр түр нуугдсан. Унтраавал шууд буцаж ирнэ." : "Асаавал хөтөлбөрийн оронд \"тун удахгүй\" дэлгэц гарна."; ?></span>
+				</div>
+				<?php } ?>
+
+				<?php if ($pvSoon) { ?>
+				<div class="reg-soon">
+					<span class="reg-soon-badge">Coming soon</span>
+					<h2 class="reg-soon-title"<?php echo pvEd("soonTitle"); ?>>Тун удахгүй</h2>
+					<p class="reg-soon-text"<?php echo pvEd("soonText"); ?>>Өдөрлөгийн дэлгэрэнгүй хөтөлбөрийг удахгүй энд нийтэлнэ.</p>
+					<span class="reg-soon-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+				</div>
+				<?php } else { ?>
+
 				<h2 class="reg-section-title"<?php echo pvEd("title"); ?>>Арга хэмжээний хөтөлбөр</h2>
 
 				<ol class="reg-timeline<?php if ($pvEdit) echo " reg-timeline-edit"; ?>">
@@ -182,6 +207,7 @@ $pvAgenda = array(
 						</ul>
 					</div>
 				</div>
+				<?php } ?>
 			</div>
 		</div>
 	</section>
