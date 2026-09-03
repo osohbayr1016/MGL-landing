@@ -208,6 +208,7 @@ class RegistrationCore
 			"pageBgBlur"     => "0",
 			"pageBgPos"      => "center",
 			"pageBgMoved"    => "",
+			"agendaAdded"    => "",
 
 			/* Гүйлт (scroll) */
 			"scrollSnap"     => "1",
@@ -395,7 +396,6 @@ class RegistrationCore
 				"icon"  => "fa fa-star",
 				"desc"  => "Дэвсгэр зураг/видео дээр гарчиг, огноо, бүртгүүлэх товч.",
 				"cols"  => array(
-					array("key" => "overlay",   "name" => "Дэвсгэрийн бараан % (0-100)", "type" => "number", "def" => "45"),
 					array("key" => "logo",      "name" => "Лого зураг",                  "type" => "file"),
 					array("key" => "logoWidth", "name" => "Логоны өргөн (px)",           "type" => "number", "def" => "160"),
 					array("key" => "eyebrow",   "name" => "Дээд жижиг текст",            "type" => "text"),
@@ -600,7 +600,7 @@ class RegistrationCore
 			array(
 				"type" => "hero",
 				"data" => array(
-					"overlay" => "50", "logoWidth" => "160",
+					"logoWidth" => "160",
 					"eyebrow" => "MGL E&C",
 					"title" => "Шинэ оффисын нээлтийн өдөрлөг",
 					"subtitle" => "Бидний шинэ гэрт хамтдаа тэмдэглэе.",
@@ -1300,6 +1300,90 @@ class RegistrationCore
 	 * тогтмол зогсоно. Хуучин Hero зургийг нэг удаа автоматаар шилжүүлж авна —
 	 * админ дахин юу ч хийх шаардлагагүй.
 	 */
+	/**
+	 * "Хөтөлбөр" хэсэг хуудсан дээр БАЙХ ёстой.
+	 *
+	 * Мэдээллийн хэсгийн ЯГ ДООР нь agenda блок нэмнэ — тэр блокийн дотор
+	 * өдөрлөгийн хөтөлбөрөө бичих чөлөөт талбар байна. Зөвхөн НЭГ УДАА
+	 * ажиллана (agendaAdded тэмдэглэгээ), тиймээс дараа нь админ блокоо
+	 * устгасан бол дахин ургахгүй.
+	 */
+	public static function ensureAgenda($db, $set)
+	{
+		if ((string)self::val($set, "agendaAdded") === "1") {
+			return false;
+		}
+
+		$t = self::tables();
+
+		$have = (int)self::scalar($db,
+			"SELECT COUNT(*) FROM `" . $t["block"] . "` WHERE `blockType`='agenda' AND `parentID`=0",
+			null
+		);
+
+		if ($have > 0) {
+			self::saveSettings($db, array("agendaAdded" => "1"));
+			return false;
+		}
+
+		/* Мэдээллийн (info) блокийн байрлалыг олно — түүний яг ард орно */
+		$after = (int)self::scalar($db,
+			"SELECT `blockOrder` FROM `" . $t["block"] . "` WHERE `blockType`='info' AND `parentID`=0"
+				. " ORDER BY `blockOrder` ASC",
+			null
+		);
+
+		if ($after < 1) {
+			$after = (int)self::scalar($db,
+				"SELECT MAX(`blockOrder`) FROM `" . $t["block"] . "` WHERE `parentID`=0 AND `blockType`<>'form'",
+				null
+			);
+		}
+
+		/* Ард нь байгаа блокуудыг нэг доош түлхэнэ */
+		$db->rawQuery(
+			"UPDATE `" . $t["block"] . "` SET `blockOrder`=`blockOrder`+1"
+				. " WHERE `parentID`=0 AND `blockOrder`>?",
+			array($after)
+		);
+
+		$data = self::blockDefaults("agenda");
+		$data["title"]        = "Өдөрлөгийн хөтөлбөр";
+		$data["programTitle"] = "Хөтөлбөр";
+		$data["program"]      = "<p>Өдөрлөгийн хөтөлбөрөө энд бичнэ үү.</p>";
+
+		$blockID = $db->insert($t["block"], array(
+			"parentID"    => 0,
+			"blockType"   => "agenda",
+			"blockData"   => json_encode($data, JSON_UNESCAPED_UNICODE),
+			"blockStatus" => 1,
+			"blockOrder"  => $after + 1
+		));
+
+		/* Цагийн хуваарийн эхний хоёр мөр — админ засаад л болно */
+		if ($blockID) {
+			$rows = array(
+				array("time" => "09:00", "date" => "", "location" => "", "body" => "<p>Бүртгэл</p>"),
+				array("time" => "10:00", "date" => "", "location" => "", "body" => "<p>Нээлт</p>")
+			);
+
+			$order = 1;
+			foreach ($rows as $row) {
+				$db->insert($t["block"], array(
+					"parentID"    => (int)$blockID,
+					"blockType"   => "agenda",
+					"blockData"   => json_encode($row, JSON_UNESCAPED_UNICODE),
+					"blockStatus" => 1,
+					"blockOrder"  => $order++
+				));
+			}
+		}
+
+		self::saveSettings($db, array("agendaAdded" => "1"));
+
+		return true;
+	}
+
 	public static function pageBg($db, $set)
 	{
 		$pic   = trim(self::val($set, "pageBgPic"));

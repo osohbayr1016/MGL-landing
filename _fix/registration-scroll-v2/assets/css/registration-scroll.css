@@ -94,17 +94,25 @@
 
 /* ---------------- Дэлгэц дүүрэн snap ---------------- */
 
-html.reg-snap {
+/* Компьютер дээр гүйлтийг registration-scroll.js өөрөө easing-тэй
+   хөтөлдөг тул хөтчийн өөрийн smooth-ыг унтраана — эс бөгөөс хоёулаа
+   зэрэг ажиллаад таталддаг. */
+html.reg-smooth {
+	scroll-behavior: auto;
+}
+
+/* Гар утас — төрөлх гүйлт дээр CSS snap нь зөөлөн ажилладаг */
+html.reg-snap-touch {
 	scroll-snap-type: y proximity;
 }
 
-html.reg-snap .reg-scroll-section {
+html.reg-snap-touch .reg-scroll-section {
 	scroll-snap-align: start;
 	scroll-snap-stop: normal;
 }
 
 /* Дэлгэцээс өндөр хэсэгт snap хийхгүй — уншиж дуусгах боломж өгнө */
-html.reg-snap .reg-scroll-section.reg-snap-free {
+html.reg-snap-touch .reg-scroll-section.reg-snap-free {
 	scroll-snap-align: none;
 }
 
@@ -211,7 +219,7 @@ body.reg-scrolled .reg-scroll-cue {
 /* ---------------- Хөдөлгөөн багасгах / жижиг дэлгэц ---------------- */
 
 @media (prefers-reduced-motion: reduce) {
-	html.reg-snap { scroll-snap-type: none; }
+	html.reg-snap-touch { scroll-snap-type: none; }
 
 	body.reg-scroll-ready .reg-rv {
 		opacity: 1 !important;

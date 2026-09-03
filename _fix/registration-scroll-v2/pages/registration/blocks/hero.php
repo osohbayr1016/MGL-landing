@@ -7,12 +7,15 @@
  * гүйлгэхэд зураг байрандаа үлдэж, зөвхөн текст нь хөвж өнгөрнө.
  *
  * Засварлагч hero дээр дарвал ТЭР дэвсгэрийг сольж өгнө.
+ *
+ * Hero нь ӨӨРИЙН бараан бүрхүүлгүй. Өмнө нь байсан бөгөөд hero дуусах
+ * шугам дээр хатуу хар зааг үүсгэдэг байв. Одоо бүх хуудсанд НЭГ жигд
+ * бүрхүүл (Тохиргоо -> Бараан бүрхүүл %) байна.
  */
 
 require_once __DIR__ . "/../inc/scroll-section.php";
 
 $heroLogo    = RegistrationCore::val($regData, "logo");
-$heroOverlay = (int)RegistrationCore::val($regData, "overlay", "45");
 $heroHeight  = RegistrationCore::val($regData, "height", "90");
 $heroAlign   = RegistrationCore::val($regData, "align", "center");
 $heroValign  = RegistrationCore::val($regData, "valign", "center");
@@ -21,16 +24,18 @@ $heroBtn     = RegistrationCore::val($regData, "btnText");
 $heroID      = $regBlockID;
 
 $heroCls = "reg-hero reg-hero-a-" . RegistrationCore::esc($heroAlign) . " reg-hero-v-" . RegistrationCore::esc($heroValign);
-$heroMin = $heroHeight != "auto" ? "min-height:" . (int)$heroHeight . "vh;" : "";
+/* Хэсэг бүр дэлгэц дүүрэн (snap) горимд hero-г 90vh байлгавал доод
+   талаас дараагийн хэсэг цухуйж, зааг үүсгэдэг. Тиймээс тэр үед
+   CSS-ийн 100vh-г хэвээр нь үлдээнэ. "Агуулгаараа" сонголтыг хүндэтгэнэ. */
+$heroSnap = isset($regSnap) ? $regSnap : false;
+$heroMin  = ($heroHeight != "auto" && !$heroSnap)
+	? "min-height:" . (int)$heroHeight . "vh;"
+	: ($heroHeight == "auto" ? "min-height:0;" : "");
 ?>
 <section class="reg-hero reg-scroll-section <?php echo $heroCls; ?>"
 	style="color:<?php echo RegistrationCore::esc($heroColor); ?>;<?php echo $heroMin; ?>"
 	<?php echo RegistrationCore::mediaAttr($regEdit, "setting", 0, "pageBgPic", "both"); ?>
 	data-reg-bg="page">
-
-	<?php if ($heroOverlay > 0) { ?>
-	<span class="reg-hero-overlay" style="opacity:<?php echo max(0, min(100, $heroOverlay)) / 100; ?>"></span>
-	<?php } ?>
 
 	<div class="reg-scroll-content reg-hero-inner">
 		<div class="reg-wrap">

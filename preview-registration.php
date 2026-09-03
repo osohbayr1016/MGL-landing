@@ -87,9 +87,7 @@ $pvAgenda = array(
 
 	<!-- ---------------- Hero ---------------- -->
 	<section class="reg-hero reg-scroll-section reg-hero-a-center reg-hero-v-center"
-		style="color:#FFFFFF;min-height:90vh"<?php if ($pvEdit) echo ' data-reg-media="setting:0:pageBgPic:both"'; ?> data-reg-bg="page">
-
-		<span class="reg-hero-overlay" style="opacity:.5"></span>
+		style="color:#FFFFFF"<?php if ($pvEdit) echo ' data-reg-media="setting:0:pageBgPic:both"'; ?> data-reg-bg="page">
 
 		<div class="reg-scroll-content reg-hero-inner">
 			<div class="reg-wrap">

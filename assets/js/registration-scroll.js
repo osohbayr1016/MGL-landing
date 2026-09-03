@@ -3,11 +3,20 @@
 
    - Дэвсгэр зураг/видео нь CSS-ээр дэлгэцэнд наалдсан (position:fixed)
      тул энд юу ч хийхгүй — гүйлгэхэд өөрөө байрандаа үлдэнэ.
-   - Хэсэг бүр дэлгэц дүүрэн snap хийнэ. Дэлгэцээс ӨНДӨР хэсэг (форм,
-     урт хөтөлбөр) snap-аас чөлөөлөгдөнө — эс бөгөөс уншиж дуусгах
-     боломжгүй болно.
+
+   - КОМПЬЮТЕР дээр: хулганы дугуй эргүүлэх бүрд дараагийн хэсэг рүү
+     ЖИГД, зөөлөн (easing) гулсана. Өмнө нь CSS scroll-snap ашигладаг
+     байсан бөгөөд дугуйны товшилт болгонд хуудас таталддаг тул
+     цочромтгой мэдрэгддэг байв.
+
+   - ГАР УТАС дээр: төрөлх (native) гүйлтийг хөндөхгүй — хуруугаараа
+     гүйлгэх нь аль хэдийн зөөлөн. Зөвхөн CSS snap-аар хэсэг бүрт
+     тогтооно.
+
+   - Дэлгэцээс ӨНДӨР хэсэг (форм, урт хөтөлбөр) дотроо чөлөөтэй гүйнэ.
+     Ирмэгт нь хүрсний дараа л дараагийн хэсэг рүү шилжинэ.
+
    - Текст доороосоо зөөлөн гарч ирээд БАЙРАНДАА үлдэнэ.
-   - Баруун талд хэсэг сонгох цэгүүд.
 
    Гуравдагч сан хэрэглээгүй.
    ------------------------------------------------------------------ */
@@ -28,9 +37,32 @@
 
 	var root   = document.documentElement;
 	var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+
+	var DURATION = 750;   /* нэг хэсгээс нөгөө рүү гулсах хугацаа (мс) */
+	var COOLDOWN = 250;   /* нэг дохиог нэг л удаа тоолохын тулд хүлээх */
 
 	function contentOf(sec) {
 		return sec.querySelector(".reg-scroll-content");
+	}
+
+	function scrollY() {
+		return window.pageYOffset || root.scrollTop || 0;
+	}
+
+	function maxY() {
+		return Math.max(
+			document.body.scrollHeight,
+			root.scrollHeight
+		) - window.innerHeight;
+	}
+
+	function topOf(sec) {
+		return sec.getBoundingClientRect().top + scrollY();
+	}
+
+	function isTall(sec) {
+		return sec.getBoundingClientRect().height > window.innerHeight * 1.02;
 	}
 
 	/* ------------------------------------------------------------------
@@ -87,18 +119,197 @@
 	}
 
 	/* ------------------------------------------------------------------
-	   2. Дэлгэц дүүрэн snap
+	   2. Зөөлөн гулсуулагч
 	   ------------------------------------------------------------------ */
 
-	var snapOn = page.getAttribute("data-reg-snap") === "1" && !reduce;
+	var snapOn = page.getAttribute("data-reg-snap") === "1";
+	var engine = snapOn && !reduce && !coarse;
+
+	var animing = false;
+	var animRaf = 0;
+	var animAt  = 0;
+	var animFrom = 0;
+	var animTo   = 0;
+	var restUntil = 0;
+
+	function ease(t) {
+		/* easeInOutCubic — эхэлж, дуусахдаа зөөлөн */
+		return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+	}
+
+	function stop() {
+		animing = false;
+		if (animRaf) {
+			window.cancelAnimationFrame(animRaf);
+			animRaf = 0;
+		}
+	}
+
+	function step(now) {
+		if (!animAt) {
+			animAt = now;
+		}
+
+		var t = Math.min(1, (now - animAt) / DURATION);
+		window.scrollTo(0, animFrom + (animTo - animFrom) * ease(t));
+
+		if (t < 1) {
+			animRaf = window.requestAnimationFrame(step);
+			return;
+		}
+
+		animing = false;
+		animRaf = 0;
+		restUntil = Date.now() + COOLDOWN;
+	}
+
+	function glideTo(y) {
+		y = Math.max(0, Math.min(y, maxY()));
+
+		if (Math.abs(y - scrollY()) < 2) {
+			return;
+		}
+
+		stop();
+
+		animFrom = scrollY();
+		animTo   = y;
+		animAt   = 0;
+		animing  = true;
+		animRaf  = window.requestAnimationFrame(step);
+	}
+
+	/* Дэлгэцийн голд аль хэсэг байна вэ */
+	function currentIndex() {
+		var mid = window.innerHeight / 2;
+
+		for (var i = 0; i < sections.length; i++) {
+			var r = sections[i].getBoundingClientRect();
+			if (r.top <= mid && r.bottom > mid) {
+				return i;
+			}
+		}
+
+		var best = 0;
+		var bestGap = Number.MAX_VALUE;
+
+		sections.forEach(function (sec, i) {
+			var gap = Math.abs(sec.getBoundingClientRect().top);
+			if (gap < bestGap) {
+				bestGap = gap;
+				best = i;
+			}
+		});
+
+		return best;
+	}
+
+	function goTo(i) {
+		if (i < 0 || i >= sections.length) {
+			return;
+		}
+
+		glideTo(topOf(sections[i]));
+	}
+
+	/* Урт хэсэг дотор байгаа бөгөөд ирмэгт нь хүрээгүй бол
+	   төрөлх гүйлтэд саад болохгүй */
+	function freeInside(sec, dir) {
+		if (!isTall(sec)) {
+			return false;
+		}
+
+		var r = sec.getBoundingClientRect();
+
+		if (dir > 0) {
+			return r.bottom > window.innerHeight + 2;
+		}
+
+		return r.top < -2;
+	}
+
+	if (engine) {
+		root.classList.add("reg-smooth");
+
+		window.addEventListener("wheel", function (e) {
+			if (e.ctrlKey || Math.abs(e.deltaY) < 4) {
+				return;
+			}
+
+			var dir = e.deltaY > 0 ? 1 : -1;
+
+			/* Хамгийн сүүлийн хэсгээс доош — footer руу төрөлхөөр гүйнэ */
+			var lastR = sections[sections.length - 1].getBoundingClientRect();
+			if (lastR.bottom <= window.innerHeight * 0.5) {
+				stop();
+				return;
+			}
+
+			var idx = currentIndex();
+
+			/* Урт хэсэг дотор — төрөлх гүйлтэд саад болохгүй */
+			if (freeInside(sections[idx], dir)) {
+				stop();
+				return;
+			}
+
+			var to = idx + dir;
+
+			/* Эхэн/төгсгөлөөс цааш — хөтөч өөрөө шийднэ */
+			if (to < 0 || to >= sections.length) {
+				return;
+			}
+
+			e.preventDefault();
+
+			var now = Date.now();
+
+			/* Trackpad нэг шудрахад олон арван дохио илгээдэг. Дохио
+			   үргэлжилсээр байвал хүлээх хугацааг сунгаж, нэг шудралтыг
+			   НЭГ шилжилт болгож тоолно. */
+			if (animing || now < restUntil) {
+				restUntil = Math.max(restUntil, now + COOLDOWN);
+				return;
+			}
+
+			goTo(to);
+		}, { passive: false });
+
+		document.addEventListener("keydown", function (e) {
+			var el = e.target;
+
+			if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) {
+				return;
+			}
+
+			var idx = currentIndex();
+			var to = -1;
+
+			if (e.key === "PageDown") {
+				to = idx + 1;
+			} else if (e.key === "PageUp") {
+				to = idx - 1;
+			} else if (e.key === "Home") {
+				to = 0;
+			} else if (e.key === "End") {
+				to = sections.length - 1;
+			}
+
+			if (to >= 0 && to < sections.length) {
+				e.preventDefault();
+				goTo(to);
+			}
+		});
+	} else if (snapOn && !reduce) {
+		/* Гар утас — төрөлх гүйлт + CSS snap */
+		root.classList.add("reg-snap-touch");
+	}
 
 	function measure() {
 		var vh = window.innerHeight;
 
 		sections.forEach(function (sec) {
-			var tall = sec.getBoundingClientRect().height > vh * 1.02;
-
-			if (tall) {
+			if (sec.getBoundingClientRect().height > vh * 1.02) {
 				sec.classList.add("reg-snap-free");
 			} else {
 				sec.classList.remove("reg-snap-free");
@@ -106,11 +317,39 @@
 		});
 	}
 
-	if (snapOn) {
-		root.classList.add("reg-snap");
-		measure();
-		window.addEventListener("load", measure);
-	}
+	measure();
+	window.addEventListener("load", measure);
+
+	/* Хуудсан доторх холбоосууд ч зөөлөн явна */
+	Array.prototype.forEach.call(document.querySelectorAll('a[href^="#"]'), function (a) {
+		a.addEventListener("click", function (e) {
+			var id = a.getAttribute("href").slice(1);
+			if (!id) {
+				return;
+			}
+
+			var target = document.getElementById(id);
+			if (!target) {
+				return;
+			}
+
+			e.preventDefault();
+
+			if (engine) {
+				glideTo(target.getBoundingClientRect().top + scrollY());
+			} else {
+				target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+			}
+		});
+	});
+
+	/* Хэрэглэгч өөрөө гүйлгэж эхэлбэл анимацийг тасална */
+	window.addEventListener("touchstart", stop, { passive: true });
+	window.addEventListener("mousedown", function (e) {
+		if (!e.target.closest || !e.target.closest(".reg-dots")) {
+			stop();
+		}
+	}, { passive: true });
 
 	/* ------------------------------------------------------------------
 	   3. Баруун талын цэгэн навигац
@@ -134,7 +373,11 @@
 			b.setAttribute("aria-label", b.title);
 
 			b.addEventListener("click", function () {
-				sec.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+				if (engine) {
+					glideTo(topOf(sec));
+				} else {
+					sec.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+				}
 			});
 
 			nav.appendChild(b);
@@ -153,10 +396,9 @@
 	function update() {
 		ticking = false;
 
-		var y  = window.pageYOffset || document.documentElement.scrollTop;
 		var vh = window.innerHeight;
 
-		if (y > 40) {
+		if (scrollY() > 40) {
 			document.body.classList.add("reg-scrolled");
 		} else {
 			document.body.classList.remove("reg-scrolled");
@@ -172,7 +414,6 @@
 		sections.forEach(function (sec, i) {
 			var r = sec.getBoundingClientRect();
 
-			/* Дэлгэцээс өндөр хэсгийг дээд ирмэгээр нь, бусдыг голоор нь */
 			var gap = r.height > vh
 				? Math.abs(r.top)
 				: Math.abs((r.top + r.height / 2) - vh / 2);

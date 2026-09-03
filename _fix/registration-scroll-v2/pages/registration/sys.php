@@ -312,6 +312,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["frmRegPost"])) {
 /* Бүртгэл хаагдсан/дүүрсэн эсэхийг илгээлтийн дараа дахин шалгана */
 $regStatus = RegistrationCore::status($db, $regSet);
 
+/* "Хөтөлбөр" хэсэг байхгүй бол мэдээллийн хэсгийн доор нэг удаа нэмнэ */
+if (RegistrationCore::ensureAgenda($db, $regSet)) {
+	$regSet = RegistrationCore::settings($db);
+}
+
 /* Засварлах горимд унтраасан блокуудыг ч харуулж, буцааж асаах боломжтой */
 $regBlocks = RegistrationCore::blocks($db, !$regEdit);
 
