@@ -69,8 +69,8 @@
 						<div class="project-listing-item-inner">
 							<div class="project-listing-teaser-image">
 								<picture>
-									<source type="image/jpeg" srcset="/pics/visual/<?php echo $obj["visualID"];?>.jpg">
-                    				<img src="/pics/visual/<?php echo $obj["visualID"];?>.jpg" alt="<?php echo $obj["visualTitle"];?>">
+									<source type="image/jpeg" srcset="<?php echo picUrl("visual",$obj["visualID"].".jpg");?>">
+                    				<img src="<?php echo picUrl("visual",$obj["visualID"].".jpg");?>" alt="<?php echo $obj["visualTitle"];?>">
 								</picture>
 							</div>
 							<div class="project-listing-teaser-content">

@@ -86,7 +86,7 @@
                 for($i=1;$i<9;$i++){
                 ?>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                    <div class="filePic" id="adsPicPath<?php echo $i;?>" style=" <?php if($selCeoPics[$i-1]!="") echo "background-image:url(/postpic/visual/".$selCeoPics[$i-1].")";?> ">
+                    <div class="filePic" id="adsPicPath<?php echo $i;?>" style=" <?php if($selCeoPics[$i-1]!="") echo "background-image:url(".admPicUrl("visual",$selCeoPics[$i-1]).")";?> ">
                         <span class="adsPicRemove" id="adsPicRemove<?php echo $i;?>" data-file-id="<?php echo $i;?>" style=" <?php if($selCeoPics[$i-1]!="") echo "display:block";?> "><i class="glyphicon glyphicon-remove"></i></span>
                         <div class="fileTxt adsPicClk" id="adsPicClk<?php echo $i;?>" data-file-id="<?php echo $i;?>" style=" <?php if($selCeoPics[$i-1]!="") echo "display:none";?> "><i class="glyphicon glyphicon-picture"></i></div>
                         <div class="fileInp"><input type="file" class="adsPicFile" data-file-id="<?php echo $i;?>" id="frmPic<?php echo $i;?>" name="frmSlide[]" /></div>

@@ -23,7 +23,7 @@
                 ?>
                 <tr id="proTr<?php echo $obj["visualID"]?>">
                 	<td >
-                        <img src="/pics/visual/<?php echo $obj["visualID"].".jpg";?>" width="100" />
+                        <img src="<?php echo admPicUrl("visual",$obj["visualID"].".jpg");?>" width="100" />
                     </td>
                     <td >
                         <strong><?php echo $obj["visualTitle"];?></strong>

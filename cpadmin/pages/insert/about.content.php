@@ -23,7 +23,7 @@
                 ?>
                 <tr>
                 	<td >
-                        <img src="/pics/ceo/<?php echo $obj["ceoID"].".jpg";?>" width="100" />
+                        <img src="<?php echo admPicUrl("ceo",$obj["ceoID"].".jpg");?>" width="100" />
                     </td>
                     <td >
                         <strong><?php echo $obj["ceoName"];?></strong>

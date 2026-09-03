@@ -112,13 +112,15 @@ switch($_POST["frmPost"]){
 			
 			if (file_exists($to))
 			{
-				unlink($to);
+				r2Remove(r2KeyFromPath($to),$to);
 			}
 
 			$from = $_FILES["frmNewsPic"]["tmp_name"];						
 
-			if(move_uploaded_file($from,$to))	
+			if(move_uploaded_file($from,$to)){
+				r2Store(r2KeyFromPath($to),$to);
 				$proLogo = "";
+			}
 
 		}
 		
@@ -238,21 +240,23 @@ switch($_POST["frmPost"]){
 
 					$from = $_FILES["frmSlide"]["tmp_name"][$key];						
 
-					if(move_uploaded_file($from,$to))	
+					if(move_uploaded_file($from,$to)){
+						r2Store(r2KeyFromPath($to),$to);
 						$proPic .= $fileName.":";
+					}
 					
 
 				}
 				
 				if($_POST["frmOldPics"][$key]!="")					
-					unlink($path.$_POST["frmOldPics"][$key]);
+					r2Remove(r2KeyFromPath($path.$_POST["frmOldPics"][$key]),$path.$_POST["frmOldPics"][$key]);
 
 			}			
 			elseif($_POST["frmOldPics"][$key]!=""){
 				if($_POST["adsPicDel"][$key]!="d")
 					$proPic .= $_POST["frmOldPics"][$key].":";
 				else
-					unlink($path.$_POST["frmOldPics"][$key]);
+					r2Remove(r2KeyFromPath($path.$_POST["frmOldPics"][$key]),$path.$_POST["frmOldPics"][$key]);
 				
 			}
 
@@ -367,21 +371,23 @@ switch($_POST["frmPost"]){
 
 					$from = $_FILES["frmSlide"]["tmp_name"][$key];						
 
-					if(move_uploaded_file($from,$to))	
+					if(move_uploaded_file($from,$to)){
+						r2Store(r2KeyFromPath($to),$to);
 						$proPic .= $fileName.":";
+					}
 					
 
 				}
 				
 				if($_POST["frmOldPics"][$key]!="")					
-					unlink($path.$_POST["frmOldPics"][$key]);
+					r2Remove(r2KeyFromPath($path.$_POST["frmOldPics"][$key]),$path.$_POST["frmOldPics"][$key]);
 
 			}			
 			elseif($_POST["frmOldPics"][$key]!=""){
 				if($_POST["adsPicDel"][$key]!="d")
 					$proPic .= $_POST["frmOldPics"][$key].":";
 				else
-					unlink($path.$_POST["frmOldPics"][$key]);
+					r2Remove(r2KeyFromPath($path.$_POST["frmOldPics"][$key]),$path.$_POST["frmOldPics"][$key]);
 				
 			}
 
@@ -426,13 +432,15 @@ switch($_POST["frmPost"]){
 			
 			if (file_exists($to))
 			{
-				unlink($to);
+				r2Remove(r2KeyFromPath($to),$to);
 			}
 
 			$from = $_FILES["frmPic"]["tmp_name"];						
 
-			if(move_uploaded_file($from,$to))	
+			if(move_uploaded_file($from,$to)){
+				r2Store(r2KeyFromPath($to),$to);
 				$proLogo = "";
+			}
 
 		}
 		

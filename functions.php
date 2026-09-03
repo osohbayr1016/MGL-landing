@@ -129,7 +129,7 @@ function newsPicFnc($newsID,$imgPath="",$thumb="n"){
 		
 	}
 	
-	return $imgPath;
+	return cdnUrl($imgPath);
 }
 
 function menuLinkFunc($menuObj)
@@ -234,4 +234,34 @@ function timeStampFnc($session_time){
 
 } 
  
+
+/*
+	Image delivery. With $gloCdnBase empty these return the same local paths
+	the site has always used; once it points at the Cloudflare Worker the
+	same images are served from R2, falling back to this server for anything
+	not uploaded to R2 yet.
+*/
+function cdnUrl($path){
+	global $gloCdnBase;
+
+	if(!isset($gloCdnBase) || $gloCdnBase=="" || $path=="" || substr($path,0,1)!="/")
+		return $path;
+
+	return rtrim($gloCdnBase,"/").$path;
+}
+
+function absUrl($url){
+	if($url=="" || substr($url,0,1)!="/")
+		return $url;
+
+	return "http://".$_SERVER['HTTP_HOST'].$url;
+}
+
+function picUrl($folder,$file){
+	if($file=="")
+		return "";
+
+	return cdnUrl("/pics/".$folder."/".$file);
+}
+
 ?>

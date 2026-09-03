@@ -439,7 +439,7 @@ function widPicFnc($imgPath){
 		$imgPath = substr($imgPath,6,400);
 	
 	
-	return $rootPath.$imgPath;
+	return cdnUrl($rootPath.$imgPath);
 }
 function newsPicFnc($newsID,$imgPath="",$thumb="n"){
 	
@@ -469,6 +469,42 @@ function newsPicFnc($newsID,$imgPath="",$thumb="n"){
 		
 	}
 	
-	return $imgPath;
+	return cdnUrl($imgPath);
 }
+
+/*
+	Image delivery. With $gloCdnBase empty these return the same local paths
+	the site has always used; once it points at the Cloudflare Worker the
+	same images are served from R2, falling back to this server for anything
+	not uploaded to R2 yet.
+*/
+function cdnUrl($path){
+	global $gloCdnBase;
+
+	if(!isset($gloCdnBase) || $gloCdnBase=="" || $path=="" || substr($path,0,1)!="/")
+		return $path;
+
+	return rtrim($gloCdnBase,"/").$path;
+}
+
+function picUrl($folder,$file){
+	if($file=="")
+		return "";
+
+	return cdnUrl("/pics/".$folder."/".$file);
+}
+
+/* Same thing for the admin panel, whose document root is cpadmin/. */
+function admPicUrl($folder,$file){
+	global $gloCdnBase;
+
+	if($file=="")
+		return "";
+
+	if(isset($gloCdnBase) && $gloCdnBase!="")
+		return rtrim($gloCdnBase,"/")."/pics/".$folder."/".$file;
+
+	return "/postpic/".$folder."/".$file;
+}
+
 ?>

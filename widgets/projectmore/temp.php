@@ -40,7 +40,7 @@
 			<div class="pdetail-photos__grid">
 				<?php foreach($pdetailGallery as $imgurl){ ?>
 				<div class="pdetail-photos__item">
-					<img src="/pics/ceo/<?php echo $imgurl;?>" alt="" loading="lazy" decoding="async">
+					<img src="<?php echo picUrl("ceo",$imgurl);?>" alt="" loading="lazy" decoding="async">
 				</div>
 				<?php } ?>
 			</div>

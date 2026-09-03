@@ -34,7 +34,7 @@ $subMenuArr = $db->get($tbl_main_menu);
 
 $addPageTitle = $clkMenuObj["name"];
 $siteInfoDes = preg_replace('/\s+/', ' ',convertPhotoHtml(strip_tags($newsObj["newsDesc"])));	
-$siteInfoImg   = "http://".$_SERVER['HTTP_HOST']."/pics/news/".$newsObj["newsID"].".jpg";
+$siteInfoImg   = absUrl(picUrl("news",$newsObj["newsID"].".jpg"));
 	
 
 switch($clkMenuObj["pageType"]){

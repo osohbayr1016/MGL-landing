@@ -18,8 +18,8 @@
                 ?>
                 <div class="visualPic">
                         <picture>
-                            <source type="image/jpeg" srcset="/pics/visual/<?php echo $imgurl;?>">
-                            <img src="/pics/visual/<?php echo $imgurl;?>">
+                            <source type="image/jpeg" srcset="<?php echo picUrl("visual",$imgurl);?>">
+                            <img src="<?php echo picUrl("visual",$imgurl);?>">
                         </picture>
                 </div>
                 <?php 
@@ -29,8 +29,8 @@
                 ?>
                 <div class="visualPic">
                     <picture>
-                    <source type="image/jpeg" srcset="/pics/visual/<?php echo $productObj["visualID"];?>.jpg">
-                    <img src="/pics/visual/<?php echo $productObj["visualID"];?>.jpg" >
+                    <source type="image/jpeg" srcset="<?php echo picUrl("visual",$productObj["visualID"].".jpg");?>">
+                    <img src="<?php echo picUrl("visual",$productObj["visualID"].".jpg");?>" >
                     </picture>
                 </div>
                 <?php 
@@ -67,8 +67,8 @@
                 <div class="image-teaser-content">
                     <a class="image-teaser-inner" href="/visualisation/<?php echo $obj["visualID"];?>">
                         <picture>
-                            <source type="image/jpeg" srcset="/pics/visual/<?php echo $obj["visualID"];?>.jpg">
-                            <img src="/pics/visual/<?php echo $obj["visualID"];?>.jpg" alt="<?php echo $obj["visualTitle"];?>">
+                            <source type="image/jpeg" srcset="<?php echo picUrl("visual",$obj["visualID"].".jpg");?>">
+                            <img src="<?php echo picUrl("visual",$obj["visualID"].".jpg");?>" alt="<?php echo $obj["visualTitle"];?>">
                         </picture>
         
                         <div class="image-teaser-copy">

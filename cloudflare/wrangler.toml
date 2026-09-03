@@ -1,0 +1,13 @@
+name = "mglenc-media"
+main = "media-worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+ORIGIN = "https://mglenc.com"
+# Flip to "on" once the worker runs on a Cloudflare zone (cdn.mglenc.com).
+# Ignored on *.workers.dev, where the original image is returned unchanged.
+TRANSFORMS = "off"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "mglenc-media"

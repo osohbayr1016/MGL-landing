@@ -25,7 +25,7 @@ if(isset($_REQUEST["productID"])){
 	}
 
 	if(count($selProPics)>0){
-		$pdetailHero = "/pics/ceo/".$selProPics[0];
+		$pdetailHero = picUrl("ceo",$selProPics[0]);
 		$pdetailGallery = array_slice($selProPics, 1, 2);
 	}else{
 		$pdetailHero = newsPicFnc($productObj["ceoID"], $productObj["ceoPic"]);

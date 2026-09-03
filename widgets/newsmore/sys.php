@@ -24,7 +24,7 @@ $prewNewsObj = $db->getOne($db_newsroll,"newsID, newsTitle");
 
 $addPageTitle = htmlspecialchars($newsObj["newsTitle"]);
 $siteInfoDes = preg_replace('/\s+/', ' ',convertPhotoHtml(strip_tags($newsObj["newsDesc"])));	
-$siteInfoImg   = "http://".$_SERVER['HTTP_HOST'].newsPicFnc($newsObj["newsID"],$newsObj["newsPic"]);
+$siteInfoImg   = absUrl(newsPicFnc($newsObj["newsID"],$newsObj["newsPic"]));
 		
 
 $widJsArr["newsview"] = $gloConstWidDir."newsview/view.js.php";
