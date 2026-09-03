@@ -1,0 +1,53 @@
+<?php
+/** Мэдээллийн хэсэг — огноо / цаг / байршил г.м. */
+
+require_once __DIR__ . "/../inc/scroll-section.php";
+
+$infoCols = (int)RegistrationCore::val($regData, "columns", "3");
+if ($infoCols < 1) {
+	$infoCols = 3;
+}
+
+regScrollOpen("reg-section reg-info", $regData, 80, 80);
+?>
+	<div class="reg-wrap">
+
+		<?php if (RegistrationCore::val($regData, "title") != "" || $regEdit) { ?>
+		<h2 class="reg-section-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "title"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($regData, "title")); ?></h2>
+		<?php } ?>
+
+		<?php if (count($regSub) > 0) { ?>
+		<div class="reg-info-grid" style="grid-template-columns:repeat(<?php echo $infoCols; ?>, minmax(0,1fr))">
+			<?php
+			foreach ($regSub as $subObj) {
+				$item     = $subObj["data"];
+				$itemID   = (int)$subObj["blockID"];
+				$itemPic  = RegistrationCore::val($item, "pic");
+				$itemIcon = RegistrationCore::val($item, "icon");
+			?>
+			<div class="reg-info-item">
+				<?php if ($itemPic != "") { ?>
+				<img class="reg-info-pic" alt="" src="<?php echo RegistrationCore::esc(newsPicFnc(0, $itemPic)); ?>"
+					<?php echo RegistrationCore::mediaAttr($regEdit, "block", $itemID, "pic", "image"); ?>>
+				<?php } elseif ($itemIcon != "") { ?>
+				<i class="reg-info-icon <?php echo RegistrationCore::esc($itemIcon); ?>"
+					<?php echo RegistrationCore::mediaAttr($regEdit, "block", $itemID, "pic", "image"); ?>></i>
+				<?php } elseif ($regEdit) { ?>
+				<i class="reg-info-icon fa fa-image reg-empty-media"
+					<?php echo RegistrationCore::mediaAttr($regEdit, "block", $itemID, "pic", "image"); ?>></i>
+				<?php } ?>
+
+				<?php if (RegistrationCore::val($item, "label") != "" || $regEdit) { ?>
+				<h3 class="reg-info-label"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "label"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($item, "label")); ?></h3>
+				<?php } ?>
+
+				<?php if (RegistrationCore::val($item, "value") != "" || $regEdit) { ?>
+				<p class="reg-info-value"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "value"); ?>><?php echo nl2br(RegistrationCore::esc(RegistrationCore::val($item, "value"))); ?></p>
+				<?php } ?>
+			</div>
+			<?php } ?>
+		</div>
+		<?php } ?>
+
+	</div>
+<?php regScrollClose(); ?>

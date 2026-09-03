@@ -1,0 +1,89 @@
+/* ------------------------------------------------------------------
+   Section scroll — дэвсгэр fixed, текст slide animation
+   ------------------------------------------------------------------ */
+
+.reg-page {
+	scroll-behavior: smooth;
+}
+
+.reg-scroll-section {
+	position: relative;
+	min-height: 100vh;
+}
+
+.reg-scroll-section--fluid {
+	min-height: auto;
+}
+
+.reg-section-bg {
+	position: absolute;
+	inset: 0;
+	min-height: 100%;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	z-index: 0;
+}
+
+.reg-scroll-section .reg-scroll-content {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+	opacity: 1;
+	transform: none;
+}
+
+body.reg-scroll-ready .reg-scroll-content {
+	transition: opacity .42s ease, transform .42s ease;
+}
+
+body.reg-scroll-ready .reg-scroll-content.reg-scroll-in {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+body.reg-scroll-ready .reg-scroll-content.reg-scroll-out-up {
+	opacity: 0;
+	transform: translateY(-32px);
+	pointer-events: none;
+}
+
+body.reg-scroll-ready .reg-scroll-content.reg-scroll-out-down {
+	opacity: 0;
+	transform: translateY(32px);
+	pointer-events: none;
+}
+
+/* Hero */
+.reg-hero.reg-scroll-section {
+	display: flex;
+	align-items: stretch;
+	padding: 0;
+}
+
+.reg-hero-v-start  { align-items: flex-start; }
+.reg-hero-v-center { align-items: center; }
+.reg-hero-v-end    { align-items: flex-end; }
+
+.reg-hero .reg-scroll-content.reg-hero-inner {
+	width: 100%;
+	padding: 80px 0;
+}
+
+.reg-hero .reg-section-bg {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body.reg-scroll-ready .reg-scroll-content {
+		opacity: 1 !important;
+		transform: none !important;
+		transition: none !important;
+	}
+}
+
+@media (max-width: 640px) {
+	.reg-hero .reg-scroll-content.reg-hero-inner { padding: 64px 0; }
+}

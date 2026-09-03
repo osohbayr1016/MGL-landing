@@ -1,0 +1,56 @@
+/* ------------------------------------------------------------------
+   Agenda (хөтөлбөр) блок
+   ------------------------------------------------------------------ */
+
+.reg-agenda-list {
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+}
+
+.reg-agenda-item {
+	background: var(--reg-surface, #171717);
+	border: 1px solid var(--reg-border, #2A2A2A);
+	border-radius: var(--reg-radius, 4px);
+	padding: 28px 32px;
+}
+
+.reg-agenda-meta {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.reg-agenda-field {
+	min-width: 0;
+}
+
+.reg-agenda-label {
+	display: block;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--reg-muted, #A8A8A8);
+	margin-bottom: 6px;
+}
+
+.reg-agenda-value {
+	display: block;
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 1.35;
+	word-break: break-word;
+}
+
+.reg-agenda-body {
+	font-weight: 400;
+}
+
+.reg-agenda-body p:last-child { margin-bottom: 0; }
+
+@media (max-width: 640px) {
+	.reg-agenda-item { padding: 22px 20px; }
+	.reg-agenda-meta { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
