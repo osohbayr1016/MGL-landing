@@ -2,8 +2,9 @@
 /**
  * Хөтөлбөр (agenda) блок — хоёр давхаргатай.
  *
- *   1. TIMELINE — цаг нь зүүн талд, дэргэд нь босоо шугам. Мөр бүр нь
- *      CP Admin-ы "дэд мөр" (цаг / огноо / байршил / агуулга).
+ *   1. TIMELINE — цаг нь зүүн талд, дэргэд нь босоо шугам. Мөр бүрд
+ *      ЦАГ / ОГНОО / БАЙРШИЛ / ТАЙЛБАР гэсэн тусдаа талбарууд байна.
+ *      Засварлах горимд мөр нэмэх, устгах, дээш/доош зөөх боломжтой.
  *
  *   2. ХӨТӨЛБӨР — тусдаа чөлөөт хэсэг. Хуудсан дээрээ шууд дарж бичихэд
  *      үсгийн хэмжээ, өнгө, загвар, зэрэгцүүлэлт өөрчлөх багаж гарч ирнэ.
@@ -52,9 +53,11 @@ regScrollOpen("reg-section reg-agenda", $regData, 80, 80);
 		<h2 class="reg-section-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "title"); ?>><?php echo RegistrationCore::esc(RegistrationCore::val($regData, "title")); ?></h2>
 		<?php } ?>
 
-		<?php if (count($regSub) > 0) { ?>
-		<ol class="reg-timeline">
-			<?php foreach ($regSub as $subObj) {
+		<?php if (count($regSub) > 0 || $regEdit) { ?>
+		<ol class="reg-timeline<?php if ($regEdit) echo " reg-timeline-edit"; ?>">
+			<?php
+			$agRows = 0;
+			foreach ($regSub as $subObj) {
 				$item   = $subObj["data"];
 				$itemID = (int)$subObj["blockID"];
 
@@ -66,28 +69,49 @@ regScrollOpen("reg-section reg-agenda", $regData, 80, 80);
 				if (!$regEdit && $itTime == "" && $itDate == "" && $itLoc == "" && trim(strip_tags($itBody)) == "") {
 					continue;
 				}
+
+				$agRows++;
 			?>
 			<li class="reg-tl-item">
 				<span class="reg-tl-mark" aria-hidden="true"></span>
 
 				<div class="reg-tl-when">
 					<?php if ($itTime != "" || $regEdit) { ?>
-					<span class="reg-tl-time"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "time"); ?>><?php echo RegistrationCore::esc($itTime); ?></span>
+					<span class="reg-tl-time" data-reg-ph="Цаг"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "time"); ?>><?php echo RegistrationCore::esc($itTime); ?></span>
 					<?php } ?>
 					<?php if ($itDate != "" || $regEdit) { ?>
-					<span class="reg-tl-date"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "date"); ?>><?php echo RegistrationCore::esc($itDate); ?></span>
+					<span class="reg-tl-date" data-reg-ph="Огноо"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "date"); ?>><?php echo RegistrationCore::esc($itDate); ?></span>
 					<?php } ?>
 				</div>
 
 				<div class="reg-tl-body">
 					<?php if ($itBody != "" || $regEdit) { ?>
-					<div class="reg-tl-text reg-rte"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "body", "html"); ?>><?php echo $itBody; ?></div>
+					<div class="reg-tl-text reg-rte" data-reg-ph="Тайлбар"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "body", "html"); ?>><?php echo $itBody; ?></div>
 					<?php } ?>
 
 					<?php if ($itLoc != "" || $regEdit) { ?>
-					<span class="reg-tl-loc"><i class="fa fa-map-marker"></i> <span<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "location"); ?>><?php echo RegistrationCore::esc($itLoc); ?></span></span>
+					<span class="reg-tl-loc"><i class="fa fa-map-marker"></i> <span data-reg-ph="Байршил"<?php echo RegistrationCore::editAttr($regEdit, "block", $itemID, "location"); ?>><?php echo RegistrationCore::esc($itLoc); ?></span></span>
 					<?php } ?>
 				</div>
+
+				<?php if ($regEdit) { ?>
+				<span class="reg-tl-tools">
+					<button type="button" class="reg-tl-btn" data-reg-subop="subup" data-reg-sub="<?php echo $itemID; ?>" title="Дээш"><i class="fa fa-angle-up"></i></button>
+					<button type="button" class="reg-tl-btn" data-reg-subop="subdown" data-reg-sub="<?php echo $itemID; ?>" title="Доош"><i class="fa fa-angle-down"></i></button>
+					<button type="button" class="reg-tl-btn reg-tl-del" data-reg-subop="subdel" data-reg-sub="<?php echo $itemID; ?>" title="Энэ мөрийг устгах"><i class="fa fa-trash"></i></button>
+				</span>
+				<?php } ?>
+			</li>
+			<?php } ?>
+
+			<?php if ($regEdit) { ?>
+			<li class="reg-tl-add">
+				<button type="button" class="reg-tl-addbtn" data-reg-subop="subadd" data-reg-sub="<?php echo $regBlockID; ?>">
+					<i class="fa fa-plus"></i> Хөтөлбөрийн мөр нэмэх
+				</button>
+				<?php if ($agRows < 1) { ?>
+				<span class="reg-tl-hint">Мөр бүрд цаг, огноо, байршил, тайлбарыг тусад нь бичнэ.</span>
+				<?php } ?>
 			</li>
 			<?php } ?>
 		</ol>
@@ -108,7 +132,7 @@ regScrollOpen("reg-section reg-agenda", $regData, 80, 80);
 			<h3 class="reg-program-title"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "programTitle"); ?>><?php echo RegistrationCore::esc($agProgTtl); ?></h3>
 			<?php } ?>
 
-			<div class="reg-program-body reg-rte"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "program", "html"); ?>><?php echo $agProgram; ?></div>
+			<div class="reg-program-body reg-rte" data-reg-ph="Нэмэлт тайлбар"<?php echo RegistrationCore::editAttr($regEdit, "block", $regBlockID, "program", "html"); ?>><?php echo $agProgram; ?></div>
 		</div>
 		<?php } ?>
 

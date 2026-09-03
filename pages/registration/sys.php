@@ -208,6 +208,101 @@ if (isset($_POST["regAction"])) {
 				$respond(array("ok" => 1));
 			}
 
+			/* ---- Дэд мөр нэмэх (хөтөлбөрийн цагийн хуваарь г.м) ---- */
+			if ($op == "subadd") {
+				$parent = $db->rawQueryOne(
+					"SELECT * FROM `" . $regTbl["block"] . "` WHERE `blockID`=? AND `parentID`=0",
+					array($blockID)
+				);
+
+				if (!is_array($parent) || count($parent) < 1
+					|| !RegistrationCore::hasSub($parent["blockType"])) {
+					$respond(array("ok" => 0, "error" => "Энэ блокт мөр нэмэх боломжгүй."));
+				}
+
+				$order = (int)RegistrationCore::scalar($db,
+					"SELECT MAX(`blockOrder`) FROM `" . $regTbl["block"] . "` WHERE `parentID`=?",
+					array($blockID)
+				) + 1;
+
+				$db->insert($regTbl["block"], array(
+					"parentID"    => $blockID,
+					"blockType"   => $parent["blockType"],
+					"blockData"   => json_encode(
+						RegistrationCore::blockDefaults($parent["blockType"], true),
+						JSON_UNESCAPED_UNICODE
+					),
+					"blockStatus" => 1,
+					"blockOrder"  => $order
+				));
+
+				$respond(array("ok" => 1));
+			}
+
+			/* ---- Дэд мөр устгах ---- */
+			if ($op == "subdel") {
+				$row = $db->rawQueryOne(
+					"SELECT `blockID` FROM `" . $regTbl["block"] . "` WHERE `blockID`=? AND `parentID`>0",
+					array($blockID)
+				);
+
+				if (!is_array($row) || count($row) < 1) {
+					$respond(array("ok" => 0, "error" => "Мөр олдсонгүй."));
+				}
+
+				$db->rawQuery(
+					"DELETE FROM `" . $regTbl["block"] . "` WHERE `blockID`=? AND `parentID`>0",
+					array($blockID)
+				);
+
+				$respond(array("ok" => 1));
+			}
+
+			/* ---- Дэд мөрийг дээш/доош ---- */
+			if ($op == "subup" || $op == "subdown") {
+				$parentID = (int)RegistrationCore::scalar($db,
+					"SELECT `parentID` FROM `" . $regTbl["block"] . "` WHERE `blockID`=?",
+					array($blockID)
+				);
+
+				if ($parentID < 1) {
+					$respond(array("ok" => 0, "error" => "Мөр олдсонгүй."));
+				}
+
+				$rows = $db->rawQuery(
+					"SELECT `blockID` FROM `" . $regTbl["block"] . "` WHERE `parentID`=?"
+						. " ORDER BY `blockOrder` ASC, `blockID` ASC",
+					array($parentID)
+				);
+
+				$ids = array();
+				if (is_array($rows)) {
+					foreach ($rows as $r) {
+						$ids[] = (int)$r["blockID"];
+					}
+				}
+
+				$pos  = array_search($blockID, $ids, true);
+				$swap = $op == "subup" ? $pos - 1 : $pos + 1;
+
+				if ($pos !== false && $swap >= 0 && $swap < count($ids)) {
+					$tmp = $ids[$pos];
+					$ids[$pos] = $ids[$swap];
+					$ids[$swap] = $tmp;
+
+					$order = 1;
+					foreach ($ids as $id) {
+						$db->rawQuery(
+							"UPDATE `" . $regTbl["block"] . "` SET `blockOrder`=? WHERE `blockID`=?",
+							array($order, $id)
+						);
+						$order++;
+					}
+				}
+
+				$respond(array("ok" => 1));
+			}
+
 			if ($op == "up" || $op == "down") {
 				$parentID = (int)RegistrationCore::scalar($db,
 					"SELECT `parentID` FROM `" . $regTbl["block"] . "` WHERE `blockID`=?",

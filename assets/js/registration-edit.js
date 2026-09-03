@@ -496,6 +496,50 @@
 		});
 	});
 
+	/* ---------------- Дэд мөр нэмэх / устгах / зөөх ---------------- */
+
+	function subOp(op, id, ask) {
+		if (busy) {
+			return;
+		}
+
+		if (dirty > 0 && !window.confirm("Хадгалаагүй өөрчлөлт байна. Үргэлжлүүлбэл алдагдана. Үргэлжлүүлэх үү?")) {
+			return;
+		}
+
+		if (ask && !window.confirm(ask)) {
+			return;
+		}
+
+		busy = true;
+		say("Түр хүлээнэ үү...", "busy");
+
+		post({ regAction: "blockop", blockID: id, op: op }, function (res) {
+			busy = false;
+
+			if (res.ok) {
+				window.location.reload();
+			} else {
+				say(res.error || "Болсонгүй.", "err");
+			}
+		});
+	}
+
+	Array.prototype.forEach.call(document.querySelectorAll("[data-reg-subop]"), function (b) {
+		b.addEventListener("click", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			var op = b.getAttribute("data-reg-subop");
+
+			subOp(
+				op,
+				b.getAttribute("data-reg-sub"),
+				op === "subdel" ? "Энэ мөрийг устгах уу? Буцаах боломжгүй." : ""
+			);
+		});
+	});
+
 	/* ---------------- Хадгалах ---------------- */
 
 	function save() {

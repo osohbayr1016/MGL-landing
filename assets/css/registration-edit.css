@@ -49,6 +49,88 @@ body.reg-editing .reg-scroll-section {
 	font-weight: 400;
 }
 
+/* Талбар бүр өөрийн нэрийг харуулна — Цаг / Огноо / Байршил / Тайлбар */
+.reg-editing .reg-ed-empty[data-reg-ph]::before {
+	content: attr(data-reg-ph);
+}
+
+/* ------------------------------------------------------------------
+   Хөтөлбөрийн мөрийг нэмэх / устгах / зөөх
+   ------------------------------------------------------------------ */
+
+.reg-editing .reg-tl-item {
+	padding-right: 96px;
+}
+
+.reg-tl-tools {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	gap: 4px;
+	opacity: .5;
+	transition: opacity .18s ease;
+}
+
+.reg-tl-item:hover .reg-tl-tools,
+.reg-tl-tools:focus-within { opacity: 1; }
+
+.reg-tl-btn {
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid rgba(255, 255, 255, .22);
+	border-radius: 6px;
+	background: rgba(20, 20, 22, .8);
+	color: #fff;
+	font-size: 13px;
+	line-height: 1;
+	cursor: pointer;
+	transition: background .15s ease, border-color .15s ease;
+}
+
+.reg-tl-btn:hover      { background: #2E2E33; border-color: rgba(255, 255, 255, .4); }
+.reg-tl-del:hover      { background: #B02A2A; border-color: #B02A2A; }
+
+.reg-tl-add {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex-wrap: wrap;
+	padding-left: 152px;
+	margin-top: 4px;
+}
+
+.reg-tl-addbtn {
+	padding: 9px 16px;
+	border: 1px dashed rgba(255, 255, 255, .35);
+	border-radius: 6px;
+	background: transparent;
+	color: #fff;
+	font: 600 13px/1 "Montserrat", Arial, sans-serif;
+	cursor: pointer;
+	transition: background .15s ease, border-color .15s ease;
+}
+
+.reg-tl-addbtn:hover {
+	background: var(--reg-accent, #FE5925);
+	border-color: var(--reg-accent, #FE5925);
+	border-style: solid;
+}
+
+.reg-tl-addbtn i { margin-right: 7px; }
+
+.reg-tl-hint {
+	font-size: 12px;
+	color: rgba(255, 255, 255, .5);
+}
+
+@media (max-width: 720px) {
+	.reg-editing .reg-tl-item { padding-right: 0; padding-top: 34px; }
+	.reg-tl-tools { opacity: 1; }
+	.reg-tl-add { padding-left: 28px; }
+}
+
 /* ---------------- Медиа солих ---------------- */
 
 .reg-editing .reg-ed-media { cursor: pointer; position: relative; }

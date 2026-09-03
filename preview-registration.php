@@ -137,18 +137,32 @@ $pvAgenda = array(
 			<div class="reg-wrap">
 				<h2 class="reg-section-title"<?php echo pvEd("title"); ?>>Арга хэмжээний хөтөлбөр</h2>
 
-				<ol class="reg-timeline">
+				<ol class="reg-timeline<?php if ($pvEdit) echo " reg-timeline-edit"; ?>">
 					<?php foreach ($pvAgenda as $i => $row) { ?>
 					<li class="reg-tl-item">
 						<span class="reg-tl-mark" aria-hidden="true"></span>
 						<div class="reg-tl-when">
-							<span class="reg-tl-time"<?php echo pvEd("time"); ?>><?php echo $row[0]; ?></span>
-							<span class="reg-tl-date"<?php echo pvEd("date"); ?>><?php echo $row[1]; ?></span>
+							<span class="reg-tl-time" data-reg-ph="Цаг"<?php echo pvEd("time"); ?>><?php echo $row[0]; ?></span>
+							<span class="reg-tl-date" data-reg-ph="Огноо"<?php echo pvEd("date"); ?>><?php echo $row[1]; ?></span>
 						</div>
 						<div class="reg-tl-body">
-							<div class="reg-tl-text reg-rte"<?php echo pvEd("body", "html"); ?>><?php echo $row[3]; ?></div>
-							<span class="reg-tl-loc"><i class="fa fa-map-marker"></i> <span<?php echo pvEd("location"); ?>><?php echo $row[2]; ?></span></span>
+							<div class="reg-tl-text reg-rte" data-reg-ph="Тайлбар"<?php echo pvEd("body", "html"); ?>><?php echo $row[3]; ?></div>
+							<span class="reg-tl-loc"><i class="fa fa-map-marker"></i> <span data-reg-ph="Байршил"<?php echo pvEd("location"); ?>><?php echo $row[2]; ?></span></span>
 						</div>
+						<?php if ($pvEdit) { ?>
+						<span class="reg-tl-tools">
+							<button type="button" class="reg-tl-btn" data-reg-subop="subup" data-reg-sub="<?php echo $i + 10; ?>" title="Дээш"><i class="fa fa-angle-up"></i></button>
+							<button type="button" class="reg-tl-btn" data-reg-subop="subdown" data-reg-sub="<?php echo $i + 10; ?>" title="Доош"><i class="fa fa-angle-down"></i></button>
+							<button type="button" class="reg-tl-btn reg-tl-del" data-reg-subop="subdel" data-reg-sub="<?php echo $i + 10; ?>" title="Энэ мөрийг устгах"><i class="fa fa-trash"></i></button>
+						</span>
+						<?php } ?>
+					</li>
+					<?php } ?>
+					<?php if ($pvEdit) { ?>
+					<li class="reg-tl-add">
+						<button type="button" class="reg-tl-addbtn" data-reg-subop="subadd" data-reg-sub="1">
+							<i class="fa fa-plus"></i> Хөтөлбөрийн мөр нэмэх
+						</button>
 					</li>
 					<?php } ?>
 				</ol>
@@ -158,7 +172,7 @@ $pvAgenda = array(
 					<?php if ($pvEdit) { ?>data-reg-panel="1" data-align="left" data-pos="center"
 					data-width="760" data-bg="#000000" data-opacity="70" data-pad="32"<?php } ?>>
 					<h3 class="reg-program-title"<?php echo pvEd("programTitle"); ?>>Хөтөлбөр</h3>
-					<div class="reg-program-body reg-rte"<?php echo pvEd("program", "html"); ?>>
+					<div class="reg-program-body reg-rte" data-reg-ph="Нэмэлт тайлбар"<?php echo pvEd("program", "html"); ?>>
 						<p>Өдөрлөгийн дэлгэрэнгүй хөтөлбөрөө энд бичнэ. Текст сонгоод дээр нь гарч ирэх
 						багажаар <strong>үсгийн хэмжээ</strong>, <em>загвар</em>, өнгө, зэрэгцүүлэлтээ өөрчилнө.</p>
 						<ul>

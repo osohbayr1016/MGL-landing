@@ -191,8 +191,26 @@ body.reg-editing .reg-program {
 	min-height: 80px;
 }
 
+/* ------------------------------------------------------------------
+   Засварлах горимд ч ДЭВСГЭР ЗУРАГ харагдана.
+
+   registration-edit.css доторх ".reg-editing .reg-ed-media{position:relative}"
+   дүрэм нь хуудасны дэвсгэрийн position:fixed-ийг дарж, засварлагч хар
+   дэлгэц дээр ажилладаг байсан. Энэ файл түүний ДАРАА ачаалагддаг.
+   ------------------------------------------------------------------ */
+
+body.reg-editing .reg-page-bg,
+body.reg-editing .reg-page-bg.reg-ed-media {
+	position: fixed;
+}
+
 /* Засварлаж байхад HTML талбарын доторх зай тодрох */
 body.reg-editing .reg-rte:empty::before {
 	content: "Энд бичнэ үү…";
 	color: rgba(255, 255, 255, .35);
+	font-style: italic;
+}
+
+body.reg-editing .reg-rte[data-reg-ph]:empty::before {
+	content: attr(data-reg-ph);
 }
