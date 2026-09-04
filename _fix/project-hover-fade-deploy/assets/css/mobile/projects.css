@@ -1,0 +1,156 @@
+/* Phone projects listing: one large tile, caption always visible. */
+@media (max-width: 768px) {
+  .workfilter {
+    margin: 8px 0 12px;
+    padding-bottom: 8px;
+  }
+
+  .filterbtns {
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .filter-container h6 {
+    font-size: 15px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .filter .filter-columns {
+    flex-direction: column;
+  }
+
+  .filter .filter-columns .filter-column {
+    flex-basis: 100%;
+    margin: 0 0 16px;
+  }
+
+  .filter-item {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .filter-item label {
+    font-size: 15px;
+    line-height: 1.4;
+    padding: 10px 0;
+  }
+
+  .projects-listing .projects-listing-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-item,
+  .projects-listing .projects-listing-row.featured-row .project-listing-item {
+    flex-basis: 100%;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0 28px;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-item-inner {
+    overflow: visible;
+    display: block;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-item-inner::after {
+    display: none;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-teaser-image {
+    overflow: hidden;
+    background: #f2f4f5;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-teaser-image picture {
+    display: block;
+    width: 100%;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-teaser-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-teaser-content,
+  .projects-listing .projects-listing-row .project-listing-item-inner:hover
+    .project-listing-teaser-content {
+    position: static;
+    display: block;
+    width: 100%;
+    padding: 12px 0 0;
+    color: #0e1417;
+    background: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+
+  .projects-listing .projects-listing-row .project-teaser-name {
+    display: block;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+    color: #0e1417;
+  }
+
+  .projects-listing .projects-listing-row .project-teaser-location {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7c878d;
+  }
+
+  .projects-listing .projects-listing-row .project-listing-teaser-content:after {
+    display: none;
+  }
+
+  .pdetail-head {
+    padding-top: 12px;
+  }
+
+  .pdetail-title {
+    font-size: 22px;
+  }
+
+  .pdetail-prose {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .pdetail-nav {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .pdetail-nav__link {
+    max-width: 100%;
+  }
+
+  .pdetail-nav__link--next {
+    text-align: left;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 768px) {
+  .projects-listing .projects-listing-row .project-listing-item {
+    flex-basis: 50%;
+    width: 50%;
+    padding: 0 8px 24px;
+  }
+}
