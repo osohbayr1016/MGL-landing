@@ -68,15 +68,17 @@
   right: 0;
   bottom: 0;
   transform: translateY(100%);
+  opacity: 0;
   padding: clamp(12px, 1.5vw, 20px);
   z-index: 1;
-  transition: transform 0.35s ease;
+  transition: transform 0.35s ease, opacity 0.35s ease;
   line-height: 1.35;
 }
 
 .home-projects-marquee__track .image-teaser-content:hover .image-teaser-copy,
 .home-projects-marquee__track .image-teaser-inner:hover .image-teaser-copy {
   transform: translateY(0);
+  opacity: 1;
 }
 
 .home-projects-marquee:hover .home-projects-marquee__track {
@@ -110,6 +112,7 @@
   .home-projects-marquee__track .image-teaser-copy {
     position: static;
     transform: none;
+    opacity: 1;
     padding: 12px 0 0;
     line-height: 1.35;
   }
@@ -131,6 +134,7 @@
     position: absolute;
     bottom: 0;
     transform: translateY(0);
+    opacity: 1;
     background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.65));
   }
 

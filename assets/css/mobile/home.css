@@ -73,6 +73,7 @@
   .image-teaser-wrap:not(.image-teaser-grid) .image-teaser-content .image-teaser-copy {
     position: static !important;
     transform: none !important;
+    opacity: 1 !important;
     padding: 10px 0 0;
     bottom: auto !important;
   }

@@ -89,6 +89,10 @@
     padding: 12px 0 0;
     color: #0e1417;
     background: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
   }
 
   .projects-listing .projects-listing-row .project-teaser-name {
