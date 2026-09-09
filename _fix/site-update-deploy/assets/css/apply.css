@@ -1,0 +1,253 @@
+/* ------------------------------------------------------------------
+   Дадлага / ажлын байрны өргөдлийн форм
+   /internship, /career болон CP Admin-аас заасан /page/N хуудсууд
+   ------------------------------------------------------------------ */
+
+.apply-section {
+	padding: 60px 0 100px;
+	color: #000;
+}
+
+.apply-page .apply-section {
+	padding-top: 40px;
+}
+
+.apply-wrap {
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 0 100px;
+}
+
+.apply-head {
+	max-width: 720px;
+	margin-bottom: 34px;
+}
+
+.apply-title {
+	font-size: 34px;
+	line-height: 1.15;
+	font-weight: 700;
+	text-transform: uppercase;
+	margin: 0 0 16px;
+}
+
+.apply-lead {
+	font-size: 15px;
+	line-height: 24px;
+	color: #444;
+	margin: 0;
+}
+
+.apply-box {
+	max-width: 720px;
+	border-top: 2px solid #000;
+	padding-top: 30px;
+}
+
+/* ---- Талбарууд ---- */
+
+.apply-grid {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 -10px;
+}
+
+.apply-field {
+	padding: 0 10px;
+	margin-bottom: 20px;
+	width: 100%;
+}
+
+.apply-w-half {
+	width: 50%;
+}
+
+.apply-label {
+	display: block;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	margin-bottom: 8px;
+	color: #111;
+}
+
+.apply-req {
+	color: #fe5925;
+	margin-left: 4px;
+}
+
+.apply-input,
+.apply-file {
+	width: 100%;
+	background: #fff;
+	border: 1px solid #c9c9c9;
+	border-radius: 0;
+	padding: 12px 14px;
+	font-family: inherit;
+	font-size: 14px;
+	line-height: 20px;
+	color: #000;
+	transition: border-color .2s ease;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+select.apply-input {
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23000' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 14px center;
+	padding-right: 36px;
+}
+
+.apply-input:focus,
+.apply-file:focus {
+	outline: none;
+	border-color: #fe5925;
+}
+
+textarea.apply-input {
+	resize: vertical;
+	min-height: 110px;
+}
+
+.apply-file {
+	padding: 10px 12px;
+	font-size: 13px;
+	background: #fafafa;
+}
+
+.apply-help {
+	display: block;
+	font-size: 12px;
+	line-height: 18px;
+	color: #777;
+	margin-top: 6px;
+}
+
+.apply-error {
+	display: block;
+	font-size: 12px;
+	line-height: 18px;
+	color: #d0342c;
+	margin-top: 6px;
+}
+
+.apply-has-error .apply-input,
+.apply-has-error .apply-file {
+	border-color: #d0342c;
+}
+
+/* ---- Сонголтууд ---- */
+
+.apply-choice-list {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -4px -14px;
+}
+
+.apply-choice {
+	display: flex;
+	align-items: center;
+	margin: 4px 14px;
+	font-size: 14px;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.apply-choice input {
+	margin-right: 8px;
+}
+
+.apply-consent {
+	align-items: flex-start;
+	line-height: 20px;
+}
+
+/* ---- Товч ---- */
+
+.apply-btn {
+	margin-top: 14px;
+	background: #000;
+	color: #fff;
+	border: 2px solid #000;
+	border-radius: 30px;
+	padding: 13px 42px;
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.apply-btn:hover {
+	background: #fe5925;
+	border-color: #fe5925;
+	color: #fff;
+}
+
+/* ---- Мессежүүд ---- */
+
+.apply-alert {
+	border: 1px solid #d0342c;
+	color: #d0342c;
+	padding: 14px 16px;
+	font-size: 14px;
+	line-height: 20px;
+	margin-bottom: 24px;
+}
+
+.apply-state h3 {
+	font-size: 22px;
+	font-weight: 700;
+	text-transform: uppercase;
+	margin: 0 0 12px;
+}
+
+.apply-state p {
+	font-size: 15px;
+	line-height: 24px;
+	color: #444;
+	margin: 0;
+}
+
+.apply-state--ok h3 {
+	color: #fe5925;
+}
+
+/* robot хамгаалалтын талбар — хүнд харагдахгүй */
+.apply-hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* ---- Жижиг дэлгэц ---- */
+
+@media (max-width: 1200px) {
+	.apply-wrap {
+		padding: 0 60px;
+	}
+}
+
+@media (max-width: 768px) {
+	.apply-section {
+		padding: 40px 0 70px;
+	}
+
+	.apply-wrap {
+		padding: 0 24px;
+	}
+
+	.apply-title {
+		font-size: 26px;
+	}
+
+	.apply-w-half {
+		width: 100%;
+	}
+}
