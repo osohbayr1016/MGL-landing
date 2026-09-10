@@ -18,7 +18,7 @@ $erpCsrf = $_SESSION["erpLoginCsrf"];
 		</button>
 
 		<div class="erp-login__head">
-			<span class="erp-login__eyebrow">MGL E &amp; C design system</span>
+			<span class="erp-login__eyebrow">MGL E&amp;C design management system</span>
 			<h2 class="erp-login__title" id="erpLoginTitle">Нэвтрэх</h2>
 		</div>
 
