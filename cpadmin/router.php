@@ -60,6 +60,7 @@ if (localRoute('#^/pics/([A-Za-z]+)/(.+)$#', $uri, $m)) {
 
 if (localRoute('#^/userPost/([^/]+)/?$#', $uri, $m)) {
 	$_GET["mod"] = $m[1];
+	$_REQUEST = array_merge($_REQUEST, $_GET);
 	require $root . "/user.sys.posts.php";
 	return true;
 }
@@ -68,6 +69,7 @@ if (localRoute('#^/insert/([^/]+)/([0-9]+)/?$#', $uri, $m)) {
 	$_GET["incPageType"] = "insert";
 	$_GET["subPage"] = $m[1];
 	$_GET["objID"] = $m[2];
+	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
 	require $root . "/index.php";
 	return true;
 }
@@ -75,34 +77,48 @@ if (localRoute('#^/insert/([^/]+)/([0-9]+)/?$#', $uri, $m)) {
 if (localRoute('#^/insert/([^/]+)/?$#', $uri, $m)) {
 	$_GET["incPageType"] = "insert";
 	$_GET["subPage"] = $m[1];
+	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
 	require $root . "/index.php";
 	return true;
 }
 
-$modules = array("settings", "access", "info", "users", "home", "registration", "internship");
+if (localRoute('#^/floorplan/asset/([^/]+)/?$#', $uri, $m)) {
+	$_GET["incPageType"] = "floorplan";
+	$_GET["subPage"] = "asset";
+	$_GET["asset"] = $m[1];
+	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
+	require $root . "/index.php";
+	return true;
+}
+
+$modules = array("settings", "access", "info", "users", "home", "registration", "internship", "floorplan");
 foreach ($modules as $mod) {
 	if (localRoute('#^/' . $mod . '/([^/]+)/([0-9]+)/?$#', $uri, $m)) {
 		$_GET["incPageType"] = $mod;
 		$_GET["subPage"] = $m[1];
 		$_GET["objID"] = $m[2];
-		require $root . "/index.php";
+		$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
+	require $root . "/index.php";
 		return true;
 	}
 	if (localRoute('#^/' . $mod . '/([^/]+)/?$#', $uri, $m)) {
 		$_GET["incPageType"] = $mod;
 		$_GET["subPage"] = $m[1];
-		require $root . "/index.php";
+		$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
+	require $root . "/index.php";
 		return true;
 	}
 }
 
 if ($uri === "/" || $uri === "") {
+	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
 	require $root . "/index.php";
 	return true;
 }
 
 if (localRoute('#^/([^/]+)/?$#', $uri, $m)) {
 	$_GET["incPageType"] = $m[1];
+	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
 	require $root . "/index.php";
 	return true;
 }
