@@ -1,0 +1,831 @@
+/* Interactive office floor plan (Office page hero).
+   Used by the public site and, with .fp-edit, by the CP Admin editor. */
+
+.fp-hero {
+	--fp-offset: 122px;             /* page header above the hero (body padding-top) */
+	--fp-cyan: #2c9dc2;             /* dot / accent line */
+	--fp-cyan-ink: #13789a;         /* cyan text (AA on white) */
+	--fp-ink: #15191d;
+	--fp-side: clamp(16px, 4vw, 64px);
+	--fp-bottom: clamp(20px, 7vh, 72px);
+	--fp-vh: 1vh;                   /* 1% of the stage height (set by viewer.js) */
+
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: calc(100vh - var(--fp-offset));
+	min-height: 420px;
+	box-sizing: border-box;
+	background: #fff;
+	color: var(--fp-ink);
+	overflow: hidden;
+	font-family: Montserrat, "Helvetica Neue", Arial, sans-serif;
+}
+
+@supports (height: 100svh) {
+	.fp-hero { height: calc(100svh - var(--fp-offset)); }
+}
+
+/* phones: 56px header, then the section chips (about.css) whose bar overlaps
+   the next block by ~47px — start below them */
+@media (max-width: 768px) {
+	.fp-hero {
+		--fp-offset: 176px;
+		margin-top: 56px;
+	}
+}
+
+.fp-hero *,
+.fp-hero *::before,
+.fp-hero *::after { box-sizing: border-box; }
+
+/* style.css gives every <button> an arrow background image */
+.fp-hero button { background-image: none; }
+
+/* short landscape screens: the page header would eat the whole view, so the
+   hero takes the full screen height once scrolled to */
+@media (max-height: 520px) and (orientation: landscape) {
+	.fp-hero {
+		--fp-offset: 0px;
+		min-height: 300px;
+	}
+}
+
+/* ---------- stage ---------- */
+
+.fp-stage {
+	position: relative;
+	flex: 1 1 auto;
+	min-height: 0;
+	width: 100%;
+	overflow: hidden;
+	touch-action: pan-y;            /* vertical page scroll stays native */
+	-webkit-user-select: none;
+	user-select: none;
+	contain: layout paint;
+	container-type: inline-size;    /* type scales with the hero, not the window */
+}
+
+/* ---------- floors (one layer per floor, stacked) ---------- */
+
+.fp-floors {
+	position: absolute;
+	inset: 0;
+}
+
+.fp-floor {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	transform-origin: 50% 50%;
+}
+
+.fp-floor.is-active {
+	visibility: visible;
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.fp-hero.is-switching .fp-floor { pointer-events: none; }
+
+/* Changing floor. Going up, the floor you leave sinks away and the next one
+   comes down into place (the reverse going down), while the camera walks
+   into the stairs on one floor and out of the stairwell on the other. */
+.fp-floor.is-arriving[data-dir="up"] { transform: translate3d(0, -7%, 0) scale(0.96); opacity: 0; }
+.fp-floor.is-arriving[data-dir="down"] { transform: translate3d(0, 7%, 0) scale(0.96); opacity: 0; }
+
+.fp-floor.is-arriving.is-active {
+	transform: none;
+	opacity: 1;
+	transition: opacity 0.7s ease, transform 1.05s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+.fp-floor.is-leaving {
+	visibility: visible;
+	opacity: 0;
+	transition: opacity 0.6s ease, transform 0.9s cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.fp-floor.is-leaving[data-dir="up"] { transform: translate3d(0, 8%, 0) scale(1.08); }
+.fp-floor.is-leaving[data-dir="down"] { transform: translate3d(0, -8%, 0) scale(1.08); }
+
+.fp-world {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform-origin: 0 0;
+	opacity: 0;
+	transition: opacity 0.5s ease;
+}
+
+.fp-floor.is-ready .fp-world { opacity: 1; }
+
+.fp-hero .fp-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	-webkit-user-drag: none;
+	user-drag: none;
+	pointer-events: none;
+}
+
+.fp-fail {
+	display: none;
+	position: absolute;
+	inset: 0;
+	place-items: center;
+	padding: 24px;
+	text-align: center;
+	color: #5a6269;
+	font-size: 15px;
+}
+
+.fp-floor.is-failed .fp-fail { display: grid; }
+.fp-floor.is-failed .fp-world,
+.fp-floor.is-failed .fp-spots { display: none; }
+
+/* ---------- pannable overview (phones) ---------- */
+
+
+.fp-floor::before,
+.fp-floor::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	z-index: 2;
+	width: 44px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.fp-floor::before {
+	left: 0;
+	background:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2313789a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 5l-7 7 7 7'/%3E%3C/svg%3E") 6px 50% / 18px no-repeat,
+		linear-gradient(90deg, #fff 20%, rgba(255, 255, 255, 0));
+}
+
+.fp-floor::after {
+	right: 0;
+	background:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2313789a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") calc(100% - 6px) 50% / 18px no-repeat,
+		linear-gradient(270deg, #fff 20%, rgba(255, 255, 255, 0));
+}
+
+.fp-floor.is-pannable[data-phase="OVERVIEW"]:not(.is-zoomed).can-left::before,
+.fp-floor.is-pannable[data-phase="OVERVIEW"]:not(.is-zoomed).can-right::after { opacity: 1; }
+
+/* ---------- hotspots ---------- */
+
+.fp-spots {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.fp-spot {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: var(--fp-hit, 44px);
+	height: var(--fp-hit, 44px);
+	margin: calc(var(--fp-hit, 44px) / -2) 0 0 calc(var(--fp-hit, 44px) / -2);
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	cursor: pointer;
+	pointer-events: auto;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	will-change: transform;
+	opacity: 0;
+	outline: none;
+	transition: opacity 0.5s ease 0.15s;
+}
+
+.fp-floor.is-ready .fp-spot { opacity: 1; }
+
+.fp-spot.is-off {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.fp-dot {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 14px;
+	height: 14px;
+	margin: -7px 0 0 -7px;
+	border-radius: 50%;
+	background: var(--fp-cyan);
+	box-shadow:
+		0 0 0 3px #fff,
+		0 0 0 4px rgba(44, 157, 194, 0.55),
+		0 3px 9px rgba(10, 30, 40, 0.3);
+	transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease;
+}
+
+/* very quiet idle pulse, overview only */
+.fp-dot::after {
+	content: "";
+	position: absolute;
+	inset: -3px;
+	border-radius: 50%;
+	border: 1.5px solid var(--fp-cyan);
+	opacity: 0;
+	animation: fp-pulse 3.4s ease-out infinite;
+}
+
+.fp-spot:nth-child(3n) .fp-dot::after { animation-delay: 1.1s; }
+.fp-spot:nth-child(3n + 1) .fp-dot::after { animation-delay: 2.2s; }
+
+.fp-floor:not([data-phase="OVERVIEW"]) .fp-dot::after { animation: none; }
+
+@keyframes fp-pulse {
+	0% { transform: scale(1); opacity: 0; }
+	12% { opacity: 0.38; }
+	100% { transform: scale(2.6); opacity: 0; }
+}
+
+@media (hover: hover) {
+	.fp-spot:hover .fp-dot { transform: scale(1.22); }
+}
+
+.fp-spot:focus-visible .fp-dot {
+	box-shadow:
+		0 0 0 3px #fff,
+		0 0 0 6px var(--fp-ink),
+		0 3px 9px rgba(10, 30, 40, 0.3);
+}
+
+.fp-spot.is-selected .fp-dot {
+	transform: scale(1.3);
+	box-shadow:
+		0 0 0 3px #fff,
+		0 0 0 4.5px rgba(44, 157, 194, 0.6),
+		0 0 0 12px rgba(44, 157, 194, 0.16),
+		0 4px 12px rgba(10, 30, 40, 0.3);
+}
+
+.fp-spot.is-selected:focus-visible .fp-dot {
+	box-shadow:
+		0 0 0 3px #fff,
+		0 0 0 6px var(--fp-ink),
+		0 0 0 14px rgba(44, 157, 194, 0.16);
+}
+
+/* ---------- free exploration ---------- */
+
+/* zoomed out: vertical swipes scroll the page; zoomed in: the plan takes every drag */
+.fp-floor { touch-action: pan-y; }
+.fp-floor.is-zoomed { touch-action: none; }
+.fp-floor.is-active { cursor: grab; }
+.fp-floor.is-panning,
+.fp-floor.is-panning .fp-spot,
+.fp-floor.is-panning .fp-link { cursor: grabbing; }
+
+/* room names, shown once the visitor has zoomed in close enough to read */
+.fp-spot-name {
+	position: absolute;
+	left: calc(50% + 14px);
+	top: 50%;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	padding: 5px 10px 6px;
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.94);
+	box-shadow: 0 4px 16px rgba(10, 30, 40, 0.14), 0 0 0 1px rgba(20, 30, 40, 0.06);
+	text-align: left;
+	white-space: nowrap;
+	opacity: 0;
+	visibility: hidden;
+	transform: translate3d(-6px, -50%, 0) scale(0.96);
+	transform-origin: 0 50%;
+	pointer-events: none;
+	transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s linear 0.3s;
+}
+
+.fp-spot-name b {
+	color: var(--fp-ink);
+	font: 600 13px / 1.2 "Cormorant Garamond", Georgia, serif;
+	font-size: 15px;
+	letter-spacing: 0.005em;
+}
+
+.fp-spot-name i {
+	color: var(--fp-cyan-ink);
+	font: 700 10.5px / 1.2 Montserrat, "Helvetica Neue", Arial, sans-serif;
+	font-style: normal;
+}
+
+.fp-spot-name i:empty { display: none; }
+
+.fp-floor.is-close .fp-spot:not(.is-off) .fp-spot-name {
+	opacity: 1;
+	visibility: visible;
+	transform: translate3d(0, -50%, 0) scale(1);
+	pointer-events: auto;
+	transition-delay: 0s;
+}
+
+@media (hover: hover) {
+	.fp-floor.is-close .fp-spot:hover .fp-spot-name { box-shadow: 0 6px 20px rgba(10, 30, 40, 0.18), 0 0 0 1.5px var(--fp-cyan); }
+}
+
+/* one quiet hint until the first gesture */
+.fp-hint {
+	position: absolute;
+	left: 50%;
+	bottom: max(18px, env(safe-area-inset-bottom));
+	z-index: 3;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6em;
+	margin: 0;
+	padding: 0.55em 1.1em;
+	border-radius: 999px;
+	background: rgba(21, 25, 29, 0.78);
+	color: #fff;
+	font: 500 12.5px / 1.2 Montserrat, "Helvetica Neue", Arial, sans-serif;
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+	transform: translateX(-50%);
+	pointer-events: none;
+	transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fp-hint svg {
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.fp-hint.is-gone,
+.fp-hero.is-room .fp-hint,
+.fp-hero.is-switching .fp-hint {
+	opacity: 0;
+	transform: translate(-50%, 8px);
+}
+
+/* ---------- floor title ---------- */
+
+.fp-title {
+	position: absolute;
+	top: clamp(10px, calc(var(--fp-vh) * 2.6), 26px);
+	left: 50%;
+	z-index: 3;
+	max-width: calc(100% - 2 * var(--fp-side));
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+
+.fp-title-btn,
+.fp-title > .fp-title-text {
+	display: inline-flex;
+	align-items: center;
+	max-width: 100%;
+	margin: 0;
+	padding: 0.7em 1.45em;
+	overflow: hidden;
+	border: 0;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 8px 26px rgba(20, 30, 40, 0.1), 0 1px 3px rgba(20, 30, 40, 0.07);
+	color: var(--fp-ink);
+	font: 700 clamp(14px, 1.9vw, 26px) / 1 Montserrat, "Helvetica Neue", Arial, sans-serif;
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+}
+
+/* the floor title is also the way to the other floor */
+.fp-title-btn {
+	width: auto;                     /* style.css sizes every <button> 20x20 */
+	height: auto;
+	gap: 0.75em;
+	pointer-events: auto;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.fp-title-btn:disabled { cursor: default; }
+.fp-title-btn:focus-visible { outline: 2px solid var(--fp-ink); outline-offset: 3px; }
+
+@media (hover: hover) {
+	.fp-title-btn:not(:disabled):hover {
+		transform: translateY(-1px);
+		box-shadow: 0 12px 30px rgba(20, 30, 40, 0.14), 0 1px 3px rgba(20, 30, 40, 0.07);
+	}
+	.fp-title-btn:not(:disabled):hover .fp-title-go svg { transform: translateY(-2px); }
+	.fp-title-btn:not(:disabled):hover .fp-title-go[data-dir="down"] svg { transform: rotate(180deg) translateY(-2px); }
+}
+
+.fp-title-btn .fp-title-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.fp-title-go {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 0.3em;
+	padding-left: 0.75em;
+	border-left: 1px solid rgba(20, 30, 40, 0.14);
+	color: var(--fp-cyan-ink);
+	font-size: 0.66em;
+	letter-spacing: 0.04em;
+}
+
+.fp-title-go[hidden] { display: none; }
+
+.fp-title-go svg {
+	width: 1.3em;
+	height: 1.3em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.4;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	transition: transform 0.25s ease;
+}
+
+.fp-title-go[data-dir="down"] svg { transform: rotate(180deg); }
+
+.fp-hero.is-floor-in .fp-title-btn { animation: fp-title-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+@keyframes fp-title-in {
+	0% { opacity: 0.2; transform: translateY(6px); }
+	100% { opacity: 1; transform: none; }
+}
+
+/* ---------- staircase to the other floor ---------- */
+
+.fp-link {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 48px;
+	height: 48px;
+	margin: -24px 0 0 -24px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	pointer-events: auto;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+	will-change: transform;
+	opacity: 0;
+	outline: none;
+	transition: opacity 0.5s ease 0.15s;
+}
+
+.fp-floor.is-ready .fp-link { opacity: 1; }
+
+.fp-link.is-off {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.fp-link-icon {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	margin: -17px 0 0 -17px;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 0 0 1.5px rgba(19, 120, 154, 0.6), 0 4px 14px rgba(10, 30, 40, 0.25);
+	color: var(--fp-cyan-ink);
+	transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.fp-link-icon svg {
+	width: 18px;
+	height: 18px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* a quiet "this leads somewhere" pulse */
+.fp-link-icon::after {
+	content: "";
+	position: absolute;
+	inset: -4px;
+	border-radius: 50%;
+	border: 1.5px solid var(--fp-cyan);
+	opacity: 0;
+	animation: fp-pulse 2.8s ease-out 0.6s infinite;
+}
+
+.fp-floor:not([data-phase="OVERVIEW"]) .fp-link-icon::after { animation: none; }
+
+.fp-link-tag {
+	position: absolute;
+	left: calc(50% + 21px);
+	top: 50%;
+	padding: 4px 9px;
+	border-radius: 999px;
+	background: var(--fp-cyan-ink);
+	box-shadow: 0 2px 8px rgba(10, 30, 40, 0.2);
+	color: #fff;
+	font: 700 11px / 1.2 Montserrat, "Helvetica Neue", Arial, sans-serif;
+	letter-spacing: 0.03em;
+	white-space: nowrap;
+	transform: translateY(-50%);
+	pointer-events: none;
+}
+
+@media (hover: hover) {
+	.fp-link:hover .fp-link-icon { transform: scale(1.12); }
+}
+
+.fp-link:focus-visible .fp-link-icon { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--fp-ink); }
+
+/* ---------- information card ---------- */
+
+.fp-info {
+	position: absolute;
+	left: var(--fp-side);
+	bottom: var(--fp-bottom);
+	z-index: 3;
+	max-width: min(520px, calc(100% - 2 * var(--fp-side)));
+	opacity: 0;
+	visibility: hidden;
+	transform: translate3d(0, 14px, 0);
+	pointer-events: none;
+	transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s linear 0.35s;
+}
+
+.fp-hero.is-room .fp-info {
+	opacity: 1;
+	visibility: visible;
+	transform: none;
+	pointer-events: auto;
+	transition-delay: 0.3s, 0.3s, 0s;
+}
+
+.fp-info-inner {
+	padding: clamp(14px, 2.2vh, 22px) clamp(18px, 2.4vw, 32px) clamp(14px, 2.2vh, 22px) clamp(16px, 2vw, 28px);
+	border-left: 3px solid var(--fp-cyan);
+	border-radius: 0 6px 6px 0;
+	background: rgba(255, 255, 255, 0.8);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	box-shadow: 0 10px 32px rgba(20, 30, 40, 0.1);
+	transition: opacity 0.2s ease;
+}
+
+.fp-info.is-swap .fp-info-inner { opacity: 0; }
+
+.fp-info-en {
+	margin: 0;
+	color: var(--fp-ink);
+	font: 600 clamp(26px, 3.4vw, 46px) / 1.05 "Cormorant Garamond", Georgia, "Times New Roman", serif;
+	letter-spacing: -0.005em;
+	overflow-wrap: anywhere;
+}
+
+.fp-info-mn {
+	margin: 0.4em 0 0;
+	color: var(--fp-cyan-ink);
+	font: 700 clamp(15px, 1.45vw, 20px) / 1.25 Montserrat, "Helvetica Neue", Arial, sans-serif;
+	overflow-wrap: anywhere;
+}
+
+.fp-info-desc {
+	margin: 0.85em 0 0;
+	padding-top: 0.8em;
+	border-top: 1px solid rgba(20, 30, 40, 0.12);
+	color: #3a4248;
+	font: italic 500 clamp(15px, 1.35vw, 19px) / 1.45 "Cormorant Garamond", Georgia, "Times New Roman", serif;
+	overflow-wrap: anywhere;
+}
+
+.fp-info [hidden] { display: none; }
+
+/* ---------- arrows ---------- */
+
+.fp-nav {
+	position: absolute;
+	right: var(--fp-side);
+	bottom: var(--fp-bottom);
+	z-index: 4;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	opacity: 0;
+	visibility: hidden;
+	transform: translate3d(0, 10px, 0);
+	transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s linear 0.3s;
+}
+
+.fp-hero.is-room .fp-nav {
+	opacity: 1;
+	visibility: visible;
+	transform: none;
+	transition-delay: 0.4s, 0.4s, 0s;
+}
+
+.fp-btn {
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	padding: 0;
+	border: 1px solid rgba(20, 30, 40, 0.14);
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.92);
+	box-shadow: 0 4px 14px rgba(20, 30, 40, 0.1);
+	color: var(--fp-ink);
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.fp-btn svg {
+	width: 20px;
+	height: 20px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+@media (hover: hover) {
+	.fp-btn:hover { border-color: var(--fp-cyan); color: var(--fp-cyan-ink); }
+	.fp-btn-down:hover { color: #fff; background: #0e6684; border-color: #0e6684; }
+}
+
+.fp-btn:active { transform: scale(0.94); }
+.fp-btn:focus-visible { outline: 2px solid var(--fp-ink); outline-offset: 3px; }
+
+.fp-btn-down {
+	width: 52px;
+	height: 52px;
+	border-color: var(--fp-cyan-ink);
+	background: var(--fp-cyan-ink);
+	color: #fff;
+}
+
+/* ---------- portrait (phones, tablets) ----------
+   Layout classes are set by viewer.js from the hero's own size, so the
+   editor's phone preview frame gets the real phone layout. */
+
+.fp-stage[data-fp-layout="portrait"] .fp-nav {
+	right: auto;
+	left: 50%;
+	bottom: max(18px, env(safe-area-inset-bottom));
+	transform: translate3d(-50%, 10px, 0);
+}
+
+.fp-hero.is-room .fp-stage[data-fp-layout="portrait"] .fp-nav { transform: translate3d(-50%, 0, 0); }
+
+.fp-stage[data-fp-layout="portrait"] .fp-info {
+	bottom: calc(max(18px, env(safe-area-inset-bottom)) + 52px + 22px);
+}
+
+.fp-stage[data-fp-size="small"] .fp-dot {
+	width: 11px;
+	height: 11px;
+	margin: -5.5px 0 0 -5.5px;
+	box-shadow:
+		0 0 0 2.5px #fff,
+		0 0 0 3.5px rgba(44, 157, 194, 0.55),
+		0 2px 6px rgba(10, 30, 40, 0.3);
+}
+
+/* ---------- short landscape (phones on their side) ---------- */
+
+.fp-stage[data-fp-layout="short"] { --fp-bottom: 14px; }
+.fp-stage[data-fp-layout="short"] .fp-info { max-width: min(46%, 420px); bottom: 14px; }
+.fp-stage[data-fp-layout="short"] .fp-info-en { font-size: clamp(20px, 5vh, 30px); }
+.fp-stage[data-fp-layout="short"] .fp-info-mn { font-size: clamp(12px, 3.2vh, 15px); }
+.fp-stage[data-fp-layout="short"] .fp-info-desc { font-size: clamp(12px, 3.2vh, 15px); margin-top: 0.5em; padding-top: 0.5em; }
+.fp-stage[data-fp-layout="short"] .fp-info-inner { padding-top: 10px; padding-bottom: 10px; }
+.fp-stage[data-fp-layout="short"] .fp-nav { bottom: 14px; }
+.fp-stage[data-fp-layout="short"] .fp-btn { width: 42px; height: 42px; }
+.fp-stage[data-fp-layout="short"] .fp-btn-down { width: 46px; height: 46px; }
+
+/* ---------- type & spacing relative to the hero (modern browsers) ---------- */
+
+@supports (width: 1cqw) {
+	.fp-title,
+	.fp-info,
+	.fp-nav { --fp-side: clamp(16px, 4cqw, 64px); }
+	.fp-title-btn,
+	.fp-title > .fp-title-text { font-size: clamp(14px, 1.9cqw, 26px); }
+	.fp-info-inner { padding: clamp(14px, calc(var(--fp-vh) * 2.2), 22px) clamp(18px, 2.4cqw, 32px) clamp(14px, calc(var(--fp-vh) * 2.2), 22px) clamp(16px, 2cqw, 28px); }
+	.fp-info-en { font-size: clamp(26px, 3.4cqw, 46px); }
+	.fp-info-mn { font-size: clamp(15px, 1.45cqw, 20px); }
+	.fp-info-desc { font-size: clamp(15px, 1.35cqw, 19px); }
+}
+
+/* ---------- no-JS / SEO text ---------- */
+
+.fp-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.fp-dot::after { animation: none; }
+	.fp-world,
+	.fp-spot,
+	.fp-dot { transition: none; }
+
+	.fp-info,
+	.fp-nav,
+	.fp-hero.is-room .fp-info,
+	.fp-hero.is-room .fp-nav {
+		transform: none;
+		transition: opacity 0.15s linear, visibility 0s;
+		transition-delay: 0s;
+	}
+
+	.fp-info-inner { transition: none; }
+	.fp-link-icon::after { animation: none; }
+	.fp-spot-name,
+	.fp-hint { transition: opacity 0.15s linear; }
+	.fp-floor.is-arriving.is-active,
+	.fp-floor.is-leaving { transition: none; transform: none; }
+	.fp-hero.is-floor-in .fp-title-btn { animation: none; }
+
+	.fp-stage[data-fp-layout="portrait"] .fp-nav,
+	.fp-hero.is-room .fp-stage[data-fp-layout="portrait"] .fp-nav { transform: translateX(-50%); }
+}
+
+/* ---------- CP Admin editor (stage gets .fp-edit) ---------- */
+
+.fp-edit .fp-spot,
+.fp-edit .fp-link { cursor: grab; touch-action: none; opacity: 1; }
+.fp-edit .fp-link-icon::after { animation: none; }
+.fp-edit .fp-floor.is-active { cursor: default; }
+.fp-edit .fp-spot:active { cursor: grabbing; }
+.fp-edit .fp-dot::after { animation: none; }
+.fp-edit.is-add-mode { cursor: crosshair; }
+.fp-edit .fp-world { opacity: 1; }
+
+.fp-edit .fp-spot-label {
+	position: absolute;
+	left: calc(50% + 14px);
+	top: 50%;
+	padding: 2px 7px;
+	border-radius: 3px;
+	background: rgba(255, 255, 255, 0.94);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+	color: #15191d;
+	font: 600 11px/1.3 Montserrat, Arial, sans-serif;
+	white-space: nowrap;
+	pointer-events: none;
+	transform: translateY(-50%);
+}
+
+.fp-edit .fp-spot.is-disabled .fp-dot { background: #9aa4ab; box-shadow: 0 0 0 3px #fff, 0 0 0 4px rgba(120, 130, 136, 0.55); }
+.fp-edit .fp-spot.is-disabled .fp-spot-label { opacity: 0.6; text-decoration: line-through; }
+
+.fp-edit .fp-spot.is-edit-selected { z-index: 2; }
+.fp-edit .fp-spot.is-edit-selected .fp-dot {
+	transform: scale(1.35);
+	background: #e8590c;
+	box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(232, 89, 12, 0.7), 0 0 0 13px rgba(232, 89, 12, 0.16);
+}

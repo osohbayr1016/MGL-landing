@@ -41,6 +41,9 @@ Options All -Indexes
   RewriteRule ^internship/([^/]+)/([0-9]+)(/?)+$ index.php?incPageType=internship&subPage=$1&objID=$2 [L,QSA]
   RewriteRule ^internship/([^/]+)(/?) index.php?incPageType=internship&subPage=$1 [L,QSA]
 
+  RewriteRule ^floorplan/asset/([^/]+)(/?)$ index.php?incPageType=floorplan&subPage=asset&asset=$1 [L,QSA]
+  RewriteRule ^floorplan/([^/]+)(/?) index.php?incPageType=floorplan&subPage=$1 [L,QSA]
+
   RewriteRule ^pics/([A-Z,a-z]+)/([^/]+)(/?) postpic/$1/$2 [NC,L]
   
   RewriteRule ^proPic/([A-Z,a-z]+)/([0-9]+)(/?)+$ pro.pic.php?memberID=$2&g=$1 [L]

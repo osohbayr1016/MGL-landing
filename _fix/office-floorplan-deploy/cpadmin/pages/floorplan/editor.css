@@ -1,0 +1,86 @@
+/* CP Admin: Офис схем засварлагч */
+
+.fpe-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.fpe-hint { flex: 1 1 260px; font-size: 12px; }
+
+.fpe-framewrap {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	background: #f3f3f4;
+	border: 1px solid #e7eaec;
+	border-radius: 3px;
+}
+
+/* the frame keeps its REAL logical size (1440x780, 390x780 ...) and is CSS-scaled
+   to fit, so the preview is exactly what visitors get */
+.fpe-frame.fp-hero {
+	position: absolute;
+	left: 0;
+	top: 0;
+	min-height: 0;
+	height: auto;
+	margin: 0;
+	transform-origin: 0 0;
+	box-shadow: 0 0 0 1px #e7eaec;
+}
+
+.fpe-frame .fp-stage { height: 100%; flex: 1 1 auto; }
+
+.fpe-note { margin: 10px 0 0; font-size: 12px; }
+
+.fpe-status { font-size: 13px; }
+.fpe-status.is-dirty { color: #ed5565; font-weight: 600; }
+.fpe-status.is-ok { color: #1ab394; font-weight: 600; }
+
+/* list */
+.fpe-list { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; }
+.fpe-list li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 14px;
+	border-bottom: 1px solid #f1f1f1;
+	cursor: pointer;
+	font-size: 13px;
+}
+.fpe-list li:hover { background: #f8f9fa; }
+.fpe-list li.is-active { background: #fff4ec; box-shadow: inset 3px 0 0 #e8590c; }
+.fpe-list li.is-off { color: #a0a7ad; }
+.fpe-list li.is-off .fpe-name { text-decoration: line-through; }
+.fpe-list .fpe-num { width: 22px; flex: none; color: #888; font-variant-numeric: tabular-nums; }
+.fpe-list .fpe-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fpe-list .fpe-name small { display: block; color: #888; }
+.fpe-list .fpe-new { flex: none; font-size: 10px; background: #1ab394; color: #fff; border-radius: 2px; padding: 0 5px; }
+
+/* form */
+#fpe-form fieldset { border: 0; margin: 14px 0 0; padding: 0; }
+#fpe-form legend {
+	display: block;
+	width: 100%;
+	margin-bottom: 8px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #e7eaec;
+	font-size: 13px;
+	font-weight: 700;
+}
+#fpe-form label { font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+#fpe-form .checkbox label { font-weight: 400; font-size: 13px; }
+.fpe-row { margin-bottom: 8px; }
+.fpe-pair { display: flex; align-items: center; gap: 10px; }
+.fpe-pair input[type="range"] { flex: 1 1 auto; min-width: 0; }
+.fpe-pair input[type="number"] { width: 86px; flex: none; }
+.fpe-pair2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fpe-cam.is-active-set legend { color: #13789a; border-bottom-color: #13789a; }
+.fpe-previews { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+
+.fpe-savebar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#fpe-errors { flex: 1 1 280px; font-size: 13px; }
+#fpe-errors ul { margin: 0; padding-left: 18px; }
