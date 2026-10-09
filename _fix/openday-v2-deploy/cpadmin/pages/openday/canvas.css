@@ -1,0 +1,345 @@
+/* CP Admin -> Өдөрлөг: iframe доторх хуудсан дээр засах тэмдэглэгээ */
+
+body.od-editing { --ode-hi: #f0ad4e; }
+
+/* ---------------- засах боломжтой текст ---------------- */
+
+body.od-editing [data-ode-f] {
+	border-radius: 4px;
+	outline: 1px dashed rgba(255, 255, 255, .28);
+	outline-offset: 2px;
+	cursor: text;
+	white-space: pre-wrap;
+	transition: outline-color .15s ease, background-color .15s ease;
+	min-width: 1ch;
+}
+
+body.od-editing [data-ode-f]:hover { outline-color: rgba(255, 255, 255, .7); }
+
+body.od-editing [data-ode-f]:focus {
+	outline: 2px solid var(--ode-hi);
+	background: rgba(0, 0, 0, .35);
+}
+
+/* хоосон талбарт тайлбар (placeholder) */
+body.od-editing [data-ode-f]:empty::before {
+	content: attr(data-ph);
+	opacity: .45;
+	font-style: italic;
+	font-weight: 500;
+	text-transform: none;
+	pointer-events: none;
+}
+
+body.od-editing [data-ode-f].ode-invalid {
+	outline: 2px solid #ff5d5d !important;
+	background: rgba(255, 93, 93, .18);
+}
+
+body.od-editing [data-ode-f].ode-flash { animation: ode-flash .9s ease; }
+
+@keyframes ode-flash {
+	0%, 60% { background: rgba(255, 93, 93, .5); }
+	100% { background: transparent; }
+}
+
+/* ---------------- мөр: товчлуурууд ---------------- */
+
+body.od-editing [data-ode-row] { position: relative; }
+
+body.od-editing .od-ag[data-ode-row],
+body.od-editing .od-card[data-ode-row],
+body.od-editing .od-qa[data-ode-row] { padding-top: 40px; }
+
+.ode-tools {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	z-index: 5;
+	display: flex;
+	gap: 4px;
+	opacity: .35;
+	transition: opacity .15s ease;
+}
+
+[data-ode-row]:hover > .ode-tools,
+[data-ode-row]:focus-within > .ode-tools { opacity: 1; }
+
+@media (hover: none) { .ode-tools { opacity: 1; } }
+
+body.od-body .ode-tools button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid rgba(255, 255, 255, .25);
+	border-radius: 8px;
+	background: rgba(14, 14, 14, .85);
+	color: #fff;
+	font-size: 12px;
+}
+
+body.od-body .ode-tools button:hover { background: #fff; color: #111; }
+body.od-body .ode-tools button.is-danger:hover { background: #ff5d5d; color: #fff; border-color: #ff5d5d; }
+
+/* нуусан мөр */
+body.od-editing .od-off > *:not(.ode-tools) { opacity: .42; }
+
+body.od-editing .od-off::after {
+	content: "Зочдод нуусан";
+	position: absolute;
+	top: 10px;
+	left: 12px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #ff5d5d;
+	color: #fff;
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+/* ---------------- нэмэх товч ---------------- */
+
+body.od-body .ode-add {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	margin-top: 10px;
+	padding: 12px;
+	border: 1.5px dashed rgba(255, 255, 255, .45);
+	border-radius: 14px;
+	background: rgba(255, 255, 255, .04);
+	color: #fff;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: .04em;
+}
+
+body.od-body .ode-add:hover,
+body.od-body .ode-add.is-on {
+	border-color: var(--ode-hi);
+	background: rgba(240, 173, 78, .14);
+	color: var(--ode-hi);
+}
+
+body.od-body .ode-add-spot { width: auto; margin: 0; padding: 8px 14px; }
+
+/* ---------------- сонгогчтой зүйлс ---------------- */
+
+body.od-editing [data-ode-pick] {
+	cursor: pointer;
+	outline: 1px dashed rgba(240, 173, 78, .7);
+	outline-offset: 2px;
+}
+
+body.od-editing [data-ode-pick]:hover { outline-style: solid; }
+
+body.od-editing .ode-empty-pick { opacity: .75; font-style: italic; }
+
+.ode-note {
+	margin: 18px 0 0;
+	color: var(--od-faint);
+	font-size: 12px;
+}
+
+.ode-hint {
+	margin-left: 6px;
+	color: var(--od-faint);
+	font-size: 11px;
+	font-weight: 500;
+}
+
+/* ---------------- схем ---------------- */
+
+.ode-maptools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin: -6px 0 14px;
+}
+
+.ode-maphint { color: var(--od-muted); font-size: 12px; }
+
+body.od-editing .od-fp .fp-title-btn { cursor: pointer; }
+
+/* цэгийн жагсаалт */
+.ode-spot .od-place {
+	align-items: flex-start;
+	cursor: default;
+}
+
+.ode-spot.is-sel .od-place {
+	border-color: var(--ode-hi);
+	background: rgba(240, 173, 78, .12);
+}
+
+.ode-place-title { display: block; font-weight: 700; }
+
+.ode-place-desc {
+	display: block;
+	margin-top: 4px;
+	color: var(--od-muted);
+	font-size: 12px;
+	font-weight: 500;
+}
+
+body.od-body .ode-icon {
+	flex: none;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: 0;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, .1);
+	color: var(--od-accent);
+	font-size: 15px;
+}
+
+body.od-body .od-card .ode-icon.od-card-icon { width: 40px; height: 40px; font-size: 18px; }
+
+body.od-body .ode-floor {
+	flex: none;
+	padding: 4px 9px;
+	border: 1px solid rgba(255, 255, 255, .25);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, .1);
+	font-size: 11px;
+	font-weight: 800;
+}
+
+.ode-spot { padding-top: 0; }
+body.od-editing .ode-spot[data-ode-row] .od-place { padding-right: 132px; }
+
+/* ---------------- FAQ (засах үед бүгд нээлттэй) ---------------- */
+
+.ode-qa .ode-q {
+	padding: 4px 18px 10px;
+	font-weight: 700;
+	font-size: 15px;
+}
+
+/* ---------------- асуулт асуух ---------------- */
+
+body.od-editing .od-ask { position: relative; }
+body.od-editing .od-ask-form { opacity: .6; }
+
+.ode-switch {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 14px;
+	padding: 8px 12px;
+	border-radius: 10px;
+	background: rgba(240, 173, 78, .14);
+	color: var(--ode-hi);
+	font-size: 12px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.ode-switch input { width: 16px; height: 16px; margin: 0; }
+
+/* ---------------- popover ---------------- */
+
+.ode-pop {
+	position: absolute;
+	z-index: 100;
+	width: 280px;
+	max-width: calc(100vw - 16px);
+	max-height: 360px;
+	overflow: auto;
+	padding: 8px;
+	border-radius: 12px;
+	background: #fff;
+	color: #222;
+	box-shadow: 0 16px 50px rgba(0, 0, 0, .45);
+	font-size: 13px;
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.ode-pop-h {
+	padding: 4px 6px 8px;
+	font-weight: 800;
+	font-size: 12px;
+	color: #666;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+}
+
+.ode-pop-sub {
+	padding: 8px 6px 4px;
+	font-weight: 800;
+	font-size: 11px;
+	color: #999;
+}
+
+.ode-pop-list { display: grid; gap: 2px; }
+
+body.od-body .ode-pop button {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 8px 10px;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: #222;
+	text-align: left;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+body.od-body .ode-pop button:hover { background: #f1f3f5; }
+body.od-body .ode-pop button.is-on { background: #fff4e5; color: #b45f06; }
+
+.ode-pop-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 2px;
+}
+
+body.od-body .ode-pop-grid button { font-size: 12px; }
+.ode-pop-grid .fa { width: 18px; text-align: center; color: #5b8a96; font-size: 15px; }
+
+.ode-pop-form {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px;
+}
+
+.ode-pop-form input {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 7px 8px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	font: inherit;
+}
+
+body.od-body .ode-pop .ode-pop-ok {
+	flex: none;
+	width: auto;
+	padding: 8px 14px;
+	background: #1ab394;
+	color: #fff;
+	font-weight: 800;
+}
+
+body.od-body .ode-pop .ode-pop-ok:hover { background: #149c81; }
+
+.ode-pop-foot {
+	padding: 8px 6px 2px;
+	color: #888;
+	font-size: 11px;
+	line-height: 1.4;
+}

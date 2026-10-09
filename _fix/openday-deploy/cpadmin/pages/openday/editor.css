@@ -1,0 +1,161 @@
+/* CP Admin: Өдөрлөг засварлагч */
+
+.ode-actions { padding-top: 22px; }
+.ode-actions .btn { margin-left: 6px; }
+.ode-status { font-size: 13px; margin-right: 6px; }
+.ode-status.is-dirty { color: #ed5565; font-weight: 600; }
+.ode-status.is-ok { color: #1ab394; font-weight: 600; }
+
+.ode-intro { max-width: 900px; margin-bottom: 14px; }
+.ode-help { font-size: 12px; margin-top: 0; }
+.ode-pane-help { margin: 14px 0 12px; }
+
+.ode-tabs .badge { margin-left: 4px; font-weight: 600; }
+.ode-panes { padding-top: 0; }
+.ode-panes > .tab-pane { padding-top: 16px; }
+
+/* MN | EN хоёр багана */
+.ode-pair {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0 16px;
+}
+
+@media (max-width: 767px) {
+	.ode-pair { grid-template-columns: minmax(0, 1fr); }
+}
+
+.ode-times { max-width: 420px; }
+
+/* ---------------- мөрүүд ---------------- */
+
+.ode-list { margin-bottom: 12px; }
+
+.ode-list-head {
+	margin: 0 0 8px;
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.ode-empty {
+	padding: 18px;
+	border: 1px dashed #d5d8da;
+	border-radius: 4px;
+	background: #fff;
+	text-align: center;
+}
+
+.ode-row {
+	margin-bottom: 6px;
+	border: 1px solid #e7eaec;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.ode-row.is-off { background: #fafafa; }
+.ode-row.is-off .ode-row-sum { color: #a0a7ad; text-decoration: line-through; }
+.ode-row.is-selected { border-color: #e8590c; box-shadow: inset 3px 0 0 #e8590c; }
+
+.ode-row-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 6px 10px;
+}
+
+.ode-row-n {
+	flex: none;
+	width: 22px;
+	color: #999;
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+.ode-row-sum {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 6px 0;
+	border: 0;
+	background: none;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #333;
+}
+
+.ode-row-sum:hover { color: #1ab394; }
+.ode-row-sum .fa { width: 16px; text-align: center; color: #888; }
+
+.ode-sum-time {
+	display: inline-block;
+	min-width: 92px;
+	color: #555;
+	font-variant-numeric: tabular-nums;
+}
+
+.ode-row-on {
+	flex: none;
+	margin: 0;
+	font-weight: 400;
+	font-size: 12px;
+	color: #666;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.ode-row-on input { margin: 0 3px 0 0; vertical-align: -2px; }
+
+.ode-row-body { display: none; padding: 4px 14px 2px 42px; border-top: 1px solid #f1f1f1; }
+.ode-row.is-open .ode-row-body { display: block; }
+.ode-row-body .form-group { margin-bottom: 10px; }
+.ode-row-body label { font-size: 12px; margin-bottom: 3px; }
+
+@media (max-width: 767px) {
+	.ode-row-head { flex-wrap: wrap; }
+	.ode-row-body { padding-left: 14px; }
+}
+
+/* ---------------- схем ---------------- */
+
+.ode-maptools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.ode-maphint { flex: 1 1 220px; font-size: 12px; }
+
+#ode-add-spot.active { background: #1ab394; border-color: #1ab394; color: #fff; }
+
+.ode-map.fp-hero {
+	--fp-offset: 0px;
+	height: 460px;
+	min-height: 0;
+	border: 1px solid #e7eaec;
+	border-radius: 3px;
+}
+
+@media (max-width: 767px) {
+	.ode-map.fp-hero { height: 380px; }
+}
+
+.ode-map .fp-stage { height: 100%; }
+
+/* цэгийн жагсаалт өөрөө гүйлгэгдэнэ — схем хуудсан дээр байрандаа үлдэнэ */
+.ode-spot-list {
+	position: relative;
+	max-height: 600px;
+	overflow-y: auto;
+	padding-right: 4px;
+}
+
+.ode-spot-list .ode-list-head {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	padding: 4px 0 6px;
+	background: #f3f3f4;
+}

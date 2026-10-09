@@ -110,8 +110,7 @@ if(isset($_SESSION["upass"]) && isset($_SESSION["umail"])) {
 		}
 
 		/* Өдөрлөг (/openday — Open Office Day зочдын тур хуудас). Офис схемтэй
-		   ижил дүрэм: эрх нь "openday_edit" (хуудас засах), "openday_questions"
-		   (зочдын асуулт харах), эрхийн бүлэг удирддаг админд
+		   ижил дүрэм: эрх нь "openday_edit", эрхийн бүлэг удирддаг админд
 		   автоматаар нээгдэнэ. Эрхгүй админд хоосон массив — цэсэнд харагдахгүй
 		   (menu.php-ийн count() анхааруулга гаргахгүй). Эрхийг модуль СЕРВЕР
 		   талд дахин шалгана (pages/openday/sys.php, post.sys.php). */
@@ -120,15 +119,14 @@ if(isset($_SESSION["upass"]) && isset($_SESSION["umail"])) {
 				"label" => "Өдөрлөг",
 				"icon"  => "fa fa-flag",
 				"sub"   => array(
-					"edit"      => "Хуудас засах",
-					"questions" => "Ирсэн асуулт"
+					"edit" => "Агуулга засах"
 				)
 			);
 		}
 
 		if(!isset($adminAccessPer["openday"])){
 			$adminAccessPer["openday"] = (isset($adminAccessPer["access"]) && count($adminAccessPer["access"])>0)
-				? array("edit" => "edit", "questions" => "questions")
+				? array("edit" => "edit")
 				: array();
 		}
 

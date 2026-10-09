@@ -1,0 +1,912 @@
+/* ==================================================================
+   Open Office Day — зочдын тур хуудас (/openday)
+
+   Бүртгэлийн хуудастай (/registration) ижил харагдац: тогтмол дэвсгэр
+   зураг + бараан шилэн хайрцгууд, Montserrat, том үсэгтэй гарчиг.
+   --od-accent нь бүртгэлийн хуудасны өнгө (skin/new/openday.php).
+
+   Гар утсаар QR уншуулж нээх нь гол хэрэглээ — бүх зүйл эхлээд
+   нарийн дэлгэцэнд зориулагдсан.
+   ================================================================== */
+
+:root {
+	--od-accent: #88aeb8;
+	--od-bg: #0e0e0e;
+	--od-text: #ffffff;
+	--od-muted: rgba(255, 255, 255, .68);
+	--od-faint: rgba(255, 255, 255, .45);
+	--od-face: rgba(255, 255, 255, .08);
+	--od-face-2: rgba(255, 255, 255, .12);
+	--od-edge: rgba(255, 255, 255, .16);
+	--od-round: 18px;
+	--od-top-h: 56px;
+	--od-side: 16px;
+}
+
+@media (min-width: 720px) {
+	:root { --od-side: 24px; --od-top-h: 64px; }
+}
+
+/* ---------------- Хэл ---------------- */
+
+html:not([data-lang="en"]) .od-en { display: none !important; }
+html[data-lang="en"] .od-mn { display: none !important; }
+
+/* ---------------- Суурь ---------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+	scroll-behavior: smooth;
+	-webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+}
+
+body.od-body {
+	margin: 0;
+	min-height: 100vh;
+	background: var(--od-bg);
+	color: var(--od-text);
+	font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.55;
+	-webkit-font-smoothing: antialiased;
+}
+
+body.od-body button {
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}
+
+.od-body a { color: inherit; }
+
+.od-wrap {
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 0 var(--od-side);
+}
+
+/* ---------------- Тогтмол дэвсгэр ---------------- */
+
+.od-bg {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.od-bg-media {
+	position: absolute;
+	inset: 0;
+	background-color: var(--od-bg);
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.od-bg-video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.od-bg-shade {
+	position: absolute;
+	inset: 0;
+	background: #000;
+}
+
+.od-top,
+.od-page,
+.od-footer {
+	position: relative;
+	z-index: 1;
+}
+
+/* ---------------- Дээд мөр (наалддаг) ---------------- */
+
+.od-top {
+	position: sticky;
+	top: 0;
+	z-index: 30;
+	background: rgba(14, 14, 14, .62);
+	border-bottom: 1px solid rgba(255, 255, 255, .08);
+	-webkit-backdrop-filter: blur(18px) saturate(160%);
+	backdrop-filter: blur(18px) saturate(160%);
+}
+
+.od-top-in {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	height: var(--od-top-h);
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 var(--od-side);
+}
+
+.od-brand {
+	flex: none;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+}
+
+.od-brand img {
+	display: block;
+	height: 26px;
+	width: auto;
+}
+
+.od-brand-text {
+	font-weight: 800;
+	letter-spacing: .04em;
+	font-size: 14px;
+}
+
+.od-tabs {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	gap: 4px;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-webkit-overflow-scrolling: touch;
+	/* хажуу тийш гүйдэг гэдгийг ирмэгийг бүдгэрүүлж мэдэгдэнэ */
+	-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 18px), transparent 100%);
+	mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 18px), transparent 100%);
+	padding: 0 10px;
+}
+
+.od-tabs::-webkit-scrollbar { display: none; }
+
+.od-tabs a {
+	flex: none;
+	padding: 8px 12px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: var(--od-muted);
+	white-space: nowrap;
+	transition: background .2s ease, color .2s ease;
+}
+
+.od-tabs a:hover { color: #fff; }
+
+.od-tabs a.is-active {
+	background: rgba(255, 255, 255, .14);
+	color: #fff;
+}
+
+body.od-body .od-lang {
+	flex: none;
+	min-width: 44px;
+	height: 34px;
+	padding: 0 12px;
+	border-radius: 999px;
+	border: 1px solid rgba(255, 255, 255, .35);
+	background: transparent;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: .08em;
+	transition: background .2s ease, border-color .2s ease;
+}
+
+body.od-body .od-lang:hover {
+	background: rgba(255, 255, 255, .12);
+	border-color: #fff;
+}
+
+.od-body :focus-visible {
+	outline: 2px solid var(--od-accent);
+	outline-offset: 2px;
+}
+
+/* ---------------- Hero ---------------- */
+
+.od-hero { padding: 44px 0 12px; }
+
+.od-eyebrow {
+	margin: 0 0 10px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .22em;
+	text-transform: uppercase;
+	color: var(--od-accent);
+}
+
+.od-title {
+	margin: 0 0 18px;
+	font-size: clamp(30px, 8vw, 56px);
+	font-weight: 800;
+	line-height: 1.05;
+	letter-spacing: -.01em;
+	text-transform: uppercase;
+}
+
+.od-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0 0 18px;
+	padding: 0;
+	list-style: none;
+}
+
+.od-meta li {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 12px;
+	border-radius: 999px;
+	background: var(--od-face);
+	border: 1px solid var(--od-edge);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.od-meta .fa { color: var(--od-accent); }
+
+.od-intro {
+	max-width: 680px;
+	margin: 0;
+	color: var(--od-muted);
+	font-size: 15px;
+}
+
+/* ---- Одоо / дараа нь ---- */
+
+.od-live {
+	margin-top: 24px;
+	padding: 6px;
+	border-radius: var(--od-round);
+	background: rgba(255, 255, 255, .10);
+	border: 1px solid rgba(255, 255, 255, .2);
+	-webkit-backdrop-filter: blur(22px) saturate(165%);
+	backdrop-filter: blur(22px) saturate(165%);
+	box-shadow: 0 22px 60px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+
+.od-live[hidden],
+.od-live-row[hidden],
+.od-live-msg[hidden],
+.od-badge[hidden] { display: none; }
+
+.od-live-msg {
+	margin: 0;
+	padding: 12px 14px;
+	font-weight: 600;
+}
+
+.od-live-row {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	padding: 14px;
+	border-radius: 13px;
+}
+
+.od-live-row.is-now { background: rgba(255, 255, 255, .08); }
+
+.od-live-row + .od-live-row,
+.od-live-msg + .od-live-row:not([hidden]) { margin-top: 2px; }
+
+.od-live-tag {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	min-width: 86px;
+	padding-top: 2px;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: var(--od-faint);
+}
+
+.is-now .od-live-tag { color: var(--od-accent); }
+
+.od-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--od-accent);
+	box-shadow: 0 0 0 0 var(--od-accent);
+	animation: od-pulse 1.8s ease-out infinite;
+}
+
+@keyframes od-pulse {
+	0% { box-shadow: 0 0 0 0 rgba(136, 174, 184, .7); }
+	80%, 100% { box-shadow: 0 0 0 9px rgba(136, 174, 184, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.od-dot { animation: none; }
+}
+
+.od-live-body { min-width: 0; }
+
+.od-live-time {
+	display: block;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--od-muted);
+}
+
+.od-live-title {
+	display: block;
+	margin: 2px 0 8px;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.od-live-body .od-where { margin-top: 0; }
+
+@media (max-width: 420px) {
+	.od-live-row { flex-direction: column; gap: 6px; }
+	.od-live-tag { min-width: 0; }
+}
+
+/* ---------------- Хэсгүүд ---------------- */
+
+.od-section {
+	padding: 40px 0 8px;
+	scroll-margin-top: var(--od-top-h);
+}
+
+.od-h2 {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0 0 18px;
+	font-size: clamp(20px, 5vw, 28px);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: .01em;
+	text-transform: uppercase;
+}
+
+.od-h2::before {
+	content: "";
+	flex: none;
+	width: 22px;
+	height: 3px;
+	border-radius: 2px;
+	background: var(--od-accent);
+}
+
+.od-lead {
+	max-width: 680px;
+	margin: -6px 0 18px;
+	color: var(--od-muted);
+	font-size: 14px;
+}
+
+/* Хөтөлбөрийн хайрцаг — бүртгэлийн хуудасны шил */
+.od-agenda {
+	margin: 0;
+	padding: 6px;
+	list-style: none;
+	border-radius: var(--od-round);
+	background: rgba(255, 255, 255, .08);
+	border: 1px solid rgba(255, 255, 255, .18);
+	-webkit-backdrop-filter: blur(22px) saturate(165%);
+	backdrop-filter: blur(22px) saturate(165%);
+	box-shadow: 0 22px 60px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .14);
+}
+
+/* ---------------- Хөтөлбөр ---------------- */
+
+.od-ag {
+	display: grid;
+	grid-template-columns: 62px minmax(0, 1fr);
+	gap: 14px;
+	padding: 16px 12px;
+	border-radius: 13px;
+	transition: background .3s ease, opacity .3s ease;
+}
+
+.od-ag + .od-ag { border-top: 1px solid rgba(255, 255, 255, .08); }
+
+.od-ag-time {
+	display: flex;
+	flex-direction: column;
+	padding-top: 1px;
+	font-variant-numeric: tabular-nums;
+}
+
+.od-ag-start {
+	font-size: 17px;
+	font-weight: 800;
+	line-height: 1.2;
+}
+
+.od-ag-end {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--od-faint);
+}
+
+.od-ag-title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.od-ag-text {
+	margin: 4px 0 0;
+	color: var(--od-muted);
+	font-size: 14px;
+}
+
+.od-ag.is-past { opacity: .45; }
+
+.od-ag.is-now {
+	background: rgba(255, 255, 255, .1);
+	box-shadow: inset 3px 0 0 var(--od-accent);
+}
+
+.od-ag.is-now + .od-ag,
+.od-ag.is-now { border-top-color: transparent; }
+
+.od-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 6px;
+	padding: 3px 9px;
+	border-radius: 999px;
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	background: var(--od-accent);
+	color: #0e0e0e;
+}
+
+.od-badge.is-next {
+	background: transparent;
+	color: var(--od-accent);
+	box-shadow: inset 0 0 0 1px var(--od-accent);
+}
+
+/* ---------------- Байршлын товч ---------------- */
+
+body.od-body .od-where {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	max-width: 100%;
+	margin-top: 10px;
+	padding: 6px 6px 6px 11px;
+	border-radius: 999px;
+	border: 1px solid rgba(255, 255, 255, .22);
+	background: rgba(255, 255, 255, .06);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.3;
+	text-align: left;
+	transition: background .2s ease, border-color .2s ease;
+}
+
+body.od-body .od-where:hover {
+	background: rgba(255, 255, 255, .14);
+	border-color: var(--od-accent);
+}
+
+.od-where .fa { color: var(--od-accent); }
+
+.od-where-name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.od-where-floor {
+	flex: none;
+	padding: 2px 7px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, .14);
+	font-size: 10px;
+	font-weight: 800;
+	letter-spacing: .06em;
+}
+
+/* ---------------- Схем ---------------- */
+
+.od-map-frame {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 var(--od-side);
+}
+
+/* Офис хуудасны hero-г хуудасны дундах хайрцаг болгоно */
+.od-fp.fp-hero {
+	--fp-offset: 0px;
+	height: min(72vh, 660px);
+	min-height: 380px;
+	border-radius: var(--od-round);
+	box-shadow: 0 22px 60px rgba(0, 0, 0, .35);
+	isolation: isolate;
+	font-family: "Montserrat", system-ui, sans-serif;
+}
+
+@supports (height: 100svh) {
+	.od-fp.fp-hero { height: min(72svh, 660px); }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+	.od-fp.fp-hero { height: calc(100svh - var(--od-top-h) - 24px); min-height: 280px; }
+}
+
+.od-fp .fp-hint { font-family: inherit; }
+
+/* хэл: viewer-ийн өрөөний нэр, карт нь openday.js-ээр солигдоно */
+
+.od-places {
+	display: grid;
+	gap: 18px;
+	margin-top: 18px;
+}
+
+@media (min-width: 720px) {
+	.od-places { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.od-places-h {
+	margin: 0 0 8px;
+	font-size: 22px;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.od-places-h small {
+	font-size: 13px;
+	color: var(--od-accent);
+	margin-left: 1px;
+}
+
+.od-places-list {
+	display: grid;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+body.od-body .od-place {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	min-height: 46px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, .12);
+	background: var(--od-face);
+	text-align: left;
+	font-size: 14px;
+	font-weight: 600;
+	transition: background .2s ease, border-color .2s ease;
+}
+
+body.od-body .od-place:hover {
+	background: var(--od-face-2);
+	border-color: rgba(255, 255, 255, .28);
+}
+
+.od-place .fa:first-child {
+	flex: none;
+	width: 20px;
+	text-align: center;
+	color: var(--od-accent);
+	font-size: 16px;
+}
+
+.od-place-name {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.od-place-go {
+	flex: none;
+	color: var(--od-faint);
+	font-size: 18px;
+}
+
+body.od-body .od-place.is-current {
+	border-color: var(--od-accent);
+	background: rgba(255, 255, 255, .14);
+}
+
+/* ---------------- Практик мэдээлэл ---------------- */
+
+.od-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+	gap: 12px;
+}
+
+.od-card {
+	padding: 18px;
+	border-radius: var(--od-round);
+	background: rgba(255, 255, 255, .08);
+	border: 1px solid rgba(255, 255, 255, .16);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
+}
+
+.od-card-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	margin-bottom: 12px;
+	border-radius: 12px;
+	background: rgba(255, 255, 255, .1);
+	color: var(--od-accent);
+	font-size: 18px;
+}
+
+.od-card-title {
+	margin: 0 0 4px;
+	font-size: 15px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+}
+
+.od-card-text {
+	margin: 0;
+	color: var(--od-muted);
+	font-size: 14px;
+	overflow-wrap: anywhere;
+}
+
+/* ---------------- FAQ ---------------- */
+
+.od-faq {
+	display: grid;
+	gap: 8px;
+}
+
+.od-qa {
+	border-radius: 14px;
+	background: rgba(255, 255, 255, .08);
+	border: 1px solid rgba(255, 255, 255, .14);
+}
+
+.od-qa summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14px;
+	padding: 16px 18px;
+	cursor: pointer;
+	list-style: none;
+	font-weight: 700;
+	font-size: 15px;
+}
+
+.od-qa summary::-webkit-details-marker { display: none; }
+
+.od-qa summary .fa {
+	flex: none;
+	color: var(--od-accent);
+	transition: transform .25s ease;
+}
+
+.od-qa[open] summary .fa { transform: rotate(45deg); }
+
+.od-a {
+	padding: 0 18px 18px;
+	color: var(--od-muted);
+	font-size: 14px;
+}
+
+/* ---------------- Footer ---------------- */
+
+.od-footer {
+	padding: 48px 0 calc(32px + env(safe-area-inset-bottom));
+	text-align: center;
+	font-size: 12px;
+	color: var(--od-faint);
+}
+
+/* ---------------- Хуудаснууд (нэг удаад нэг нь) ---------------- */
+
+.od-view[hidden] { display: none !important; }
+
+/* хуудас солигдоход зөөлөн гарч ирнэ */
+.od-view { animation: od-in .28s ease both; }
+
+@keyframes od-in {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.od-view { animation: none; }
+}
+
+body.od-body .od-view.od-section { padding-top: 32px; min-height: calc(100vh - var(--od-top-h) - 120px); }
+
+/* ---------------- Нүүр: хэсгүүд рүү орох товчлуур ---------------- */
+
+.od-tiles {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin-top: 24px;
+}
+
+@media (min-width: 720px) {
+	.od-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.od-tile {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	min-height: 112px;
+	padding: 16px;
+	border-radius: var(--od-round);
+	background: rgba(255, 255, 255, .10);
+	border: 1px solid rgba(255, 255, 255, .2);
+	-webkit-backdrop-filter: blur(22px) saturate(165%);
+	backdrop-filter: blur(22px) saturate(165%);
+	text-decoration: none;
+	transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.od-tile:hover {
+	background: rgba(255, 255, 255, .16);
+	border-color: var(--od-accent);
+	transform: translateY(-2px);
+}
+
+.od-tile-icon {
+	font-size: 22px;
+	color: var(--od-accent);
+}
+
+.od-tile-name {
+	margin-top: auto;
+	padding-right: 18px;
+	font-size: 14px;
+	font-weight: 800;
+	line-height: 1.25;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+
+.od-tile-go {
+	position: absolute;
+	right: 14px;
+	bottom: 16px;
+	color: var(--od-faint);
+	font-size: 18px;
+}
+
+/* ---------------- Асуулт асуух ---------------- */
+
+.od-ask {
+	margin-top: 28px;
+	padding: 20px;
+	border-radius: var(--od-round);
+	background: rgba(255, 255, 255, .10);
+	border: 1px solid rgba(255, 255, 255, .2);
+	-webkit-backdrop-filter: blur(22px) saturate(165%);
+	backdrop-filter: blur(22px) saturate(165%);
+	box-shadow: 0 22px 60px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .14);
+}
+
+.od-ask-title {
+	margin: 0 0 4px;
+	font-size: 18px;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+}
+
+.od-ask-lead {
+	margin: 0 0 14px;
+	color: var(--od-muted);
+	font-size: 14px;
+}
+
+.od-ask-form fieldset {
+	display: grid;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	min-width: 0;
+}
+
+.od-input {
+	width: 100%;
+	padding: 12px 14px;
+	border-radius: 12px;
+	border: 1px solid rgba(255, 255, 255, .55);
+	background: rgba(255, 255, 255, .88);
+	color: #111;
+	font: inherit;
+	font-size: 16px;   /* iOS: 16px-ээс бага бол томруулдаг */
+	line-height: 1.4;
+}
+
+textarea.od-input { resize: vertical; min-height: 104px; }
+
+.od-input:focus {
+	outline: none;
+	border-color: var(--od-accent);
+	box-shadow: 0 0 0 3px rgba(136, 174, 184, .35);
+}
+
+body.od-body .od-btn {
+	justify-self: start;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	padding: 0 22px;
+	border: 0;
+	border-radius: 999px;
+	background: var(--od-accent);
+	color: #0e0e0e;
+	font-size: 13px;
+	font-weight: 800;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+}
+
+body.od-body .od-btn:disabled { opacity: .6; cursor: default; }
+
+.od-ask-msg {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.od-ask-msg[hidden] { display: none; }
+.od-ask-msg.is-ok { color: #8fe3b0; }
+.od-ask-msg.is-err { color: #ffb4a8; }
+.od-ask-msg.is-wait { color: var(--od-muted); }
+
+/* хүн харахгүй (robot-ын урхи), дэлгэц уншигчид зориулсан шошго */
+.od-hp {
+	position: absolute !important;
+	left: -9999px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.od-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
