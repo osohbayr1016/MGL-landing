@@ -9,7 +9,8 @@ $fpeLoaded = FloorPlanCore::load($db, false);
 $fpeAsset = function ($url) {
 	$name = basename((string)$url);
 	list($file) = floorPlanImagePath($name);
-	return $file !== null ? "/floorplan/asset/" . $name : "";
+	/* ".htaccess"-аас хамааралгүй: үндсэн index.php үргэлж хүлээн авна */
+	return $file !== null ? "/?incPageType=floorplan&subPage=asset&asset=" . rawurlencode($name) : "";
 };
 
 $fpeFloors = array();

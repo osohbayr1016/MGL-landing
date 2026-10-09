@@ -2,8 +2,10 @@
 /**
  * CP Admin -> Офис схем
  *
- *   /floorplan/edit            — цэг, текст, камерын засвар (энэ нь л цорын ганц хуудас)
- *   /floorplan/asset/<name>    — засварлагчид хэрэгтэй JS/CSS/зураг (нэрийн жагсаалттай)
+ *   /floorplan/edit            — цэг, текст, камерын засвар (энэ нь л цорын ганц хуудас;
+ *                                .htaccess-д мөр нэмээгүй бол edit/sys.php-ээр орж ирнэ)
+ *   /?incPageType=floorplan&subPage=asset&asset=<name>
+ *                              — засварлагчид хэрэгтэй JS/CSS/зураг (нэрийн жагсаалттай)
  *
  * Хадгалалт: /userPost/floorplan (post.sys.php).
  */

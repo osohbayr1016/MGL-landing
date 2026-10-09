@@ -82,16 +82,7 @@ if (localRoute('#^/insert/([^/]+)/?$#', $uri, $m)) {
 	return true;
 }
 
-if (localRoute('#^/floorplan/asset/([^/]+)/?$#', $uri, $m)) {
-	$_GET["incPageType"] = "floorplan";
-	$_GET["subPage"] = "asset";
-	$_GET["asset"] = $m[1];
-	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
-	require $root . "/index.php";
-	return true;
-}
-
-$modules = array("settings", "access", "info", "users", "home", "registration", "internship", "floorplan");
+$modules = array("settings", "access", "info", "users", "home", "registration", "internship");
 foreach ($modules as $mod) {
 	if (localRoute('#^/' . $mod . '/([^/]+)/([0-9]+)/?$#', $uri, $m)) {
 		$_GET["incPageType"] = $mod;
@@ -116,7 +107,8 @@ if ($uri === "/" || $uri === "") {
 	return true;
 }
 
-if (localRoute('#^/([^/]+)/?$#', $uri, $m)) {
+/* same as the catch-all in cpadmin/.htaccess: RewriteRule ^(.*)$ index.php?incPageType=$1 */
+if (localRoute('#^/(.+)$#', $uri, $m)) {
 	$_GET["incPageType"] = $m[1];
 	$_REQUEST = array_merge($_REQUEST, $_GET); /* CP Admin reads $_REQUEST, which PHP built before routing */
 	require $root . "/index.php";

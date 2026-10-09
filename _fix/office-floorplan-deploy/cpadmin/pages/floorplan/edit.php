@@ -44,8 +44,8 @@ if (!function_exists("fpeCameraBlock")) {
 	}
 }
 ?>
-<link rel="stylesheet" href="/floorplan/asset/floorplan.css?v=<?php echo $fpeAssetVer(false, "assets/css/floorplan.css");?>">
-<link rel="stylesheet" href="/floorplan/asset/editor.css?v=<?php echo $fpeAssetVer(true, "editor.css");?>">
+<link rel="stylesheet" href="/?incPageType=floorplan&amp;subPage=asset&amp;asset=floorplan.css&amp;v=<?php echo $fpeAssetVer(false, "assets/css/floorplan.css");?>">
+<link rel="stylesheet" href="/?incPageType=floorplan&amp;subPage=asset&amp;asset=editor.css&amp;v=<?php echo $fpeAssetVer(true, "editor.css");?>">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Montserrat:wght@500;600;700&amp;display=swap">
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -239,6 +239,6 @@ if (!function_exists("fpeCameraBlock")) {
 </div>
 
 <script type="application/json" id="fpe-data"><?php echo FloorPlanCore::jsonForHtml($fpeConfig);?></script>
-<script src="/floorplan/asset/core.js?v=<?php echo $fpeAssetVer(false, "assets/js/floorplan/core.js");?>"></script>
-<script src="/floorplan/asset/viewer.js?v=<?php echo $fpeAssetVer(false, "assets/js/floorplan/viewer.js");?>"></script>
-<script src="/floorplan/asset/editor.js?v=<?php echo $fpeAssetVer(true, "editor.js");?>"></script>
+<script src="/?incPageType=floorplan&amp;subPage=asset&amp;asset=core.js&amp;v=<?php echo $fpeAssetVer(false, "assets/js/floorplan/core.js");?>"></script>
+<script src="/?incPageType=floorplan&amp;subPage=asset&amp;asset=viewer.js&amp;v=<?php echo $fpeAssetVer(false, "assets/js/floorplan/viewer.js");?>"></script>
+<script src="/?incPageType=floorplan&amp;subPage=asset&amp;asset=editor.js&amp;v=<?php echo $fpeAssetVer(true, "editor.js");?>"></script>

@@ -62,6 +62,14 @@ if ($uri === "/userPost/floorplan") {
 	return true;
 }
 
+/* assets: /?incPageType=floorplan&subPage=asset&asset=<name> (what the editor uses) */
+if ($uri === "/" && isset($_GET["subPage"]) && $_GET["subPage"] === "asset") {
+	$_REQUEST["subPage"] = "asset";
+	$_REQUEST["asset"] = isset($_GET["asset"]) ? $_GET["asset"] : "";
+	include $cp . "/pages/floorplan/sys.php";
+	return true;
+}
+
 if ($uri === "/floorplan/edit" || $uri === "/floorplan" || $uri === "/") {
 	$_REQUEST["subPage"] = "edit";
 	include $cp . "/pages/floorplan/sys.php";

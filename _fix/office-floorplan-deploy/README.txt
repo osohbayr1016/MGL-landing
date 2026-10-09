@@ -45,7 +45,8 @@
   widgets/pagesch/floorplan.hero.php
   cpadmin/pages/floorplan/                         (бүх файл: sys, lib, asset,
                                                    edit, edit.sys, post.sys,
-                                                   denied, editor.js, editor.css)
+                                                   denied, editor.js, editor.css,
+                                                   edit/sys.php)
 
   СОЛИНО (хуучныг нь эхлээд нөөцөлнө):
   widgets/pagesch/temp.php
@@ -64,16 +65,27 @@ cpadmin/pages/floorplan/ -ийг хуулж, widgets/pagesch/temp.php-г ХАМ�
 if(isset($adminAccessPer["access"]) ...) ) л нэмнэ.
 
 
-2. CP ADMIN-ий ЗАМ (cpadmin/.htaccess) — гараар 2 мөр нэмнэ
------------------------------------------------------------
-cpadmin/.htaccess дотор
-    RewriteRule ^pics/([A-Z,a-z]+)/([^/]+)(/?) postpic/$1/$2 [NC,L]
-гэсэн мөрийн ӨМНӨ дараах 2 мөрийг нэмнэ:
+2. CP ADMIN-ий .htaccess — ЮУ Ч НЭМЭХ ШААРДЛАГАГҮЙ
+--------------------------------------------------
+Өмнөх хувилбар cpadmin/.htaccess-д 2 мөр гараар нэмэхийг шаарддаг байсан.
+Тэр мөр нэмэгдээгүй үед "Цэг, тайлбар засах" дээр дарахад засварлагч нээгдэхгүй,
+самбар (dashboard) гардаг байсан — энэ хувилбарт засагдсан:
+  - cpadmin/pages/floorplan/edit/sys.php (ШИНЭ) нь /floorplan/edit холбоосыг
+    .htaccess-ийн ерөнхий дүрмээр шууд хүлээн авна.
+  - Засварлагчийн JS/CSS/зураг /?incPageType=floorplan&... хаягаар ачаална.
+Хэрэв өмнө нь тэр 2 мөрийг нэмсэн бол хэвээр нь үлдээж болно — аль ч тохиолдолд ажиллана.
 
-  RewriteRule ^floorplan/asset/([^/]+)(/?)$ index.php?incPageType=floorplan&subPage=asset&asset=$1 [L,QSA]
-  RewriteRule ^floorplan/([^/]+)(/?) index.php?incPageType=floorplan&subPage=$1 [L,QSA]
 
-(.htaccess-ийг бүтнээр нь солихгүй — cPanel-ийн PHP тохиргооны мөрүүд байдаг.)
+ӨМНӨХ ХУВИЛБАРЫГ АЛЬ ХЭДИЙН ХУУЛСАН БОЛ
+---------------------------------------
+Зөвхөн дараах 4 файлыг хуулахад хангалттай (бусад нь өөрчлөгдөөгүй) — эсвэл
+_fix/office-floorplan-cpadmin-fix-deploy.zip-ийг ашиглана:
+  cpadmin/pages/floorplan/edit/sys.php      (ШИНЭ хавтас + файл)
+  cpadmin/pages/floorplan/sys.php
+  cpadmin/pages/floorplan/edit.php
+  cpadmin/pages/floorplan/edit.sys.php
+Дараа нь CP Admin -> Офис схем -> Цэг, тайлбар засах. Хуудас хуучнаараа байвал
+Ctrl+Shift+R (хөтчийн cache) дарна.
 
 
 3. ӨГӨГДЛИЙН САН
@@ -108,7 +120,9 @@ cpadmin/.htaccess дотор
   2. https://mglenc.com/about?area=kitchen — 21-р давхрын Гал тогоо шууд нээгдэнэ.
   3. Гар утсан дээр (эсвэл F12 -> төхөөрөмжийн горим) нээж үзнэ.
   4. CP Admin -> Офис схем нээгдэж, цэгүүд харагдана.
-  5. Файлууд серверт байгааг шалгах (бүгд 200 байх ёстой):
+  5. CP Admin -> Офис схем -> "Цэг, тайлбар засах" дээр дарахад схемтэй засварлагч
+     нээгдэнэ (самбар гарч байвал cpadmin/pages/floorplan/edit/sys.php хуулагдаагүй).
+  6. Файлууд серверт байгааг шалгах (бүгд 200 байх ёстой):
        curl -s -o /dev/null -w "%{http_code} %{size_download}\n" https://mglenc.com/assets/js/floorplan/viewer.js
        curl -s -o /dev/null -w "%{http_code} %{size_download}\n" https://mglenc.com/assets/js/floorplan/public.js
        curl -s -o /dev/null -w "%{http_code} %{size_download}\n" https://mglenc.com/assets/css/floorplan.css
@@ -120,11 +134,13 @@ cpadmin/.htaccess дотор
        curl -s https://mglenc.com/about | grep -c fp-hero
 
 
-6. ЦЭГ ЗАСАХ ЗААВАР (CP Admin -> Офис схем)
+6. ЦЭГ, ӨРӨӨНИЙ НЭР ЗАСАХ ЗААВАР (CP Admin -> Офис схем)
 -------------------------------------------
   - Схемийн дээд талын "20-Р ДАВХАР / 21-Р ДАВХАР" табаар давхраа сонгоно.
     Хоёр давхрын өөрчлөлт нэг "Хадгалах" товчоор хамт хадгалагдана.
   - Баруун талын "Цэгүүд" жагсаалтаас цэгээ сонгоно (эсвэл схем дээрх цэг дээр дарна).
+  - ӨРӨӨНИЙ НЭР: "English" ба "Монгол" талбарт шинэ нэрээ бичээд доод талын
+    "Хадгалах" товчийг дарна. Схем дээрх нэр, картын гарчиг шууд солигдоно.
   - ШАТ: схем дээрх шатны тэмдгийг (⤴) чирж давхар хоорондын шатан дээр байрлуулна.
   - БАЙРШИЛ: цэгийг схем дээр шууд ЧИРНЭ. Нарийн засах бол цэг дээр дарж
     (фокус авсан үед) сумны товч (Shift = 10 дахин том алхам) эсвэл X/Y талбар.

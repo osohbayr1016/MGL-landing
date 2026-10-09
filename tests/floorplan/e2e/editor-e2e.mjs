@@ -373,9 +373,9 @@ console.log('server-side security');
   ok(dd.floors[0].plan.link.x === 1 && dd.floors[0].plan.link.y === 0, 'server clamps the staircase position');
   ok(j.ok === 1 && h.x === 1 && h.y === 0 && h.desktop.zoom === 16 && h.desktop.offsetX === 0.4, 'server clamps coordinates, zoom and offsets');
 
-  r = await page.request.get(ED + '/floorplan/asset/..%2f..%2fclass%2ffloorplan.class.php');
+  r = await page.request.get(ED + '/?incPageType=floorplan&subPage=asset&asset=..%2f..%2fclass%2ffloorplan.class.php');
   ok(r.status() === 404, 'asset route cannot be used for path traversal');
-  r = await page.request.get(ED + '/floorplan/asset/post.sys.php');
+  r = await page.request.get(ED + '/?incPageType=floorplan&subPage=asset&asset=post.sys.php');
   ok(r.status() === 404, 'asset route only serves the whitelisted files');
   await ctx.close();
 
@@ -384,7 +384,7 @@ console.log('server-side security');
   const npPage = await np.newPage();
   await npPage.goto(NOPERM + '/floorplan/edit');
   ok((await npPage.textContent('body')).includes('Хандах эрхгүй байна'), 'no permission -> the editor is not served');
-  ok((await np.request.get(NOPERM + '/floorplan/asset/core.js')).status() === 403, 'no permission -> assets 403');
+  ok((await np.request.get(NOPERM + '/?incPageType=floorplan&subPage=asset&asset=core.js')).status() === 403, 'no permission -> assets 403');
   const sess = await np.request.post(NOPERM + '/userPost/floorplan', { form: { frmPost: 'floorPlanSave', ajaxOrder: '1', csrf: 'x', revisions: '{}', payload } });
   ok(sess.status() === 403, 'no permission -> save refused (403) even with a payload');
   await np.close();
